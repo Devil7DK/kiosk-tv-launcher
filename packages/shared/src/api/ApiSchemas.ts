@@ -72,6 +72,16 @@ export const PlaybackStateSchema = z.discriminatedUnion('state', [
 ]);
 export type PlaybackState = z.infer<typeof PlaybackStateSchema>;
 
+/** The remote, as last heard from. */
+export const RemoteStatusSchema = z.object({
+  /** Absent until a press reports it, or when the remote cannot measure it. */
+  batteryPercent: z.number().int().min(0).max(100).optional(),
+  batteryLow: z.boolean(),
+  /** A press or the battery report it sends before sleeping. */
+  lastHeardAt: z.iso.datetime({ offset: true }).optional(),
+});
+export type RemoteStatus = z.infer<typeof RemoteStatusSchema>;
+
 /** Pushed to the launcher over server-sent events. */
 export const ServerEventSchema = z.discriminatedUnion('type', [
   z.object({ type: z.literal('playback'), playback: PlaybackStateSchema }),
@@ -82,6 +92,7 @@ export const ServerEventSchema = z.discriminatedUnion('type', [
   /** Home changed; fetch it again. */
   z.object({ type: z.literal('home') }),
   z.object({ type: z.literal('settings'), settings: SettingsSchema }),
+  z.object({ type: z.literal('remote'), remote: RemoteStatusSchema }),
 ]);
 export type ServerEvent = z.infer<typeof ServerEventSchema>;
 
