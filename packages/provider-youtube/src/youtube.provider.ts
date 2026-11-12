@@ -170,7 +170,8 @@ export function createYouTubeProvider(
       )
         .map(lockupToPlaylist)
         .filter((t): t is Title => t !== undefined);
-      return { follows: await subscribedChannels(), playlists };
+      // Subscriptions are too many for My shows; the YouTube tab has a row for each.
+      return { follows: [], playlists };
     },
 
     async progress() {

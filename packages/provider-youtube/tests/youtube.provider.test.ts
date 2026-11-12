@@ -16,21 +16,29 @@ describe('YouTube provider', () => {
     });
   });
 
-  it('follows the subscribed channels and offers the account’s playlists', async () => {
+  it('offers the account’s playlists but leaves subscriptions out of My shows', async () => {
     const { page } = fakeSite([
       channels,
       { match: browseId('FEplaylist_aggregation'), body: fixture('playlists') },
     ]);
     const library = await createYouTubeProvider(contextFor(page)).library();
-    expect(library.follows.map((c) => [c.name, c.kind])).toEqual([
-      ['Example Kitchen', 'channel'],
-      ['Example Songs', 'channel'],
-    ]);
+    expect(library.follows).toEqual([]);
     expect(library.playlists.map((p) => p.ref.id)).toEqual([
       'PLexample0001',
       'WL',
     ]);
-    expect(library.follows[0]?.artwork.landscape?.url).toBe(
+  });
+
+  it('names a subscribed channel with its picture enlarged for a tile', async () => {
+    const { page } = fakeSite([channels]);
+    const channel = await createYouTubeProvider(contextFor(page)).title(
+      kitchen,
+    );
+    expect([channel.name, channel.kind]).toEqual([
+      'Example Kitchen',
+      'channel',
+    ]);
+    expect(channel.artwork.landscape?.url).toBe(
       'https://yt3.ggpht.com/example=s480-c-k',
     );
   });
