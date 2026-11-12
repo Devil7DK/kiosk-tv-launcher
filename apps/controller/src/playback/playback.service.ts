@@ -1,4 +1,4 @@
-import type { PlaybackSession } from '@kiosk-tv/provider-kit';
+import type { PlaybackSession, Provider } from '@kiosk-tv/provider-kit';
 import {
   newerProgress,
   type Playable,
@@ -68,7 +68,8 @@ export class PlaybackService {
     return undefined;
   }
 
-  async play(request: PlayRequest): Promise<void> {
+  /** Throws when the request can never play, before anything changes on screen. */
+  check(request: PlayRequest): Provider {
     const { playable } = request;
     const provider = this.deps.registry.get(playable.ref.provider);
     if (!provider) {
@@ -81,6 +82,12 @@ export class PlaybackService {
         'The watch URL is not on the provider’s site',
       );
     }
+    return provider;
+  }
+
+  async play(request: PlayRequest): Promise<void> {
+    const { playable } = request;
+    const provider = this.check(request);
 
     const generation = ++this.generation;
     await this.release();
