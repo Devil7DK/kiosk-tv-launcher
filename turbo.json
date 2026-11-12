@@ -2,39 +2,28 @@
   "$schema": "https://turborepo.dev/schema.json",
   "ui": "stream",
   "globalDependencies": [
+    ".prettierrc.json",
     "eslint.config.js",
     "tsconfig.base.json"
   ],
   "tasks": {
     "build": {
-      "dependsOn": [
-        "^build"
-      ],
-      "outputs": [
-        "dist/**"
-      ]
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"]
     },
     "typecheck": {
-      "dependsOn": [
-        "^build"
-      ]
+      "dependsOn": ["^build"]
     },
     "test": {
-      "dependsOn": [
-        "^build"
-      ],
-      "env": [
-        "CI"
-      ]
+      "dependsOn": ["^build"],
+      "env": ["CI"]
     },
     "lint": {},
     "lint:fix": {
       "cache": false
     },
     "dev": {
-      "dependsOn": [
-        "^build"
-      ],
+      "dependsOn": ["^build"],
       "cache": false,
       "persistent": true
     }
