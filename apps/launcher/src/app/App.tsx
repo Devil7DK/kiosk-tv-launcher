@@ -11,7 +11,11 @@ import { useCallback, useMemo, useRef, useState } from 'preact/hooks';
 import { api } from '../api/api.client';
 import { useServerEvents } from '../api/useServerEvents';
 import { Message } from '../components/Message';
-import type { Navigation, Route } from '../navigation/navigation';
+import {
+  itemName,
+  type Navigation,
+  type Route,
+} from '../navigation/navigation';
 import { useRemote } from '../remote/useRemote';
 import { HomeScreen } from '../screens/HomeScreen';
 import { ProviderScreen } from '../screens/ProviderScreen';
@@ -180,9 +184,7 @@ export function App() {
         );
       })}
       {starting && (
-        <div class='starting'>
-          Starting {playback.playable.parent?.name ?? playback.playable.title}…
-        </div>
+        <div class='starting'>Starting {itemName(playback.playable)}…</div>
       )}
     </>
   );

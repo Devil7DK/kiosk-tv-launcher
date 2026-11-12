@@ -158,7 +158,7 @@ export function ProviderScreen({
             <Tile
               key={`${item.ref.provider}:${item.ref.id}`}
               title={itemName(item)}
-              subtitle={itemSubtitle(item)}
+              subtitle={itemSubtitle(item, shelf.id)}
               artwork={item.artwork}
               focused={active && focus.row === r + 1 && columnOf(focus) === i}
             />

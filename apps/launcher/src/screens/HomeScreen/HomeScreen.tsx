@@ -93,11 +93,8 @@ export function HomeScreen({
               {home.continueWatching.map((p, i) => (
                 <Tile
                   key={`${p.ref.provider}:${p.ref.id}`}
-                  title={p.parent?.name ?? p.title}
-                  subtitle={[
-                    p.parent ? p.title : undefined,
-                    progressLabel(p.progress),
-                  ]
+                  title={itemName(p)}
+                  subtitle={[itemSubtitle(p), progressLabel(p.progress)]
                     .filter(Boolean)
                     .join(' · ')}
                   artwork={p.artwork}

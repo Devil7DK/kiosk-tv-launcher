@@ -26,10 +26,27 @@ export function choose(navigation: Navigation, item: CatalogItem): void {
   else navigation.open({ kind: 'title', title: item });
 }
 
+/** Episodes go by their show's name; films and videos by their own title. */
 export function itemName(item: CatalogItem): string {
-  return isPlayable(item) ? (item.parent?.name ?? item.title) : item.name;
+  if (!isPlayable(item)) return item.name;
+  return item.kind === 'episode'
+    ? (item.parent?.name ?? item.title)
+    : item.title;
 }
 
-export function itemSubtitle(item: CatalogItem): string | undefined {
-  return isPlayable(item) && item.parent ? item.title : undefined;
+/**
+ * The second line: the episode's own title, or the channel a video is from.
+ * Left out on a row that already is that channel.
+ */
+export function itemSubtitle(
+  item: CatalogItem,
+  row?: string,
+): string | undefined {
+  if (!isPlayable(item)) return undefined;
+  if (item.kind === 'episode') return item.parent ? item.title : undefined;
+  if (item.kind === 'video') {
+    if (item.parent && item.parent.ref.id === row) return undefined;
+    return item.parent?.name ?? item.description;
+  }
+  return undefined;
 }
