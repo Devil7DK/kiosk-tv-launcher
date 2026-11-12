@@ -1,4 +1,6 @@
 import {
+  type BluetoothStatus,
+  BluetoothStatusSchema,
   type CatalogItem,
   CatalogItemSchema,
   type EpisodeListing,
@@ -161,6 +163,16 @@ export const adminApi = {
       z.array(CatalogItemSchema),
     ),
   refresh: (): Promise<void> => post('/refresh', {}),
+  bluetooth: (): Promise<BluetoothStatus> =>
+    get('/bluetooth', BluetoothStatusSchema),
+  searchBluetooth: (): Promise<void> => post('/bluetooth/scan', {}),
+  connectBluetooth: (address: string): Promise<void> =>
+    post(`/bluetooth/devices/${address}/connect`, {}),
+  disconnectBluetooth: (address: string): Promise<void> =>
+    post(`/bluetooth/devices/${address}/disconnect`, {}),
+  forgetBluetooth: async (address: string): Promise<void> => {
+    await send('DELETE', `/bluetooth/devices/${address}`);
+  },
   followLink: (url: string): Promise<{ title: Title; library: Library }> =>
     sendFor(
       'POST',

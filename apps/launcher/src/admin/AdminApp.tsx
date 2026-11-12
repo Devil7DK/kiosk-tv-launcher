@@ -5,6 +5,7 @@ import { useEffect, useState } from 'preact/hooks';
 
 import { adminApi, api } from '../api/api.client';
 import { AddFromLink } from './AddFromLink';
+import { BluetoothSection } from './BluetoothSection';
 import { BrowseSection } from './BrowseSection';
 import { PlaylistsSection } from './PlaylistsSection';
 
@@ -122,6 +123,7 @@ export function AdminApp() {
       </section>
 
       <PlaylistsSection library={library} onChange={onChange} />
+      <BluetoothSection />
       <BrowseSection
         providers={providers}
         library={library}
