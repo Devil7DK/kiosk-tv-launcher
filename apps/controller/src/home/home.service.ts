@@ -78,20 +78,27 @@ export class HomeService {
   }
 
   private async followed(title: Title): Promise<FollowedTitle> {
-    const latest = await this.deps.catalog
+    const newest = await this.deps.catalog
       .episodes(title.ref)
-      .then((listing) => listing.page.items[0])
-      .catch(() => undefined);
+      .then((listing) => listing.page.items)
+      .catch(() => [] as Playable[]);
+    const latest = newest[0];
     const last = await this.deps.watch.lastOfShow(title.ref);
     const resume =
       last && !last.progress.completed
         ? { ...last.playable, progress: last.progress }
         : undefined;
+    // Lists run newest first: anything above the episode watched last is new.
+    // Position works where air dates are missing, as on YouTube playlists.
+    const position = last
+      ? newest.findIndex((e) => refKey(e.ref) === refKey(last.playable.ref))
+      : -1;
     const hasNew =
       latest !== undefined &&
       last !== undefined &&
-      refKey(latest.ref) !== refKey(last.playable.ref) &&
-      (latest.airDate ?? '') > (last.playable.airDate ?? '');
+      (position >= 0
+        ? position > 0
+        : (latest.airDate ?? '') > (last.playable.airDate ?? ''));
     return {
       title,
       ...(latest ? { latest } : {}),

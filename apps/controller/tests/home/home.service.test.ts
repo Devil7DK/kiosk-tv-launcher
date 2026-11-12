@@ -129,4 +129,21 @@ describe('HomeService', () => {
       'Bhakti',
     ]);
   });
+
+  it('marks a show as new by position when its episodes have no dates', async () => {
+    const { home, watch } = await setup();
+    const undated = {
+      ...serialEpisodes[1]!,
+      airDate: undefined,
+    } as (typeof serialEpisodes)[1];
+    delete (undated as { airDate?: string }).airDate;
+    await watch.record(
+      undated!,
+      progressAt(1300, 1300, 'launcher', '2026-11-11T21:00:00Z'),
+    );
+    const shows = (await home.build()).myShows;
+    expect(shows.find((s) => s.title.name === 'Moondru Mudichu')?.hasNew).toBe(
+      true,
+    );
+  });
 });
