@@ -71,7 +71,7 @@ constexpr int kBatteryPin = 3;  // D2, on ADC1
 
 constexpr size_t kButtonCount = sizeof(kButtons) / sizeof(kButtons[0]);
 
-// Battery through two equal resistors; reads near 0 when none are fitted.
+// The battery reaches its pin through two equal resistors.
 constexpr float kBatteryDivider = 2.0f;
 
 constexpr uint32_t kDebounceMs = 25;
@@ -93,14 +93,46 @@ struct State {
 State states[kButtonCount];
 uint32_t lastActivity = 0;
 
-uint16_t batteryMillivolts() {
-  const uint32_t pin = analogReadMilliVolts(kBatteryPin);
-  return pin < 500 ? 0 : (uint16_t)(pin * kBatteryDivider);
+// Measured before each sleep and sent with the presses after it; 0 when the
+// divider is not fitted.
+RTC_DATA_ATTR uint16_t batteryMillivolts = 0;
+
+/** Whether the two divider resistors are fitted. */
+bool batteryDividerFitted() {
+#if defined(REMOTE_BOARD_DEVKIT)
+  // GPIO 34 has no pull-down to probe with, so the build says.
+#ifdef REMOTE_BATTERY_SENSE
+  return true;
+#else
+  return false;
+#endif
+#else
+  // With the pin's own pull-down on, a bare pin reads near 0 V while the
+  // divider still holds it at a few hundred millivolts.
+  pinMode(kBatteryPin, INPUT_PULLDOWN);
+  delay(5);
+  const uint32_t probe = analogReadMilliVolts(kBatteryPin);
+  pinMode(kBatteryPin, INPUT);
+  return probe > 100;
+#endif
+}
+
+/** Slow (the probe drains the capacitor), so it runs only where nobody waits. */
+void measureBattery() {
+  if (!batteryDividerFitted()) {
+    batteryMillivolts = 0;
+    return;
+  }
+  // The 100 nF capacitor recharges through the divider in about 0.1 s.
+  delay(150);
+  uint32_t total = 0;
+  for (int i = 0; i < 8; i++) total += analogReadMilliVolts(kBatteryPin);
+  batteryMillivolts = (uint16_t)(total / 8 * kBatteryDivider);
 }
 
 void send(remote::Key key, bool repeat) {
   remote::Packet packet{remote::kMagic, remote::kVersion, key, (uint8_t)repeat, ++sequence,
-                        batteryMillivolts()};
+                        batteryMillivolts};
   // Broadcast frames get no acknowledgement, so each press goes out a few times.
   for (int i = 0; i < kCopies; i++) {
     esp_now_send(kBroadcast, reinterpret_cast<uint8_t *>(&packet), sizeof(packet));
@@ -108,7 +140,9 @@ void send(remote::Key key, bool repeat) {
   }
   lastActivity = millis();
 #ifdef REMOTE_BENCH
-  Serial.printf("sent %s%s\n", remote::keyName(key), repeat ? " (repeat)" : "");
+  Serial.printf("sent %s%s\n",
+                key == remote::kBatteryReport ? "battery report" : remote::keyName(key),
+                repeat ? " (repeat)" : "");
 #endif
 }
 
@@ -174,6 +208,11 @@ void readSerialKeys() {
       case 'b': send(remote::kBack, false); break;
       case '+': send(remote::kVolumeUp, false); break;
       case '-': send(remote::kVolumeDown, false); break;
+      // Pretends the battery is nearly empty, to check the TV's notice.
+      case '!':
+        batteryMillivolts = 3550;
+        send(remote::kBatteryReport, false);
+        break;
       default: break;
     }
   }
@@ -191,6 +230,9 @@ bool anyButtonDown() {
 void sleepUntilPressed() {
   // A button still held would wake the chip again at once.
   while (anyButtonDown()) delay(10);
+  measureBattery();
+  // Sent now, so the TV knows the level without waiting for the next press.
+  if (batteryMillivolts > 0) send(remote::kBatteryReport, false);
   uint64_t mask = 0;
   for (const Button &button : kButtons) {
     mask |= 1ULL << button.pin;
@@ -230,7 +272,10 @@ void setup() {
   }
   lastActivity = millis();
 #ifdef REMOTE_BENCH
-  Serial.println("remote on the bench: type u d l r o b + - to send keys");
+  measureBattery();
+  Serial.printf("battery %u mV (0: no divider fitted)\n", batteryMillivolts);
+  if (batteryMillivolts > 0) send(remote::kBatteryReport, false);
+  Serial.println("remote on the bench: type u d l r o b + - to send keys, ! for a low battery");
 #endif
 }
 

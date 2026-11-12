@@ -7,6 +7,7 @@
 // One JSON object per line on USB serial, read by the controller:
 //   {"hello":"kiosk-tv-dongle","version":1}      on start, and in answer to "?"
 //   {"key":"up","repeat":false,"battery":3950}   for each press
+//   {"battery":3950}                             the remote's report before it sleeps
 
 namespace {
 
@@ -58,8 +59,12 @@ void loop() {
   lastSequence = packet.sequence;
   lastSequenceAt = now;
 
-  Serial.printf("{\"key\":\"%s\",\"repeat\":%s,\"battery\":%u}\n", remote::keyName(packet.key),
-                packet.repeat ? "true" : "false", packet.batteryMillivolts);
+  if (packet.key == remote::kBatteryReport) {
+    Serial.printf("{\"battery\":%u}\n", packet.batteryMillivolts);
+  } else {
+    Serial.printf("{\"key\":\"%s\",\"repeat\":%s,\"battery\":%u}\n", remote::keyName(packet.key),
+                  packet.repeat ? "true" : "false", packet.batteryMillivolts);
+  }
   digitalWrite(LED_BUILTIN, LOW);
   delay(15);
   digitalWrite(LED_BUILTIN, HIGH);

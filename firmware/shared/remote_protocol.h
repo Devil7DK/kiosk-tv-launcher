@@ -13,6 +13,8 @@ constexpr uint8_t kVersion = 1;
 constexpr uint8_t kChannel = 1;
 
 enum Key : uint8_t {
+  /** No button: a battery report, sent just before the remote sleeps. */
+  kBatteryReport = 0,
   kUp = 1,
   kDown,
   kLeft,
@@ -53,7 +55,8 @@ inline bool isValid(const uint8_t *data, int length) {
   if (length != (int)sizeof(Packet)) return false;
   Packet packet;
   memcpy(&packet, data, sizeof(packet));
-  return packet.magic == kMagic && packet.version == kVersion && keyName(packet.key);
+  return packet.magic == kMagic && packet.version == kVersion &&
+         (packet.key == kBatteryReport || keyName(packet.key));
 }
 
 }  // namespace remote
