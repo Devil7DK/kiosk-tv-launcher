@@ -5,14 +5,19 @@ import {
   EpisodeListingSchema,
   type Home,
   HomeSchema,
+  type Library,
+  LibrarySchema,
   type Page,
   pageSchema,
   type Playable,
   type PlaybackCommand,
+  type PlaylistCreate,
+  type PlaylistUpdate,
   type ProviderInfo,
   ProviderInfoSchema,
   type Ref,
   refKey,
+  type SettingsUpdate,
   type Shelf,
   ShelfSchema,
   type Title,
@@ -49,11 +54,32 @@ async function get<Schema extends z.ZodType>(
 }
 
 async function post(path: string, body: unknown): Promise<void> {
-  await request(path, {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify(body),
+  await send('POST', path, body);
+}
+
+async function send(
+  method: string,
+  path: string,
+  body?: unknown,
+): Promise<Response> {
+  return request(path, {
+    method,
+    ...(body === undefined
+      ? {}
+      : {
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(body),
+        }),
   });
+}
+
+async function sendFor<Schema extends z.ZodType>(
+  method: string,
+  path: string,
+  schema: Schema,
+  body?: unknown,
+): Promise<z.infer<Schema>> {
+  return schema.parse(await (await send(method, path, body)).json());
 }
 
 const query = (params: Record<string, string | undefined>) => {
@@ -92,4 +118,39 @@ export const api = {
     post('/play', { playable, ...(fromStart ? { fromStart } : {}) }),
   playback: (command: PlaybackCommand): Promise<void> =>
     post('/playback', command),
+};
+
+/** What the admin page changes; every call answers with the whole library. */
+export const adminApi = {
+  library: (): Promise<Library> => get('/library', LibrarySchema),
+  follow: (title: Title): Promise<Library> =>
+    sendFor('PUT', '/library/follows', LibrarySchema, { title }),
+  unfollow: (ref: Ref): Promise<Library> =>
+    sendFor('DELETE', `/library/follows/${refKey(ref)}`, LibrarySchema),
+  createPlaylist: (request: PlaylistCreate): Promise<Library> =>
+    sendFor('POST', '/library/playlists', LibrarySchema, request),
+  updatePlaylist: (id: string, update: PlaylistUpdate): Promise<Library> =>
+    sendFor('PATCH', `/library/playlists/${id}`, LibrarySchema, update),
+  addToPlaylist: (id: string, item: CatalogItem): Promise<Library> =>
+    sendFor('POST', `/library/playlists/${id}/items`, LibrarySchema, { item }),
+  deletePlaylist: (id: string): Promise<Library> =>
+    sendFor('DELETE', `/library/playlists/${id}`, LibrarySchema),
+  settings: (update: SettingsUpdate): Promise<Library> =>
+    sendFor('PATCH', '/settings', LibrarySchema, update),
+  accountLists: (
+    provider: string,
+  ): Promise<{ follows: Title[]; playlists: Title[] }> =>
+    get(
+      `/providers/${provider}/library`,
+      z.object({
+        follows: z.array(TitleSchema),
+        playlists: z.array(TitleSchema),
+      }),
+    ),
+  search: (provider: string, q: string): Promise<CatalogItem[]> =>
+    get(
+      `/providers/${provider}/search${query({ q })}`,
+      z.array(CatalogItemSchema),
+    ),
+  refresh: (): Promise<void> => post('/refresh', {}),
 };
