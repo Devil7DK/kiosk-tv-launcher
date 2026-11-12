@@ -17,7 +17,7 @@ export const TvConfigSchema = z.object({
     .object({
       /** The admin page is opened from other devices, so it listens beyond localhost. */
       host: z.string().default('0.0.0.0'),
-      port: z.number().int().positive().default(8080),
+      port: z.number().int().positive().default(8765),
     })
     .prefault({}),
   browser: z

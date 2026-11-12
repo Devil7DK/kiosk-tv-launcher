@@ -1,5 +1,5 @@
 {
-  "server": { "host": "0.0.0.0", "port": 8080 },
+  "server": { "host": "0.0.0.0", "port": 8765 },
   "browser": {
     "binary": "/usr/bin/brave-browser",
     "port": 9222,

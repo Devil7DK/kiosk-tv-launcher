@@ -7,7 +7,7 @@ import { TvConfigSchema } from '../../src/config/tv-config.js';
 describe('TvConfigSchema', () => {
   it('fills in a working setup from an empty file', () => {
     const config = TvConfigSchema.parse({});
-    expect(config.server.port).toBe(8080);
+    expect(config.server.port).toBe(8765);
     expect(config.browser.kiosk).toBe(true);
     expect(config.providers).toEqual({});
   });
