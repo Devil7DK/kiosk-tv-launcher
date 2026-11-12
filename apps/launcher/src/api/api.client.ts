@@ -17,6 +17,8 @@ import {
   ProviderInfoSchema,
   type Ref,
   refKey,
+  type RemoteStatus,
+  RemoteStatusSchema,
   type SettingsUpdate,
   type Shelf,
   ShelfSchema,
@@ -116,6 +118,7 @@ export const api = {
     ),
   play: (playable: Playable, fromStart = false): Promise<void> =>
     post('/play', { playable, ...(fromStart ? { fromStart } : {}) }),
+  remote: (): Promise<RemoteStatus> => get('/remote', RemoteStatusSchema),
   playback: (command: PlaybackCommand): Promise<void> =>
     post('/playback', command),
 };

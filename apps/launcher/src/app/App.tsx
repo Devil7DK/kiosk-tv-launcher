@@ -5,6 +5,7 @@ import {
   type PlaybackState,
   type ProviderInfo,
   refKey,
+  type RemoteStatus,
 } from '@kiosk-tv/shared';
 import {
   useCallback,
@@ -28,6 +29,7 @@ import { HomeScreen } from '../screens/HomeScreen';
 import { ProviderScreen } from '../screens/ProviderScreen';
 import { TitleScreen } from '../screens/TitleScreen';
 import { UpNextScreen } from '../screens/UpNextScreen';
+import { RemoteStatusContext } from './tv-status';
 
 function usable(provider: ProviderInfo): boolean {
   return (
@@ -61,6 +63,7 @@ export function App() {
   const [version, setVersion] = useState(0);
   const [scale, setScale] = useState(1);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [remote, setRemote] = useState<RemoteStatus>({ batteryLow: false });
   useEffect(() => {
     const root = document.getElementById('app');
     if (!root) return;
@@ -103,6 +106,7 @@ export function App() {
     if (event.type === 'providers') setProviders(event.providers);
     if (event.type === 'home') setVersion((v) => v + 1);
     if (event.type === 'settings') setScale(event.settings.scale);
+    if (event.type === 'remote') setRemote(event.remote);
     if (event.type !== 'playback') return;
     const state = event.playback;
     const previous = lastPlayback.current;
@@ -155,7 +159,7 @@ export function App() {
 
   const starting = playback.state === 'starting';
   return (
-    <>
+    <RemoteStatusContext.Provider value={remote}>
       {stack.map((route, index) => {
         const top = index === stack.length - 1;
         const active = top && !starting && !settingsOpen;
@@ -207,6 +211,6 @@ export function App() {
       {starting && (
         <div class='starting'>Starting {itemName(playback.playable)}…</div>
       )}
-    </>
+    </RemoteStatusContext.Provider>
   );
 }

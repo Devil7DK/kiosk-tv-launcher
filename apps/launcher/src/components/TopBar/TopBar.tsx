@@ -1,6 +1,8 @@
 import './TopBar.css';
 
-import { useEffect, useRef } from 'preact/hooks';
+import { useContext, useEffect, useRef } from 'preact/hooks';
+
+import { RemoteStatusContext } from '../../app/tv-status';
 
 export interface Tab {
   id: string;
@@ -26,6 +28,7 @@ export function TopBar({
   focusedIndex: number | undefined;
 }) {
   const element = useRef<HTMLElement>(null);
+  const remote = useContext(RemoteStatusContext);
   useEffect(() => {
     if (focusedIndex === undefined) return;
     element.current?.scrollIntoView({ block: 'start' });
@@ -49,6 +52,9 @@ export function TopBar({
           {tab.label}
         </span>
       ))}
+      {remote.batteryLow && (
+        <span class='top-bar-notice'>Charge the remote</span>
+      )}
       <span
         class={
           focusedIndex === tabs.length

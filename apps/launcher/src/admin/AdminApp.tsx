@@ -1,6 +1,6 @@
 import './admin.css';
 
-import type { Library, ProviderInfo } from '@kiosk-tv/shared';
+import type { Library, ProviderInfo, RemoteStatus } from '@kiosk-tv/shared';
 import { useEffect, useState } from 'preact/hooks';
 
 import { adminApi, api } from '../api/api.client';
@@ -34,17 +34,26 @@ function statusText(provider: ProviderInfo): string {
   }
 }
 
+function remoteText(remote: RemoteStatus | undefined): string {
+  if (!remote?.lastHeardAt) return 'Not heard from since the TV started';
+  if (remote.batteryPercent === undefined)
+    return 'Working; battery level not measured';
+  return `Battery ${remote.batteryPercent}%${remote.batteryLow ? ', needs charging' : ''}`;
+}
+
 /** The page family members open from a phone to set up the TV. */
 export function AdminApp() {
   const [library, setLibrary] = useState<Library | undefined>();
   const [providers, setProviders] = useState<ProviderInfo[]>([]);
   const [error, setError] = useState<string | undefined>();
+  const [remote, setRemote] = useState<RemoteStatus | undefined>();
 
   const loadProviders = () =>
     api.providers().then(setProviders, (e: unknown) => setError(String(e)));
   useEffect(() => {
     adminApi.library().then(setLibrary, (e: unknown) => setError(String(e)));
     void loadProviders();
+    api.remote().then(setRemote, () => {});
   }, []);
 
   const onChange = (change: Promise<Library>) => {
@@ -73,6 +82,12 @@ export function AdminApp() {
               <div class='muted'>{statusText(p)}</div>
             </li>
           ))}
+        </ul>
+        <ul>
+          <li>
+            <div class='grow'>Remote</div>
+            <div class='muted'>{remoteText(remote)}</div>
+          </li>
         </ul>
         <div class='row-form'>
           <button onClick={() => adminApi.refresh().then(loadProviders)}>
