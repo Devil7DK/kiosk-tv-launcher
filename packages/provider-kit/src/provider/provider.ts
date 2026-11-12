@@ -66,6 +66,11 @@ export interface Provider {
   /** Resolves once the video is playing full screen in the player tab. */
   play(playable: Playable, options?: PlayOptions): Promise<PlaybackSession>;
   search?(query: string, options: CatalogOptions): Promise<CatalogItem[]>;
+  /**
+   * The show, channel or playlist a link from the service's website or app
+   * points at; undefined for links that are not this service's, or not to one.
+   */
+  resolve?(url: URL): Promise<Title | undefined>;
   dispose?(): Promise<void>;
 }
 
