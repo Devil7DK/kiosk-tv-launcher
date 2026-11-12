@@ -58,11 +58,11 @@ constexpr Button kButtons[] = {
     {GPIO_NUM_1, remote::kUp, true},          // D0
     {GPIO_NUM_2, remote::kDown, true},        // D1
     {GPIO_NUM_4, remote::kLeft, true},        // D3
-    {GPIO_NUM_5, remote::kRight, true},       // D4
-    {GPIO_NUM_6, remote::kOk, false},         // D5
-    {GPIO_NUM_7, remote::kBack, false},       // D8
+    {GPIO_NUM_5, remote::kOk, false},         // D4
+    {GPIO_NUM_6, remote::kRight, true},       // D5
+    {GPIO_NUM_7, remote::kVolumeDown, true},  // D8
     {GPIO_NUM_8, remote::kVolumeUp, true},    // D9
-    {GPIO_NUM_9, remote::kVolumeDown, true},  // D10
+    {GPIO_NUM_9, remote::kBack, false},       // D10
 };
 constexpr int kBatteryPin = 3;  // D2, on ADC1
 #else

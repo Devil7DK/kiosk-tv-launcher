@@ -57,11 +57,11 @@ quick tap counts.
 | Up     | D0  | 1    |
 | Down   | D1  | 2    |
 | Left   | D3  | 4    |
-| Right  | D4  | 5    |
-| OK     | D5  | 6    |
-| Back   | D8  | 7    |
+| OK     | D4  | 5    |
+| Right  | D5  | 6    |
+| Vol −  | D8  | 7    |
 | Vol +  | D9  | 8    |
-| Vol −  | D10 | 9    |
+| Back   | D10 | 9    |
 
 D6 and D7 (its serial port) are left free.
 

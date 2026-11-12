@@ -90,7 +90,7 @@
     <path class="wire" d="M270 410 H 150"/>
     <circle cx="330" cy="410" r="5" class="contact"/><circle cx="270" cy="410" r="5" class="contact"/>
     <path class="wire" d="M268 394 H 332 M300 394 V 384"/>
-    <text x="210" y="401" text-anchor="middle" class="button-name">Right</text>
+    <text x="210" y="401" text-anchor="middle" class="button-name">OK</text>
     <circle cx="150" cy="410" r="5" fill="#1b7f3b"/>
   </g>
   <g>
@@ -98,7 +98,7 @@
     <path class="wire" d="M270 460 H 150"/>
     <circle cx="330" cy="460" r="5" class="contact"/><circle cx="270" cy="460" r="5" class="contact"/>
     <path class="wire" d="M268 444 H 332 M300 444 V 434"/>
-    <text x="210" y="451" text-anchor="middle" class="button-name">OK</text>
+    <text x="210" y="451" text-anchor="middle" class="button-name">Right</text>
     <circle cx="150" cy="460" r="5" fill="#1b7f3b"/>
   </g>
 
@@ -113,7 +113,7 @@
     <path class="wire" d="M930 360 H 1050"/>
     <circle cx="870" cy="360" r="5" class="contact"/><circle cx="930" cy="360" r="5" class="contact"/>
     <path class="wire" d="M868 344 H 932 M900 344 V 334"/>
-    <text x="990" y="351" text-anchor="middle" class="button-name">Vol −</text>
+    <text x="990" y="351" text-anchor="middle" class="button-name">Back</text>
     <circle cx="1050" cy="360" r="5" fill="#1b7f3b"/>
   </g>
   <g>
@@ -129,7 +129,7 @@
     <path class="wire" d="M930 460 H 1050"/>
     <circle cx="870" cy="460" r="5" class="contact"/><circle cx="930" cy="460" r="5" class="contact"/>
     <path class="wire" d="M868 444 H 932 M900 444 V 434"/>
-    <text x="990" y="451" text-anchor="middle" class="button-name">Back</text>
+    <text x="990" y="451" text-anchor="middle" class="button-name">Vol −</text>
     <circle cx="1050" cy="460" r="5" fill="#1b7f3b"/>
   </g>
 
