@@ -54,12 +54,14 @@ function ports(
 const tick = (ms = 20) => new Promise((resolve) => setTimeout(resolve, ms));
 
 describe('DongleConnection', () => {
-  it('picks the port that greets as the dongle and leaves the others closed', async () => {
+  it('picks the port that greets as the dongle, then reads presses and battery reports', async () => {
     const other = new FakeLink();
     const dongle = new FakeLink('{"hello":"kiosk-tv-dongle","version":1}');
     const presses: RemotePress[] = [];
+    const reports: (number | undefined)[] = [];
     const connection = new DongleConnection({
       onPress: (p) => presses.push(p),
+      onBatteryReport: (mv) => reports.push(mv),
       log: silentLog,
       ports: ports({ '/dev/ttyUSB0': other, '/dev/ttyUSB1': dongle }),
       helloTimeoutMs: 10,
@@ -72,11 +74,13 @@ describe('DongleConnection', () => {
 
     dongle.feed('{"key":"left","repeat":true,"battery":3950}');
     dongle.feed('{"key":"ok","repeat":false,"battery":0}');
+    dongle.feed('{"battery":3712}');
     dongle.feed('boot garbage from the ESP8266 ROM');
     expect(presses).toEqual([
       { button: 'left', repeat: true, batteryMillivolts: 3950 },
       { button: 'ok', repeat: false },
     ]);
+    expect(reports).toEqual([3712]);
     await connection.stop();
   });
 

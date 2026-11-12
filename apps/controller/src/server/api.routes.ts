@@ -8,6 +8,7 @@ import {
   PlayRequestSchema,
   type Ref,
   RemoteKeySchema,
+  type RemoteStatus,
   SettingsUpdateSchema,
 } from '@kiosk-tv/shared';
 import { type Context, Hono } from 'hono';
@@ -39,6 +40,8 @@ export interface ApiDeps {
   playback: PlaybackService;
   watch: WatchStore;
   events: EventHub;
+  /** The remote as last heard from. */
+  remote: () => RemoteStatus;
   log: Logger;
 }
 
@@ -143,6 +146,7 @@ export function createApi(deps: ApiDeps): Hono {
   });
 
   api.get('/playback', (c) => c.json(deps.playback.state));
+  api.get('/remote', (c) => c.json(deps.remote()));
   api.post('/play', async (c) => {
     const request = await body(c, PlayRequestSchema);
     deps.playback.check(request);
@@ -174,6 +178,7 @@ export function createApi(deps: ApiDeps): Hono {
         type: 'settings',
         settings: (await deps.library.read()).settings,
       });
+      await send({ type: 'remote', remote: deps.remote() });
       const unsubscribe = deps.events.subscribe(
         (event) => void send(event).catch(() => {}),
       );

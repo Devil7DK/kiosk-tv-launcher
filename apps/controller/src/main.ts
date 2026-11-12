@@ -19,6 +19,7 @@ import { PlaybackService } from './playback/playback.service.js';
 import { ProviderRegistry } from './providers/provider.registry.js';
 import { DongleConnection } from './remote/dongle.connection.js';
 import { createRemoteInput } from './remote/remote.input.js';
+import { RemoteStatusTracker } from './remote/remote.status.js';
 import { createApi } from './server/api.routes.js';
 import { isPrivateAddress } from './server/private-network.js';
 import { WatchStore } from './watch/watch.store.js';
@@ -91,17 +92,27 @@ const playback = new PlaybackService({
   log: log.child('playback'),
 });
 
+const remoteStatus = new RemoteStatusTracker();
+const remoteInput = createRemoteInput({
+  playback,
+  // Typed into the page directly, so it lands even if another window has focus.
+  pressInLauncher: async (key) =>
+    (await browser.launcher(launcherUrl)).keyboard.press(key),
+  log: log.child('remote'),
+});
 const dongle = config.remote.enabled
   ? new DongleConnection({
       port: config.remote.port,
       log: log.child('remote'),
-      onPress: createRemoteInput({
-        playback,
-        // Typed into the page directly, so it lands even if another window has focus.
-        pressInLauncher: async (key) =>
-          (await browser.launcher(launcherUrl)).keyboard.press(key),
-        log: log.child('remote'),
-      }),
+      onPress: (press) => {
+        void remoteInput(press);
+        const changed = remoteStatus.update(press);
+        if (changed) events.publish({ type: 'remote', remote: changed });
+      },
+      onBatteryReport: (millivolts) => {
+        const changed = remoteStatus.report(millivolts);
+        if (changed) events.publish({ type: 'remote', remote: changed });
+      },
     })
   : undefined;
 dongle?.start();
@@ -135,6 +146,7 @@ app.route(
     playback,
     watch,
     events,
+    remote: () => remoteStatus.current,
     log,
   }),
 );

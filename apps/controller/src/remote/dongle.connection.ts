@@ -26,6 +26,9 @@ const HelloSchema = z.object({
   hello: z.literal('kiosk-tv-dongle'),
   version: z.literal(1),
 });
+const BatteryReportSchema = z
+  .object({ battery: z.number().int().nonnegative() })
+  .strict();
 const PressSchema = z.object({
   key: RemoteButtonSchema,
   repeat: z.boolean(),
@@ -94,6 +97,8 @@ export class DongleConnection {
   constructor(
     private readonly options: {
       onPress: (press: RemotePress) => void;
+      /** The level the remote reports before it sleeps; undefined when it cannot measure. */
+      onBatteryReport?: (batteryMillivolts: number | undefined) => void;
       log: Logger;
       /** A fixed port, instead of trying each USB serial port. */
       port?: string | undefined;
@@ -168,7 +173,16 @@ export class DongleConnection {
       this.link = link;
       this.options.log.info('remote dongle connected', { port: path });
       link.onLine((line) => {
-        const press = PressSchema.safeParse(parseLine(line));
+        const json = parseLine(line);
+        const report = BatteryReportSchema.safeParse(json);
+        if (report.success) {
+          const millivolts = report.data.battery;
+          this.options.onBatteryReport?.(
+            millivolts > 0 ? millivolts : undefined,
+          );
+          return;
+        }
+        const press = PressSchema.safeParse(json);
         if (!press.success) return;
         this.options.onPress({
           button: press.data.key,

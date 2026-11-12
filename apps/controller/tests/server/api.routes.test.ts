@@ -69,6 +69,7 @@ async function setup() {
     events,
     homeService,
     home: () => homeService.build(),
+    remote: () => ({ batteryLow: false }),
     log: silentLog,
   });
   return { app, watch };
