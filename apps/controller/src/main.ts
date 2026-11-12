@@ -17,6 +17,7 @@ import { LibraryStore } from './library/library.store.js';
 import { createLogger } from './logging/logger.js';
 import { PlaybackService } from './playback/playback.service.js';
 import { powerTv } from './power/system-power.js';
+import { readTvBattery } from './power/tv-battery.js';
 import { ProviderRegistry } from './providers/provider.registry.js';
 import { DongleConnection } from './remote/dongle.connection.js';
 import { createRemoteInput } from './remote/remote.input.js';
@@ -26,6 +27,7 @@ import { isPrivateAddress } from './server/private-network.js';
 import { WatchStore } from './watch/watch.store.js';
 
 const STATUS_EVERY_MS = 15 * 60_000;
+const BATTERY_EVERY_MS = 60_000;
 
 const configPath =
   process.argv[2] ??
@@ -96,6 +98,7 @@ const playback = new PlaybackService({
   log: log.child('playback'),
 });
 
+let battery = await readTvBattery();
 const remoteStatus = new RemoteStatusTracker();
 const remoteInput = createRemoteInput({
   playback,
@@ -151,6 +154,7 @@ app.route(
     watch,
     events,
     remote: () => remoteStatus.current,
+    battery: () => battery,
     ...(config.power.enabled ? { power: powerTv } : {}),
     log,
   }),
@@ -190,9 +194,18 @@ const statusTimer = setInterval(() => {
     );
 }, STATUS_EVERY_MS);
 
+const batteryTimer = setInterval(() => {
+  void readTvBattery().then((latest) => {
+    if (JSON.stringify(latest) === JSON.stringify(battery)) return;
+    battery = latest;
+    events.publish({ type: 'battery', battery: latest });
+  });
+}, BATTERY_EVERY_MS);
+
 async function shutdown(signal: string) {
   log.info('stopping', { signal });
   clearInterval(statusTimer);
+  clearInterval(batteryTimer);
   await dongle?.stop().catch(() => {});
   server.close();
   await registry.dispose();

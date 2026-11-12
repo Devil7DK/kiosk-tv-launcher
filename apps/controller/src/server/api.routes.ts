@@ -13,6 +13,7 @@ import {
   RemoteKeySchema,
   type RemoteStatus,
   SettingsUpdateSchema,
+  type TvBattery,
 } from '@kiosk-tv/shared';
 import { type Context, Hono } from 'hono';
 import { HTTPException } from 'hono/http-exception';
@@ -45,6 +46,8 @@ export interface ApiDeps {
   events: EventHub;
   /** The remote as last heard from. */
   remote: () => RemoteStatus;
+  /** The computer's own battery; undefined without one. */
+  battery: () => TvBattery | undefined;
   /** Absent where the launcher may not shut the computer down. */
   power?: (action: PowerAction) => Promise<void>;
   log: Logger;
@@ -184,6 +187,7 @@ export function createApi(deps: ApiDeps): Hono {
         settings: (await deps.library.read()).settings,
       });
       await send({ type: 'remote', remote: deps.remote() });
+      await send({ type: 'battery', battery: deps.battery() });
       const unsubscribe = deps.events.subscribe(
         (event) => void send(event).catch(() => {}),
       );

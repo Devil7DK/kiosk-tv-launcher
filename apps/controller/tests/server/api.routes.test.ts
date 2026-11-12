@@ -70,6 +70,7 @@ async function setup(power?: (action: PowerAction) => Promise<void>) {
     homeService,
     home: () => homeService.build(),
     remote: () => ({ batteryLow: false }),
+    battery: () => undefined,
     ...(power ? { power } : {}),
     log: silentLog,
   });
