@@ -1,23 +1,32 @@
 import type { PlaybackState, RemoteKey } from '@kiosk-tv/shared';
 import { describe, expect, it } from 'vitest';
 
-import { createRemoteInput } from '../../src/remote/remote.input.js';
+import {
+  createRemoteInput,
+  parseVolume,
+  type SystemVolume,
+} from '../../src/remote/remote.input.js';
 import { episode, show, silentLog } from '../support/fakes.js';
 
 function setup(state: PlaybackState) {
   const toPlayer: RemoteKey[] = [];
   const toLauncher: string[] = [];
   const volume: number[] = [];
+  const shown: SystemVolume[] = [];
   const input = createRemoteInput({
     playback: {
       state,
       key: async (key) => void toPlayer.push(key as RemoteKey),
     },
     pressInLauncher: async (key) => void toLauncher.push(key),
-    changeVolume: async (direction) => void volume.push(direction),
+    changeVolume: async (direction) => {
+      volume.push(direction);
+      return { percent: 50 + direction * 5, muted: false };
+    },
+    showVolume: async (level) => void shown.push(level),
     log: silentLog,
   });
-  return { input, toPlayer, toLauncher, volume };
+  return { input, toPlayer, toLauncher, volume, shown };
 }
 
 const playing: PlaybackState = {
@@ -47,5 +56,23 @@ describe('remote input', () => {
     await input({ button: 'volumeUp', repeat: false });
     await input({ button: 'volumeDown', repeat: true });
     expect(volume).toEqual([1, -1]);
+  });
+
+  it('shows where the volume ended up after each step', async () => {
+    const { input, shown } = setup(playing);
+    await input({ button: 'volumeUp', repeat: false });
+    expect(shown).toEqual([{ percent: 55, muted: false }]);
+  });
+
+  it('reads the volume and mute state wpctl reports', () => {
+    expect(parseVolume('Volume: 0.45\n')).toEqual({
+      percent: 45,
+      muted: false,
+    });
+    expect(parseVolume('Volume: 0.30 [MUTED]\n')).toEqual({
+      percent: 30,
+      muted: true,
+    });
+    expect(parseVolume('no sink')).toBeUndefined();
   });
 });

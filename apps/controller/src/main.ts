@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { serve } from '@hono/node-server';
 import { getConnInfo } from '@hono/node-server/conninfo';
 import { serveStatic } from '@hono/node-server/serve-static';
-import { connectTvBrowser } from '@kiosk-tv/browser';
+import { connectTvBrowser, showVolume } from '@kiosk-tv/browser';
 import { REMOTE_KEYBOARD_KEYS, remoteKeyFor } from '@kiosk-tv/shared';
 import { type Context, Hono } from 'hono';
 
@@ -105,6 +105,14 @@ const remoteInput = createRemoteInput({
   // Typed into the page directly, so it lands even if another window has focus.
   pressInLauncher: async (key) =>
     (await browser.launcher(launcherUrl)).keyboard.press(key),
+  showVolume: async (volume) => {
+    const state = playback.state.state;
+    const front =
+      state === 'playing' || state === 'starting'
+        ? await browser.player()
+        : await browser.launcher(launcherUrl);
+    await showVolume(front, volume);
+  },
   log: log.child('remote'),
 });
 const dongle = config.remote.enabled
