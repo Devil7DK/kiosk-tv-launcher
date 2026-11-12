@@ -1,10 +1,8 @@
 import { defineProvider } from '@kiosk-tv/provider-kit';
 import { z } from 'zod';
 
-export const youtubeConfigSchema = z.object({
-  /** Show or channel URLs to always offer the viewer. */
-  favourites: z.array(z.url()).default([]),
-});
+/** The signed-in Google account is the only choice; there is nothing to configure. */
+export const youtubeConfigSchema = z.object({});
 
 export default defineProvider({
   manifest: {
