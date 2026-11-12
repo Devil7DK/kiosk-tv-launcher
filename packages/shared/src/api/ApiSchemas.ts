@@ -103,6 +103,16 @@ export type FollowRequest = z.infer<typeof FollowRequestSchema>;
 export const FollowLinkRequestSchema = z.object({ url: z.url() });
 export type FollowLinkRequest = z.infer<typeof FollowLinkRequestSchema>;
 
+export const PowerActionSchema = z.enum(['shutdown', 'restart']);
+export type PowerAction = z.infer<typeof PowerActionSchema>;
+
+export const PowerRequestSchema = z.object({ action: PowerActionSchema });
+export type PowerRequest = z.infer<typeof PowerRequestSchema>;
+
+/** Whether this TV lets the launcher shut it down and restart it. */
+export const PowerStatusSchema = z.object({ available: z.boolean() });
+export type PowerStatus = z.infer<typeof PowerStatusSchema>;
+
 export const PlaylistCreateSchema = z.object({
   name: z.string().trim().min(1),
   source: PlaylistSourceSchema,
