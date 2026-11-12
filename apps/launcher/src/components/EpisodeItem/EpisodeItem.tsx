@@ -3,7 +3,7 @@ import './EpisodeItem.css';
 import type { Playable } from '@kiosk-tv/shared';
 import { useEffect, useRef } from 'preact/hooks';
 
-import { formatDate, progressLabel } from '../../format/format';
+import { airDateLabel, progressLabel } from '../../format/format';
 
 export function EpisodeItem({
   episode,
@@ -18,11 +18,7 @@ export function EpisodeItem({
   }, [focused]);
   const image = episode.artwork.landscape;
   const progress = episode.progress;
-  // Some sites put the air date in the title already.
-  const date =
-    episode.airDate && !episode.title.includes(episode.airDate.slice(0, 4))
-      ? formatDate(episode.airDate)
-      : undefined;
+  const date = airDateLabel(episode);
   const meta = [date, progressLabel(progress)].filter(Boolean).join(' · ');
   return (
     <div ref={element} class={focused ? 'episode focused' : 'episode'}>

@@ -4,7 +4,7 @@ import type { Playable } from '@kiosk-tv/shared';
 import { useState } from 'preact/hooks';
 
 import { Button } from '../../components/Button';
-import { formatDate } from '../../format/format';
+import { airDateLabel } from '../../format/format';
 import type { Navigation } from '../../navigation/navigation';
 import { useRemote } from '../../remote/useRemote';
 
@@ -39,8 +39,8 @@ export function UpNextScreen({
         <div class='up-next-label'>Next episode</div>
         {next.parent && <div class='up-next-show'>{next.parent.name}</div>}
         <h1 class='up-next-title'>{next.title}</h1>
-        {next.airDate && (
-          <div class='up-next-label'>{formatDate(next.airDate)}</div>
+        {airDateLabel(next) && (
+          <div class='up-next-label'>{airDateLabel(next)}</div>
         )}
         <div class='up-next-buttons'>
           <Button label='Play' focused={active && focused === 0} />

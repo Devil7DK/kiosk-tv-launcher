@@ -30,3 +30,17 @@ export function progressLabel(
   );
   return left <= 1 ? 'Almost done' : `${left} min left`;
 }
+
+/** The air date to show, unless the site already put it in the title. */
+export function airDateLabel(playable: {
+  title: string;
+  airDate?: string | undefined;
+}): string | undefined {
+  if (
+    !playable.airDate ||
+    playable.title.includes(playable.airDate.slice(0, 4))
+  ) {
+    return undefined;
+  }
+  return formatDate(playable.airDate);
+}
