@@ -2,11 +2,16 @@ import { describe, expect, it } from 'vitest';
 
 import { capabilitiesOf, type Provider } from '../../src/index.js';
 
+const notUsed = () => Promise.reject(new Error('not used in this test'));
+
 const basic: Provider = {
   status: async () => ({ state: 'ready' }),
-  listShows: async () => [],
-  listEpisodes: async () => [],
-  play: async () => {},
+  library: async () => ({ follows: [], playlists: [] }),
+  shelves: async () => ({ items: [] }),
+  shelf: async () => ({ items: [] }),
+  title: notUsed,
+  episodes: async () => ({ page: { items: [] } }),
+  play: notUsed,
 };
 
 describe('capabilitiesOf', () => {
@@ -18,9 +23,10 @@ describe('capabilitiesOf', () => {
     expect(
       capabilitiesOf({
         ...basic,
-        continueWatching: async () => [],
+        progress: async () => [],
+        next: async () => null,
         search: async () => [],
       }),
-    ).toEqual(['continueWatching', 'search']);
+    ).toEqual(['progress', 'next', 'search']);
   });
 });
