@@ -698,7 +698,11 @@ __metadata:
   dependencies:
     "@hono/node-server": "npm:^2.1.6"
     "@kiosk-tv/browser": "workspace:*"
+    "@kiosk-tv/provider-hotstar": "workspace:*"
     "@kiosk-tv/provider-kit": "workspace:*"
+    "@kiosk-tv/provider-sunnxt": "workspace:*"
+    "@kiosk-tv/provider-youtube": "workspace:*"
+    "@kiosk-tv/provider-zee5": "workspace:*"
     "@kiosk-tv/shared": "workspace:*"
     "@types/node": "npm:^24"
     eslint: "npm:^10.14.0"
@@ -727,7 +731,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@kiosk-tv/provider-hotstar@workspace:packages/provider-hotstar":
+"@kiosk-tv/provider-hotstar@workspace:*, @kiosk-tv/provider-hotstar@workspace:packages/provider-hotstar":
   version: 0.0.0-use.local
   resolution: "@kiosk-tv/provider-hotstar@workspace:packages/provider-hotstar"
   dependencies:
@@ -757,7 +761,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@kiosk-tv/provider-sunnxt@workspace:packages/provider-sunnxt":
+"@kiosk-tv/provider-sunnxt@workspace:*, @kiosk-tv/provider-sunnxt@workspace:packages/provider-sunnxt":
   version: 0.0.0-use.local
   resolution: "@kiosk-tv/provider-sunnxt@workspace:packages/provider-sunnxt"
   dependencies:
@@ -773,7 +777,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@kiosk-tv/provider-youtube@workspace:packages/provider-youtube":
+"@kiosk-tv/provider-youtube@workspace:*, @kiosk-tv/provider-youtube@workspace:packages/provider-youtube":
   version: 0.0.0-use.local
   resolution: "@kiosk-tv/provider-youtube@workspace:packages/provider-youtube"
   dependencies:
@@ -788,7 +792,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@kiosk-tv/provider-zee5@workspace:packages/provider-zee5":
+"@kiosk-tv/provider-zee5@workspace:*, @kiosk-tv/provider-zee5@workspace:packages/provider-zee5":
   version: 0.0.0-use.local
   resolution: "@kiosk-tv/provider-zee5@workspace:packages/provider-zee5"
   dependencies:

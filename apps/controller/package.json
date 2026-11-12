@@ -17,7 +17,11 @@
   "dependencies": {
     "@hono/node-server": "^2.1.6",
     "@kiosk-tv/browser": "workspace:*",
+    "@kiosk-tv/provider-hotstar": "workspace:*",
     "@kiosk-tv/provider-kit": "workspace:*",
+    "@kiosk-tv/provider-sunnxt": "workspace:*",
+    "@kiosk-tv/provider-youtube": "workspace:*",
+    "@kiosk-tv/provider-zee5": "workspace:*",
     "@kiosk-tv/shared": "workspace:*",
     "hono": "^4.13.17",
     "zod": "^4.6.7"
