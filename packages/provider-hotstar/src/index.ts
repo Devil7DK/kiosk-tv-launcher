@@ -2,8 +2,8 @@ import { defineProvider } from '@kiosk-tv/provider-kit';
 import { z } from 'zod';
 
 export const hotstarConfigSchema = z.object({
-  /** Show or channel URLs to always offer the viewer. */
-  favourites: z.array(z.url()).default([]),
+  /** The viewer profile to watch as, by the name the site shows for it. */
+  profile: z.string().min(1),
 });
 
 export default defineProvider({
