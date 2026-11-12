@@ -1,0 +1,13 @@
+{
+  "server": { "host": "0.0.0.0", "port": 8080 },
+  "browser": {
+    "binary": "/usr/bin/brave-browser",
+    "port": 9222,
+    "profileDir": "~/.local/share/kiosk-tv/brave-profile",
+    "kiosk": true
+  },
+  "dataDir": "~/.local/share/kiosk-tv/data",
+  "providers": {
+    "sunnxt": { "profile": "Test" }
+  }
+}
