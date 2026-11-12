@@ -6,7 +6,7 @@ import { getConnInfo } from '@hono/node-server/conninfo';
 import { serveStatic } from '@hono/node-server/serve-static';
 import { connectTvBrowser } from '@kiosk-tv/browser';
 import { REMOTE_KEYBOARD_KEYS, remoteKeyFor } from '@kiosk-tv/shared';
-import { Hono } from 'hono';
+import { type Context, Hono } from 'hono';
 
 import { CatalogService } from './catalog/catalog.service.js';
 import { TtlCache } from './catalog/ttl.cache.js';
@@ -150,8 +150,25 @@ app.route(
     log,
   }),
 );
-app.use('/*', serveStatic({ root: launcherDist }));
-app.get('/*', serveStatic({ root: launcherDist, path: 'index.html' }));
+// Bundled files are named by their content and never change; the page that
+// names them is checked on every load, so a rebuilt launcher shows at once.
+const cacheHeaders = (path: string, c: Context) => {
+  c.header(
+    'Cache-Control',
+    path.includes('/assets/')
+      ? 'public, max-age=31536000, immutable'
+      : 'no-cache',
+  );
+};
+app.use('/*', serveStatic({ root: launcherDist, onFound: cacheHeaders }));
+app.get(
+  '/*',
+  serveStatic({
+    root: launcherDist,
+    path: 'index.html',
+    onFound: cacheHeaders,
+  }),
+);
 
 const server = serve(
   { fetch: app.fetch, hostname: config.server.host, port: config.server.port },
