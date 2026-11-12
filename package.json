@@ -21,7 +21,8 @@
     "lint:fix": "turbo lint:fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "prepare": "husky"
+    "prepare": "husky",
+    "start": "node apps/controller/dist/main.js"
   },
   "devDependencies": {
     "@commitlint/cli": "^21.2.4",

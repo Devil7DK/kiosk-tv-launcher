@@ -1,0 +1,16 @@
+# User service: copy to ~/.config/systemd/user/ and enable with
+#   systemctl --user enable --now kiosk-tv.service
+[Unit]
+Description=Kiosk TV controller
+# Brave needs the desktop session's display.
+After=graphical-session.target
+PartOf=graphical-session.target
+
+[Service]
+WorkingDirectory=%h/Projects/kiosk-tv-launcher
+ExecStart=/usr/bin/env node apps/controller/dist/main.js
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=graphical-session.target
