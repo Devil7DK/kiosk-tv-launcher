@@ -9,14 +9,15 @@
     "build": "vite build",
     "preview": "vite preview",
     "typecheck": "tsc -p tsconfig.json",
-    "test": "vitest run --passWithNoTests",
+    "test": "vitest run",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write ."
   },
   "dependencies": {
     "@kiosk-tv/shared": "workspace:*",
-    "preact": "^11.2.0"
+    "preact": "^11.2.0",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@babel/core": "^7.28.0",
