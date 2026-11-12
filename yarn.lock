@@ -467,13 +467,73 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kiosk-tv/provider-kit@workspace:packages/provider-kit":
+"@kiosk-tv/provider-hotstar@workspace:packages/provider-hotstar":
+  version: 0.0.0-use.local
+  resolution: "@kiosk-tv/provider-hotstar@workspace:packages/provider-hotstar"
+  dependencies:
+    "@kiosk-tv/provider-kit": "workspace:*"
+    "@kiosk-tv/shared": "workspace:*"
+    eslint: "npm:^10.14.0"
+    prettier: "npm:^3.9.10"
+    typescript: "npm:~6.0.0"
+    vite: "npm:^8.3.5"
+    vitest: "npm:^5.1.0"
+    zod: "npm:^4.6.7"
+  languageName: unknown
+  linkType: soft
+
+"@kiosk-tv/provider-kit@workspace:*, @kiosk-tv/provider-kit@workspace:packages/provider-kit":
   version: 0.0.0-use.local
   resolution: "@kiosk-tv/provider-kit@workspace:packages/provider-kit"
   dependencies:
     "@kiosk-tv/shared": "workspace:*"
     eslint: "npm:^10.14.0"
     playwright-core: "npm:^1.65.0"
+    prettier: "npm:^3.9.10"
+    typescript: "npm:~6.0.0"
+    vite: "npm:^8.3.5"
+    vitest: "npm:^5.1.0"
+    zod: "npm:^4.6.7"
+  languageName: unknown
+  linkType: soft
+
+"@kiosk-tv/provider-sunnxt@workspace:packages/provider-sunnxt":
+  version: 0.0.0-use.local
+  resolution: "@kiosk-tv/provider-sunnxt@workspace:packages/provider-sunnxt"
+  dependencies:
+    "@kiosk-tv/provider-kit": "workspace:*"
+    "@kiosk-tv/shared": "workspace:*"
+    eslint: "npm:^10.14.0"
+    prettier: "npm:^3.9.10"
+    typescript: "npm:~6.0.0"
+    vite: "npm:^8.3.5"
+    vitest: "npm:^5.1.0"
+    zod: "npm:^4.6.7"
+  languageName: unknown
+  linkType: soft
+
+"@kiosk-tv/provider-youtube@workspace:packages/provider-youtube":
+  version: 0.0.0-use.local
+  resolution: "@kiosk-tv/provider-youtube@workspace:packages/provider-youtube"
+  dependencies:
+    "@kiosk-tv/provider-kit": "workspace:*"
+    "@kiosk-tv/shared": "workspace:*"
+    eslint: "npm:^10.14.0"
+    prettier: "npm:^3.9.10"
+    typescript: "npm:~6.0.0"
+    vite: "npm:^8.3.5"
+    vitest: "npm:^5.1.0"
+    zod: "npm:^4.6.7"
+  languageName: unknown
+  linkType: soft
+
+"@kiosk-tv/provider-zee5@workspace:packages/provider-zee5":
+  version: 0.0.0-use.local
+  resolution: "@kiosk-tv/provider-zee5@workspace:packages/provider-zee5"
+  dependencies:
+    "@kiosk-tv/provider-kit": "workspace:*"
+    "@kiosk-tv/shared": "workspace:*"
+    eslint: "npm:^10.14.0"
     prettier: "npm:^3.9.10"
     typescript: "npm:~6.0.0"
     vite: "npm:^8.3.5"
