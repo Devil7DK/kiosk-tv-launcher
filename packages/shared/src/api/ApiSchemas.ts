@@ -90,6 +90,23 @@ export const TvBatterySchema = z.object({
 });
 export type TvBattery = z.infer<typeof TvBatterySchema>;
 
+export const BluetoothDeviceSchema = z.object({
+  /** As BlueZ writes it: six pairs of upper-case hex digits. */
+  address: z.string().regex(/^([0-9A-F]{2}:){5}[0-9A-F]{2}$/),
+  name: z.string(),
+  paired: z.boolean(),
+  connected: z.boolean(),
+});
+export type BluetoothDevice = z.infer<typeof BluetoothDeviceSchema>;
+
+export const BluetoothStatusSchema = z.object({
+  /** False on a computer without a Bluetooth adapter. */
+  available: z.boolean(),
+  scanning: z.boolean(),
+  devices: z.array(BluetoothDeviceSchema),
+});
+export type BluetoothStatus = z.infer<typeof BluetoothStatusSchema>;
+
 /** Pushed to the launcher over server-sent events. */
 export const ServerEventSchema = z.discriminatedUnion('type', [
   z.object({ type: z.literal('playback'), playback: PlaybackStateSchema }),
