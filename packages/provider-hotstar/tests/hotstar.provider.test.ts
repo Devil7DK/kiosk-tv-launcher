@@ -163,4 +163,23 @@ describe('JioHotstar provider', () => {
       }),
     ).rejects.toThrow();
   });
+
+  it('finds the show a JioHotstar link points at, and ignores other sites', async () => {
+    const { page } = fakeSite([showPage]);
+    const provider = createHotstarProvider(contextFor(page));
+    const title = await provider.resolve!(
+      new URL(
+        'https://www.hotstar.com/in/shows/siragadikka-aasai/1260129356/watch',
+      ),
+    );
+    expect(title).toMatchObject({
+      ref: { id: '1260129356' },
+      name: 'Siragadikka Aasai',
+    });
+    expect(
+      await provider.resolve!(
+        new URL('https://www.zee5.com/tv-shows/details/x/0-6-1'),
+      ),
+    ).toBeUndefined();
+  });
 });

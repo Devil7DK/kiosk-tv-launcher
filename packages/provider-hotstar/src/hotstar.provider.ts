@@ -310,6 +310,12 @@ export function createHotstarProvider(
 
     title,
 
+    async resolve(url) {
+      if (!/(^|\.)hotstar\.com$/.test(url.hostname)) return undefined;
+      const id = /\/shows\/[^/]+\/(\d+)/.exec(url.pathname)?.[1];
+      return id ? title({ provider: PROVIDER, id }) : undefined;
+    },
+
     async episodes(ref, options = {}): Promise<EpisodeListing> {
       const path = options.cursor ?? options.group;
       let show = shows.get(ref.id);
