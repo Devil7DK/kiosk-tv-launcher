@@ -12,6 +12,13 @@ export function columnOf(focus: GridFocus, row = focus.row): number {
   return focus.columns[row] ?? 0;
 }
 
+/** Up to the row of tabs, onto `column`: the screen's own tab. Rows keep their columns. */
+export function toTabs(focus: GridFocus, column: number): GridFocus {
+  const columns = [...focus.columns];
+  columns[0] = column;
+  return { row: 0, columns };
+}
+
 /** Skips empty rows; returns the same focus when the key leads nowhere. */
 export function moveFocus(
   focus: GridFocus,

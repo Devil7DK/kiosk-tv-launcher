@@ -16,6 +16,7 @@ import {
   columnOf,
   moveFocus,
   startFocus,
+  toTabs,
 } from '../../focus/grid-focus';
 import {
   choose,
@@ -107,15 +108,14 @@ export function ProviderScreen({
     topBarLength(navigation.tabs, navigation.power),
     ...shelves.map((s) => s.items.items.length),
   ];
+  const ownTab = Math.max(
+    0,
+    navigation.tabs.findIndex((t) => t.id === id),
+  );
   // Going up to the tabs lands on this service's own tab.
   const [focus, setFocus] = useState(() => ({
-    ...startFocus(1),
-    columns: [
-      Math.max(
-        0,
-        navigation.tabs.findIndex((t) => t.id === id),
-      ),
-    ],
+    ...toTabs(startFocus(), ownTab),
+    row: 1,
   }));
   useEffect(() => {
     if (loaded.state === 'ready') setFocus((f) => clampFocus(f, lengths));
@@ -131,7 +131,10 @@ export function ProviderScreen({
   }, [focus, loaded]);
 
   useRemote((key) => {
-    if (key === 'back') return;
+    if (key === 'back') {
+      if (focus.row === 0) return navigation.switchTab('home');
+      return setFocus((f) => toTabs(f, ownTab));
+    }
     if (key !== 'ok') return setFocus((f) => moveFocus(f, key, lengths));
     const column = columnOf(focus);
     if (focus.row === 0) {

@@ -5,6 +5,7 @@ import {
   columnOf,
   moveFocus,
   startFocus,
+  toTabs,
 } from '../../src/focus/grid-focus';
 
 describe('moveFocus', () => {
@@ -36,5 +37,12 @@ describe('clampFocus', () => {
 
   it('moves focus up when its row disappeared', () => {
     expect(clampFocus({ row: 3, columns: [] }, [2, 2]).row).toBe(1);
+  });
+});
+
+describe('toTabs', () => {
+  it('takes Back from a row up to the screen’s own tab, keeping each row’s place', () => {
+    const inRow = { row: 2, columns: [3, 1, 4] };
+    expect(toTabs(inRow, 1)).toEqual({ row: 0, columns: [1, 1, 4] });
   });
 });

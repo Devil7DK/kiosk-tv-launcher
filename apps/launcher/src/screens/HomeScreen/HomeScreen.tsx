@@ -17,6 +17,7 @@ import {
   columnOf,
   moveFocus,
   startFocus,
+  toTabs,
 } from '../../focus/grid-focus';
 import { progressLabel } from '../../format/format';
 import {
@@ -56,10 +57,8 @@ export function HomeScreen({
   }, [lengths.join()]);
 
   useRemote((key) => {
-    if (key !== 'ok') {
-      if (key !== 'back') setFocus((f) => moveFocus(f, key, lengths));
-      return;
-    }
+    if (key === 'back') return setFocus((f) => toTabs(f, 0));
+    if (key !== 'ok') return setFocus((f) => moveFocus(f, key, lengths));
     const column = columnOf(focus);
     if (focus.row === 0) {
       if (isSettings(navigation.tabs, column)) return navigation.openSettings();
