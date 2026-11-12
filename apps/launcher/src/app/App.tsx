@@ -6,7 +6,13 @@ import {
   type ProviderInfo,
   refKey,
 } from '@kiosk-tv/shared';
-import { useCallback, useMemo, useRef, useState } from 'preact/hooks';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'preact/hooks';
 
 import { api } from '../api/api.client';
 import { useServerEvents } from '../api/useServerEvents';
@@ -19,6 +25,7 @@ import {
 import { useRemote } from '../remote/useRemote';
 import { HomeScreen } from '../screens/HomeScreen';
 import { ProviderScreen } from '../screens/ProviderScreen';
+import { SizeScreen } from '../screens/SizeScreen';
 import { TitleScreen } from '../screens/TitleScreen';
 import { UpNextScreen } from '../screens/UpNextScreen';
 
@@ -52,6 +59,16 @@ export function App() {
   const [providers, setProviders] = useState<ProviderInfo[]>([]);
   const [stack, setStack] = useState<Route[]>([{ kind: 'home' }]);
   const [version, setVersion] = useState(0);
+  const [scale, setScale] = useState(1);
+  useEffect(() => {
+    const root = document.getElementById('app');
+    if (!root) return;
+    // zoom scales every unit, the vw-based tile widths included; the box is
+    // enlarged in step so the zoomed page still fills the screen exactly.
+    root.style.zoom = String(scale);
+    root.style.width = `${100 / scale}%`;
+    root.style.height = `${100 / scale}%`;
+  }, [scale]);
   const [playback, setPlayback] = useState<PlaybackState>({ state: 'idle' });
   const lastPlayback = useRef<PlaybackState>({ state: 'idle' });
 
@@ -61,6 +78,7 @@ export function App() {
       ...providers
         .filter(usable)
         .map((p) => ({ id: p.manifest.id, label: p.manifest.name })),
+      { id: 'size', label: 'Size' },
     ],
     [providers],
   );
@@ -86,6 +104,7 @@ export function App() {
   useServerEvents((event) => {
     if (event.type === 'providers') setProviders(event.providers);
     if (event.type === 'home') setVersion((v) => v + 1);
+    if (event.type === 'settings') setScale(event.settings.scale);
     if (event.type !== 'playback') return;
     const state = event.playback;
     const previous = lastPlayback.current;
@@ -116,7 +135,13 @@ export function App() {
     tabs,
     tab: tabOf(stack),
     switchTab: (id) =>
-      setStack([id === 'home' ? { kind: 'home' } : { kind: 'provider', id }]),
+      setStack([
+        id === 'home'
+          ? { kind: 'home' }
+          : id === 'size'
+            ? { kind: 'size' }
+            : { kind: 'provider', id },
+      ]),
     open: (route) => setStack((s) => [...s, route]),
     back: () => setStack((s) => (s.length > 1 ? s.slice(0, -1) : s)),
     play: (playable, fromStart) => {
@@ -171,6 +196,13 @@ export function App() {
                 navigation={navigation}
                 active={active}
                 onShowEpisodes={() => void showEpisodesOf(route.finished)}
+              />
+            )}
+            {route.kind === 'size' && (
+              <SizeScreen
+                scale={scale}
+                navigation={navigation}
+                active={active}
               />
             )}
             {route.kind === 'notice' && (

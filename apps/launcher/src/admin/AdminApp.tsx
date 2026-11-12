@@ -7,6 +7,8 @@ import { adminApi, api } from '../api/api.client';
 import { BrowseSection } from './BrowseSection';
 import { PlaylistsSection } from './PlaylistsSection';
 
+const SIZES = [0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6];
+
 const LANGUAGES: [code: string, name: string][] = [
   ['ta', 'Tamil'],
   ['te', 'Telugu'],
@@ -131,6 +133,23 @@ export function AdminApp() {
             }
           />
           also what the services report from other devices
+        </label>
+        <p>Size of everything on the TV</p>
+        <label class='row-form'>
+          <select
+            value={String(settings.scale)}
+            onChange={(e) =>
+              onChange(
+                adminApi.settings({ scale: Number(e.currentTarget.value) }),
+              )
+            }
+          >
+            {SIZES.map((size) => (
+              <option key={size} value={String(size)}>
+                {Math.round(size * 100)}%{size === 1 ? ' (normal)' : ''}
+              </option>
+            ))}
+          </select>
         </label>
         <p>Languages on the service tabs</p>
         {LANGUAGES.map(([code, name]) => (
