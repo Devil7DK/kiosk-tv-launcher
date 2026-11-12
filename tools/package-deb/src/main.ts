@@ -177,6 +177,11 @@ await copyFile(
   join(tool, 'files/brave-policy.json'),
   join(root, 'etc/brave/policies/managed/kiosk-tv.json'),
 );
+await mkdir(join(root, 'usr/share/polkit-1/rules.d'), { recursive: true });
+await copyFile(
+  join(tool, 'files/kiosk-tv.rules'),
+  join(root, 'usr/share/polkit-1/rules.d/50-kiosk-tv.rules'),
+);
 await mkdir(join(root, 'usr/lib/systemd/user'), { recursive: true });
 await copyFile(
   join(tool, 'files/kiosk-tv.service'),

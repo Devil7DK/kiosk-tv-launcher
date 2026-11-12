@@ -1,0 +1,14 @@
+// The TV's user may shut the computer down and restart it from the launcher,
+// also while someone else is logged in, as over SSH. Its service runs outside
+// the console session, so polkit would otherwise ask for a password.
+polkit.addRule(function (action, subject) {
+  var allowed = [
+    'org.freedesktop.login1.power-off',
+    'org.freedesktop.login1.power-off-multiple-sessions',
+    'org.freedesktop.login1.reboot',
+    'org.freedesktop.login1.reboot-multiple-sessions',
+  ];
+  if (subject.user === 'tv' && allowed.indexOf(action.id) >= 0) {
+    return polkit.Result.YES;
+  }
+});

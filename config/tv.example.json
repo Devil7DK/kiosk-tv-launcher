@@ -6,6 +6,7 @@
     "profileDir": "~/.local/share/kiosk-tv/brave-profile",
     "kiosk": true
   },
+  "power": { "enabled": true },
   "dataDir": "~/.local/share/kiosk-tv/data",
   "providers": {
     "sunnxt": { "profile": "Test" }
