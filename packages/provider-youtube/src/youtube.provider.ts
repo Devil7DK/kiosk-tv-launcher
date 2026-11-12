@@ -12,6 +12,8 @@ import {
   collect,
   continuationOf,
   isChannelId,
+  isNewestFirst,
+  lockupAgeSeconds,
   lockupToPlayable,
   lockupToPlaylist,
 } from './catalog/youtube.mapping.js';
@@ -20,6 +22,16 @@ import {
 const CHANNEL_VIDEOS = 'EgZ2aWRlb3PyBgQKAjoA';
 const SUBSCRIPTIONS = 'subscriptions';
 const SHELVES_PER_CALL = 4;
+const PLAYLIST_PAGE = 50;
+/** A whole playlist is read at once (100 videos per request), up to this many. */
+const PLAYLIST_REQUESTS = 30;
+const PLAYLIST_KEPT_MS = 5 * 60_000;
+
+interface PlaylistVideos {
+  name: string;
+  /** Newest first, whichever way the playlist itself runs. */
+  items: Playable[];
+}
 
 export function createYouTubeProvider(
   context: ProviderContext<Record<string, never>>,
@@ -27,6 +39,10 @@ export function createYouTubeProvider(
   const { pages, log } = context;
   const api = new YouTubeApi(() => pages.background());
   let channels: Promise<Title[]> | undefined;
+  const playlists = new Map<
+    string,
+    { at: number; videos: Promise<PlaylistVideos> }
+  >();
 
   function subscribedChannels(): Promise<Title[]> {
     channels ??= api.browse({ browseId: 'FEchannels' }).then((json) =>
@@ -59,6 +75,41 @@ export function createYouTubeProvider(
       : { browseId: `VL${ref.id}` };
   }
 
+  /** Every video of a playlist, so its newest and its order are known. */
+  function playlistVideos(id: string): Promise<PlaylistVideos> {
+    const kept = playlists.get(id);
+    if (kept && Date.now() - kept.at < PLAYLIST_KEPT_MS) return kept.videos;
+    const videos = (async () => {
+      const first = await api.browse({ browseId: `VL${id}` });
+      const meta = collect(first, 'playlistMetadataRenderer')[0] as
+        { title?: string } | undefined;
+      const name = meta?.title ?? 'Playlist';
+      const parent = { id, name };
+      const entries: { video: Playable; age: number | undefined }[] = [];
+      let json: unknown = first;
+      for (let request = 0; request < PLAYLIST_REQUESTS; request++) {
+        for (const lockup of collect(json, 'lockupViewModel')) {
+          const video = lockupToPlayable(lockup, parent);
+          if (video) entries.push({ video, age: lockupAgeSeconds(lockup) });
+        }
+        const next = continuationOf(json);
+        if (!next) break;
+        json = await api.browse({ continuation: next });
+      }
+      const ends = [entries[0], entries.at(-1)].map(
+        (e) => e && { number: e.video.number, age: e.age },
+      );
+      const items = entries.map((e) => e.video);
+      return {
+        name,
+        items: isNewestFirst(ends[0], ends[1]) ? items : items.reverse(),
+      };
+    })();
+    playlists.set(id, { at: Date.now(), videos });
+    videos.catch(() => playlists.delete(id));
+    return videos;
+  }
+
   async function title(ref: Ref): Promise<Title> {
     if (isChannelId(ref.id)) {
       const known = (await subscribedChannels()).find(
@@ -78,14 +129,12 @@ export function createYouTubeProvider(
         url: `https://www.youtube.com/channel/${ref.id}`,
       };
     }
-    const json = await api.browse({ browseId: `VL${ref.id}` });
-    const meta = collect(json, 'playlistMetadataRenderer')[0] as
-      { title?: string } | undefined;
+    const { name, items } = await playlistVideos(ref.id);
     return {
       ref,
       kind: 'playlist',
-      name: meta?.title ?? 'Playlist',
-      artwork: {},
+      name,
+      artwork: items[0]?.artwork ?? {},
       url: `https://www.youtube.com/playlist?list=${encodeURIComponent(ref.id)}`,
     };
   }
@@ -179,6 +228,17 @@ export function createYouTubeProvider(
     title,
 
     async episodes(ref, options = {}) {
+      if (!isChannelId(ref.id)) {
+        const { items } = await playlistVideos(ref.id);
+        const offset = Number(options.cursor ?? 0) || 0;
+        const end = offset + PLAYLIST_PAGE;
+        return {
+          page: {
+            items: items.slice(offset, end),
+            ...(end < items.length ? { next: String(end) } : {}),
+          },
+        };
+      }
       const parent = await title(ref);
       return {
         page: await videos(listOf(ref, options.cursor), {
@@ -192,12 +252,28 @@ export function createYouTubeProvider(
       const parent = playable.parent;
       // A channel has no order to follow; a playlist does.
       if (!parent || isChannelId(parent.ref.id)) return null;
-      const list = await videos(listOf(parent.ref), {
-        id: parent.ref.id,
-        name: parent.name,
-      });
-      const index = list.items.findIndex((p) => p.ref.id === playable.ref.id);
-      return index >= 0 ? (list.items[index + 1] ?? null) : null;
+      // Newest first, so the next episode is the one before it.
+      const { items } = await playlistVideos(parent.ref.id);
+      const index = items.findIndex((p) => p.ref.id === playable.ref.id);
+      return index > 0 ? (items[index - 1] ?? null) : null;
+    },
+
+    async resolve(url) {
+      const host = url.hostname.replace(/^(www|m|music)\./, '');
+      if (host !== 'youtube.com' && host !== 'youtu.be') return undefined;
+      const ref = (id: string): Ref => ({ provider: 'youtube', id });
+      const list = url.searchParams.get('list');
+      if (list) return title(ref(list));
+      if (host === 'youtu.be') return undefined;
+      const channel = /^\/channel\/(UC[\w-]+)/.exec(url.pathname)?.[1];
+      if (channel) return title(ref(channel));
+      if (/^\/(@[^/]+|c\/[^/]+|user\/[^/]+)/.test(url.pathname)) {
+        const id = await api.resolveChannel(
+          `https://www.youtube.com${url.pathname}`,
+        );
+        return id ? title(ref(id)) : undefined;
+      }
+      return undefined;
     },
 
     async play(playable, options = {}) {

@@ -31,10 +31,13 @@ export function collect(
   return out;
 }
 
+/** Newer lists wrap the command in another one: `continuationItemViewModel`. */
 export function continuationOf(json: Json): string | undefined {
   for (const command of collect(json, 'continuationCommand')) {
     const token = (command as { token?: unknown }).token;
     if (typeof token === 'string') return token;
+    const nested = continuationOf(command);
+    if (nested) return nested;
   }
   return undefined;
 }
@@ -114,10 +117,13 @@ export function lockupToPlayable(
   );
   const byline = texts((lockup as { metadata?: unknown }).metadata).slice(1);
   const channel = byline[0];
+  const title = parsed.data.metadata.lockupMetadataViewModel.title.content;
+  const number = episodeNumber(title);
   return {
     ref: { provider: PROVIDER, id },
     kind: 'video',
-    title: parsed.data.metadata.lockupMetadataViewModel.title.content,
+    title,
+    ...(number === undefined ? {} : { number }),
     ...(parent
       ? {
           parent: {
@@ -189,4 +195,76 @@ export function channelToTitle(renderer: unknown): Title | undefined {
 
 export function isChannelId(id: string): boolean {
   return id.startsWith('UC');
+}
+
+/** "Tenali Ramann | Episode 369 | …" and "Ep 12" carry the episode number. */
+export function episodeNumber(title: string): number | undefined {
+  const match = /\b(?:episode|ep)\.?\s*[-#:]?\s*(\d{1,5})\b/i.exec(title);
+  return match ? Number(match[1]) : undefined;
+}
+
+const UNIT_SECONDS: Record<string, number> = {
+  s: 1,
+  second: 1,
+  m: 60,
+  min: 60,
+  minute: 60,
+  h: 3600,
+  hour: 3600,
+  d: 86400,
+  day: 86400,
+  w: 604800,
+  week: 604800,
+  mo: 2629800,
+  month: 2629800,
+  y: 31557600,
+  year: 31557600,
+};
+
+/** "2w ago", "3mo ago", "1 year ago", "Streamed 2 days ago", in seconds. */
+export function ageSeconds(text: string): number | undefined {
+  const match =
+    /(\d+)\s*(mo|months?|y|years?|w|weeks?|d|days?|h|hours?|min|minutes?|m|s|seconds?)\s+ago\b/i.exec(
+      text,
+    );
+  if (!match) return undefined;
+  const unit = match[2]!.toLowerCase().replace(/s$/, '');
+  const seconds = UNIT_SECONDS[unit] ?? UNIT_SECONDS[match[2]!.toLowerCase()];
+  return seconds === undefined ? undefined : Number(match[1]) * seconds;
+}
+
+/** How long ago the video in a list item was published, when the item says. */
+export function lockupAgeSeconds(lockup: unknown): number | undefined {
+  for (const text of texts((lockup as { metadata?: unknown }).metadata)) {
+    const age = ageSeconds(text);
+    if (age !== undefined) return age;
+  }
+  return undefined;
+}
+
+/**
+ * Playlists run either way, depending on how their owner sorts them. The
+ * episode numbers of the two ends decide, then their ages; with neither, the
+ * playlist is taken to grow at the end, as most series playlists do.
+ */
+export function isNewestFirst(
+  first: { number?: number | undefined; age?: number | undefined } | undefined,
+  last: { number?: number | undefined; age?: number | undefined } | undefined,
+): boolean {
+  if (!first || !last) return false;
+  if (
+    first.number !== undefined &&
+    last.number !== undefined &&
+    first.number !== last.number
+  ) {
+    return first.number > last.number;
+  }
+  if (
+    first.age !== undefined &&
+    last.age !== undefined &&
+    first.age !== last.age
+  ) {
+    return first.age < last.age;
+  }
+  return false;
 }

@@ -25,8 +25,24 @@ export class YouTubeApi {
   }
 
   async browse(request: Browse): Promise<unknown> {
+    return this.call('browse', { ...request });
+  }
+
+  /** The channel id behind a link like youtube.com/@name. */
+  async resolveChannel(link: string): Promise<string | undefined> {
+    const json = (await this.call('navigation/resolve_url', { url: link })) as {
+      endpoint?: { browseEndpoint?: { browseId?: string } };
+    };
+    const id = json.endpoint?.browseEndpoint?.browseId;
+    return id?.startsWith('UC') ? id : undefined;
+  }
+
+  private async call(
+    endpoint: string,
+    request: Record<string, unknown>,
+  ): Promise<unknown> {
     const page = await this.page();
-    const url = `${SITE}/youtubei/v1/browse?prettyPrint=false`;
+    const url = `${SITE}/youtubei/v1/${endpoint}?prettyPrint=false`;
     const answer = await page.evaluate(
       async ({ url, request }) => {
         const sapisid =
