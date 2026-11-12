@@ -1,0 +1,40 @@
+import { describe, expect, it } from 'vitest';
+
+import {
+  clampFocus,
+  columnOf,
+  moveFocus,
+  startFocus,
+} from '../../src/focus/grid-focus';
+
+describe('moveFocus', () => {
+  it('returns to the column a row was left at', () => {
+    let focus = startFocus();
+    focus = moveFocus(focus, 'right', [5, 5]);
+    focus = moveFocus(focus, 'right', [5, 5]);
+    focus = moveFocus(focus, 'down', [5, 5]);
+    focus = moveFocus(focus, 'up', [5, 5]);
+    expect(columnOf(focus)).toBe(2);
+  });
+
+  it('jumps over rows with nothing in them', () => {
+    expect(moveFocus(startFocus(), 'down', [3, 0, 4]).row).toBe(2);
+  });
+
+  it('stays put at the edges instead of wrapping around', () => {
+    const focus = startFocus();
+    expect(moveFocus(focus, 'left', [3])).toBe(focus);
+    expect(moveFocus(focus, 'up', [3])).toBe(focus);
+  });
+});
+
+describe('clampFocus', () => {
+  it('pulls focus back into a row that became shorter', () => {
+    const focus = { row: 1, columns: [0, 7] };
+    expect(clampFocus(focus, [2, 3])).toEqual({ row: 1, columns: [0, 2] });
+  });
+
+  it('moves focus up when its row disappeared', () => {
+    expect(clampFocus({ row: 3, columns: [] }, [2, 2]).row).toBe(1);
+  });
+});
