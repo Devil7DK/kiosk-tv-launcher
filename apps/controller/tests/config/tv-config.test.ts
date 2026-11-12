@@ -12,6 +12,12 @@ describe('TvConfigSchema', () => {
     expect(config.providers).toEqual({});
   });
 
+  it('expands ~ in the default paths too', () => {
+    const config = TvConfigSchema.parse({});
+    expect(config.dataDir).toBe(`${homedir()}/.local/share/kiosk-tv/data`);
+    expect(config.browser.profileDir.startsWith(homedir())).toBe(true);
+  });
+
   it('expands ~ to the home directory', () => {
     const config = TvConfigSchema.parse({ dataDir: '~/tv-data' });
     expect(config.dataDir).toBe(`${homedir()}/tv-data`);

@@ -22,14 +22,14 @@ export const TvConfigSchema = z.object({
     .prefault({}),
   browser: z
     .object({
-      binary: path.default('/usr/bin/brave-browser'),
+      binary: path.prefault('/usr/bin/brave-browser'),
       port: z.number().int().positive().default(9222),
-      profileDir: path.default('~/.local/share/kiosk-tv/brave-profile'),
+      profileDir: path.prefault('~/.local/share/kiosk-tv/brave-profile'),
       kiosk: z.boolean().default(true),
     })
     .prefault({}),
   /** Library, watch history and caches. */
-  dataDir: path.default('~/.local/share/kiosk-tv/data'),
+  dataDir: path.prefault('~/.local/share/kiosk-tv/data'),
   /** What the launcher tab opens. Defaults to the controller's own address. */
   launcherUrl: z.url().optional(),
   /**
