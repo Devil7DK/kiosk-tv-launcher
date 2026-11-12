@@ -27,6 +27,10 @@
       "dependsOn": ["^build"],
       "cache": false,
       "persistent": true
+    },
+    "@kiosk-tv/package-deb#build": {
+      "dependsOn": ["^build"],
+      "outputs": []
     }
   }
 }

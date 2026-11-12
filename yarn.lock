@@ -733,6 +733,20 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@kiosk-tv/package-deb@workspace:tools/package-deb":
+  version: 0.0.0-use.local
+  resolution: "@kiosk-tv/package-deb@workspace:tools/package-deb"
+  dependencies:
+    "@types/node": "npm:^24"
+    eslint: "npm:^10.14.0"
+    prettier: "npm:^3.9.10"
+    rolldown: "npm:~1.2.18"
+    typescript: "npm:~6.0.0"
+    vite: "npm:^8.3.5"
+    vitest: "npm:^5.1.0"
+  languageName: unknown
+  linkType: soft
+
 "@kiosk-tv/provider-hotstar@workspace:*, @kiosk-tv/provider-hotstar@workspace:packages/provider-hotstar":
   version: 0.0.0-use.local
   resolution: "@kiosk-tv/provider-hotstar@workspace:packages/provider-hotstar"

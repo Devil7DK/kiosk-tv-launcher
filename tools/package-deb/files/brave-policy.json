@@ -1,0 +1,15 @@
+{
+  "MetricsReportingEnabled": false,
+  "BraveP3AEnabled": false,
+  "BraveStatsPingEnabled": false,
+  "BraveWebDiscoveryEnabled": false,
+  "BraveRewardsDisabled": true,
+  "BraveWalletDisabled": true,
+  "BraveVPNDisabled": true,
+  "BraveAIChatEnabled": false,
+  "BraveNewsDisabled": true,
+  "BraveTalkDisabled": true,
+  "TranslateEnabled": false,
+  "PromotionsEnabled": false,
+  "DefaultBrowserSettingEnabled": false
+}

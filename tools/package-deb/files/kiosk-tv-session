@@ -1,0 +1,6 @@
+#!/bin/sh
+# The one app cage runs: `cage -- kiosk-tv-session`. Cage closes when its app
+# exits, so this stays; Brave, started by the controller, is what it shows.
+systemctl --user import-environment WAYLAND_DISPLAY DISPLAY
+systemctl --user restart kiosk-tv.service
+exec sleep infinity

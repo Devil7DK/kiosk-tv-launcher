@@ -1,0 +1,8 @@
+# Started by kiosk-tv-session, once cage has a display to give it.
+[Unit]
+Description=Kiosk TV controller
+
+[Service]
+ExecStart=/usr/bin/node /usr/lib/kiosk-tv/apps/controller/dist/main.js /etc/kiosk-tv/tv.json
+Restart=on-failure
+RestartSec=5

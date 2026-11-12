@@ -22,7 +22,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "prepare": "husky",
-    "start": "node apps/controller/dist/main.js"
+    "start": "node apps/controller/dist/main.js",
+    "package:deb": "turbo build && yarn workspace @kiosk-tv/package-deb package"
   },
   "devDependencies": {
     "@commitlint/cli": "^21.2.4",
