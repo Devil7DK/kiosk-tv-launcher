@@ -9,8 +9,13 @@ import type { RemotePress } from './dongle.connection.js';
 
 const run = promisify(execFile);
 
-/** Changes the laptop's own output volume by 5 %, never above 100 %. */
+/**
+ * Changes the laptop's own output volume by 5 %, never above 100 %. Volume up
+ * also unmutes: pressing it and hearing nothing would look broken.
+ */
 export async function changeSystemVolume(direction: 1 | -1): Promise<void> {
+  if (direction > 0)
+    await run('wpctl', ['set-mute', '@DEFAULT_AUDIO_SINK@', '0']);
   await run('wpctl', [
     'set-volume',
     '-l',
