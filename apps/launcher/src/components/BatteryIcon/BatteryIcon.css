@@ -1,0 +1,35 @@
+.battery-icon {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  padding: 0.25em 0.3em;
+  color: var(--muted);
+}
+
+.battery-icon svg {
+  width: 1.9em;
+  height: 1.1em;
+}
+
+.battery-outline {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+}
+
+.battery-tip,
+.battery-level {
+  fill: currentColor;
+}
+
+/* Outlined in the background colour, so it shows over a full bar. */
+.battery-bolt {
+  fill: var(--fg);
+  stroke: var(--bg);
+  stroke-width: 1;
+  stroke-linejoin: round;
+}
+
+.battery-icon.low {
+  color: var(--new);
+}

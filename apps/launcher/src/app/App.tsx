@@ -6,6 +6,7 @@ import {
   type ProviderInfo,
   refKey,
   type RemoteStatus,
+  type TvBattery,
 } from '@kiosk-tv/shared';
 import {
   useCallback,
@@ -31,7 +32,7 @@ import { HomeScreen } from '../screens/HomeScreen';
 import { ProviderScreen } from '../screens/ProviderScreen';
 import { TitleScreen } from '../screens/TitleScreen';
 import { UpNextScreen } from '../screens/UpNextScreen';
-import { RemoteStatusContext } from './tv-status';
+import { RemoteStatusContext, TvBatteryContext } from './tv-status';
 
 function usable(provider: ProviderInfo): boolean {
   return (
@@ -71,6 +72,7 @@ export function App() {
     api.powerAvailable().then(setPower, () => {});
   }, []);
   const [remote, setRemote] = useState<RemoteStatus>({ batteryLow: false });
+  const [battery, setBattery] = useState<TvBattery | undefined>();
   useEffect(() => {
     const root = document.getElementById('app');
     if (!root) return;
@@ -114,6 +116,7 @@ export function App() {
     if (event.type === 'home') setVersion((v) => v + 1);
     if (event.type === 'settings') setScale(event.settings.scale);
     if (event.type === 'remote') setRemote(event.remote);
+    if (event.type === 'battery') setBattery(event.battery);
     if (event.type !== 'playback') return;
     const state = event.playback;
     const previous = lastPlayback.current;
@@ -169,58 +172,63 @@ export function App() {
   const starting = playback.state === 'starting';
   return (
     <RemoteStatusContext.Provider value={remote}>
-      {stack.map((route, index) => {
-        const top = index === stack.length - 1;
-        const active = top && !starting && !settingsOpen && !powerOpen;
-        return (
-          <div key={screenKey(route, index)} class='screen' hidden={!top}>
-            {route.kind === 'home' && (
-              <HomeScreen
-                navigation={navigation}
-                active={active}
-                version={version}
-              />
-            )}
-            {route.kind === 'provider' && (
-              <ProviderScreen
-                id={route.id}
-                navigation={navigation}
-                active={active}
-              />
-            )}
-            {route.kind === 'title' && (
-              <TitleScreen
-                title={route.title}
-                navigation={navigation}
-                active={active}
-                version={version}
-              />
-            )}
-            {route.kind === 'upNext' && (
-              <UpNextScreen
-                next={route.next}
-                navigation={navigation}
-                active={active}
-                onShowEpisodes={() => void showEpisodesOf(route.finished)}
-              />
-            )}
-            {route.kind === 'notice' && (
-              <NoticeScreen
-                route={route}
-                active={active}
-                onClose={navigation.back}
-              />
-            )}
-          </div>
-        );
-      })}
-      {settingsOpen && (
-        <SettingsDialog scale={scale} onClose={() => setSettingsOpen(false)} />
-      )}
-      {powerOpen && <PowerDialog onClose={() => setPowerOpen(false)} />}
-      {starting && (
-        <div class='starting'>Starting {itemName(playback.playable)}…</div>
-      )}
+      <TvBatteryContext.Provider value={battery}>
+        {stack.map((route, index) => {
+          const top = index === stack.length - 1;
+          const active = top && !starting && !settingsOpen && !powerOpen;
+          return (
+            <div key={screenKey(route, index)} class='screen' hidden={!top}>
+              {route.kind === 'home' && (
+                <HomeScreen
+                  navigation={navigation}
+                  active={active}
+                  version={version}
+                />
+              )}
+              {route.kind === 'provider' && (
+                <ProviderScreen
+                  id={route.id}
+                  navigation={navigation}
+                  active={active}
+                />
+              )}
+              {route.kind === 'title' && (
+                <TitleScreen
+                  title={route.title}
+                  navigation={navigation}
+                  active={active}
+                  version={version}
+                />
+              )}
+              {route.kind === 'upNext' && (
+                <UpNextScreen
+                  next={route.next}
+                  navigation={navigation}
+                  active={active}
+                  onShowEpisodes={() => void showEpisodesOf(route.finished)}
+                />
+              )}
+              {route.kind === 'notice' && (
+                <NoticeScreen
+                  route={route}
+                  active={active}
+                  onClose={navigation.back}
+                />
+              )}
+            </div>
+          );
+        })}
+        {settingsOpen && (
+          <SettingsDialog
+            scale={scale}
+            onClose={() => setSettingsOpen(false)}
+          />
+        )}
+        {powerOpen && <PowerDialog onClose={() => setPowerOpen(false)} />}
+        {starting && (
+          <div class='starting'>Starting {itemName(playback.playable)}…</div>
+        )}
+      </TvBatteryContext.Provider>
     </RemoteStatusContext.Provider>
   );
 }

@@ -2,7 +2,8 @@ import './TopBar.css';
 
 import { useContext, useEffect, useRef } from 'preact/hooks';
 
-import { RemoteStatusContext } from '../../app/tv-status';
+import { RemoteStatusContext, TvBatteryContext } from '../../app/tv-status';
+import { BatteryIcon } from '../BatteryIcon';
 
 export interface Tab {
   id: string;
@@ -39,6 +40,7 @@ export function TopBar({
 }) {
   const element = useRef<HTMLElement>(null);
   const remote = useContext(RemoteStatusContext);
+  const battery = useContext(TvBatteryContext);
   useEffect(() => {
     if (focusedIndex === undefined) return;
     element.current?.scrollIntoView({ block: 'start' });
@@ -62,9 +64,11 @@ export function TopBar({
           {tab.label}
         </span>
       ))}
+      <span class='top-bar-spacer' />
       {remote.batteryLow && (
         <span class='top-bar-notice'>Charge the remote</span>
       )}
+      {battery && <BatteryIcon battery={battery} />}
       <span
         class={iconClass('top-bar-settings', focusedIndex === tabs.length)}
         aria-label='Settings'

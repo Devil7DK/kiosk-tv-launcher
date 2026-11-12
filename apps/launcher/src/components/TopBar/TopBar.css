@@ -26,9 +26,12 @@
   color: var(--focus);
 }
 
+.top-bar-spacer {
+  flex: 1 1 auto;
+}
+
 .top-bar-notice {
   flex: 0 0 auto;
-  margin-left: auto;
   align-self: center;
   padding: 0.2em 0.7em;
   border-radius: 0.3rem;
@@ -58,12 +61,4 @@
 .top-bar-icon.focused {
   border-color: var(--focus);
   color: var(--focus);
-}
-
-.top-bar-settings {
-  margin-left: auto;
-}
-
-.top-bar-notice + .top-bar-settings {
-  margin-left: 0;
 }
