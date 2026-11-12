@@ -26,4 +26,10 @@ describe('braveArgs', () => {
     expect(braveArgs(options)).toContain('--kiosk');
     expect(braveArgs({ ...options, kiosk: false })).not.toContain('--kiosk');
   });
+
+  it('opens the launcher as Brave starts, after every flag', () => {
+    const args = braveArgs({ ...options, startUrl: 'http://127.0.0.1:8765/' });
+    expect(args.at(-1)).toBe('http://127.0.0.1:8765/');
+    expect(braveArgs(options).some((a) => a.startsWith('http'))).toBe(false);
+  });
 });

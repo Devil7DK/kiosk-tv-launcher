@@ -55,10 +55,21 @@ class TabRoles {
     return this.roles;
   }
 
+  /** Forgets every role: the tabs they named are gone. */
+  async clear(): Promise<void> {
+    const roles = await this.read();
+    for (const role of Object.keys(roles)) delete roles[role];
+    await this.save(roles);
+  }
+
   /** Writes one at a time from the copy in memory, so roles set together all stay. */
   async set(role: string, targetId: string): Promise<void> {
     const roles = await this.read();
     roles[role] = targetId;
+    await this.save(roles);
+  }
+
+  private async save(roles: Record<string, string>): Promise<void> {
     this.writing = this.writing.then(async () => {
       await mkdir(dirname(this.file), { recursive: true });
       await writeFile(this.file, JSON.stringify(roles, null, 2) + '\n');
@@ -80,6 +91,25 @@ async function targetIdOf(
   } finally {
     await session.detach().catch(() => {});
   }
+}
+
+/** Resolves once no tab has opened or closed for `quietMs`, or after `limitMs`. */
+async function settledPages(
+  context: BrowserContext,
+  quietMs = 1500,
+  limitMs = 10_000,
+): Promise<Page[]> {
+  const deadline = Date.now() + limitMs;
+  let count = context.pages().length;
+  let since = Date.now();
+  while (Date.now() - since < quietMs && Date.now() < deadline) {
+    await new Promise((resolve) => setTimeout(resolve, 250));
+    if (context.pages().length !== count) {
+      count = context.pages().length;
+      since = Date.now();
+    }
+  }
+  return context.pages();
 }
 
 const KEY_BINDING = '__kioskTvKey';
@@ -117,7 +147,7 @@ export async function connectTvBrowser(
     rolesFile?: string;
   },
 ): Promise<TvBrowser> {
-  await ensureBrave(options);
+  const started = await ensureBrave(options);
   const browser: Browser = await chromium.connectOverCDP(cdpUrl(options.port));
   const context: BrowserContext | undefined = browser.contexts()[0];
   if (!context) throw new Error('Brave has no browser context to attach to');
@@ -126,6 +156,27 @@ export async function connectTvBrowser(
   const roles = new TabRoles(
     options.rolesFile ?? join(dirname(options.profileDir), 'tab-roles.json'),
   );
+
+  // A Brave that was stopped abruptly, as a power cut or shutdown does, reopens
+  // its last tabs under new ids. Their roles are stale, and left open they would
+  // pile up with every boot. One stays, as the window closes with its last tab:
+  // the start page, which is already the launcher.
+  const spare: Page[] = [];
+  if (started) {
+    await roles.clear();
+    const pages = await settledPages(context);
+    const start = options.startUrl
+      ? pages.find((page) => page.url().startsWith(options.startUrl!))
+      : undefined;
+    const keep = start ?? pages[0];
+    await Promise.all(
+      pages
+        .filter((page) => page !== keep)
+        .map((page) => page.close().catch(() => {})),
+    );
+    if (start) await roles.set('launcher', await targetIdOf(context, start));
+    else if (keep) spare.push(keep);
+  }
 
   async function find(role: string): Promise<Page | undefined> {
     const targetId = (await roles.read())[role];
@@ -150,7 +201,7 @@ export async function connectTvBrowser(
     const next = (async () => {
       const existing = (await reuse) ?? (await find(role));
       if (existing) return existing;
-      const page = await context!.newPage();
+      const page = spare.pop() ?? (await context!.newPage());
       await roles.set(role, await targetIdOf(context!, page));
       await open(page);
       return page;

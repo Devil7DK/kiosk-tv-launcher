@@ -8,6 +8,8 @@ export interface BraveOptions {
   /** A dedicated profile; Brave refuses remote debugging on the default one. */
   profileDir: string;
   kiosk: boolean;
+  /** Opened as Brave starts, so the viewer sees it before the controller is ready. */
+  startUrl?: string;
 }
 
 export function braveArgs(options: BraveOptions): string[] {
@@ -19,6 +21,7 @@ export function braveArgs(options: BraveOptions): string[] {
     '--no-default-browser-check',
     '--autoplay-policy=no-user-gesture-required',
     ...(options.kiosk ? ['--kiosk'] : []),
+    ...(options.startUrl ? [options.startUrl] : []),
   ];
 }
 
@@ -36,14 +39,15 @@ async function cdpReady(port: number): Promise<boolean> {
 }
 
 /**
- * Starts Brave unless it already listens on the port. Brave is detached so it
- * outlives a controller restart and the viewer never sees the window close.
+ * Starts Brave unless it already listens on the port, and says whether it did.
+ * Brave is detached so it outlives a controller restart and the viewer never
+ * sees the window close.
  */
 export async function ensureBrave(
   options: BraveOptions,
   timeoutMs = 15_000,
-): Promise<void> {
-  if (await cdpReady(options.port)) return;
+): Promise<boolean> {
+  if (await cdpReady(options.port)) return false;
 
   await mkdir(options.profileDir, { recursive: true });
   spawn(options.binary, braveArgs(options), {
@@ -53,7 +57,7 @@ export async function ensureBrave(
 
   const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {
-    if (await cdpReady(options.port)) return;
+    if (await cdpReady(options.port)) return true;
     await new Promise((resolve) => setTimeout(resolve, 200));
   }
   throw new Error(
