@@ -7,3 +7,4 @@ export * from './catalog/RefSchemas.js';
 export * from './home/HomeSchemas.js';
 export * from './library/LibrarySchemas.js';
 export * from './providers/ProviderSchemas.js';
+export * from './remote/RemoteKeys.js';
