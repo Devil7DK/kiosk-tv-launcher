@@ -193,6 +193,7 @@ export class DongleConnection {
         const report = BatteryReportSchema.safeParse(json);
         if (report.success) {
           const millivolts = report.data.battery;
+          this.options.log.info('remote battery', { millivolts });
           this.options.onBatteryReport?.(
             millivolts > 0 ? millivolts : undefined,
           );
