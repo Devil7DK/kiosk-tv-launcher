@@ -4,4 +4,5 @@ export * from './catalog/ItemSchemas.js';
 export * from './catalog/ListingSchemas.js';
 export * from './catalog/ProgressSchemas.js';
 export * from './catalog/RefSchemas.js';
+export * from './library/LibrarySchemas.js';
 export * from './providers/ProviderSchemas.js';
