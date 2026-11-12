@@ -29,11 +29,15 @@ export const PlaylistSchema = z.object({
 });
 export type Playlist = z.infer<typeof PlaylistSchema>;
 
+/** `launcher`: only what was started from the launcher; `all`: also what the services report. */
+export const ContinueWatchingModeSchema = z.enum(['launcher', 'all']);
+
+/** Provider tabs show only titles in these languages. */
+export const LanguagesSchema = z.array(LanguageSchema).min(1);
+
 export const SettingsSchema = z.object({
-  /** `launcher`: only what was started from the launcher; `all`: also what the services report. */
-  continueWatching: z.enum(['launcher', 'all']).default('launcher'),
-  /** Provider tabs show only titles in these languages. */
-  languages: z.array(LanguageSchema).min(1).default(['ta']),
+  continueWatching: ContinueWatchingModeSchema.default('launcher'),
+  languages: LanguagesSchema.default(['ta']),
 });
 export type Settings = z.infer<typeof SettingsSchema>;
 

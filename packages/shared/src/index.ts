@@ -1,3 +1,4 @@
+export * from './api/ApiSchemas.js';
 export * from './catalog/ArtworkSchemas.js';
 export * from './catalog/ItemSchemas.js';
 export * from './catalog/ListingSchemas.js';
