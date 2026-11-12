@@ -6,7 +6,6 @@ import type { Tab } from '../components/TopBar';
 export type Route =
   | { kind: 'home' }
   | { kind: 'provider'; id: string }
-  | { kind: 'size' }
   | { kind: 'title'; title: Title }
   | { kind: 'upNext'; finished: Playable; next: Playable }
   | { kind: 'notice'; title: string; detail?: string };
@@ -16,6 +15,7 @@ export interface Navigation {
   /** The tab a screen belongs to, highlighted in the top bar. */
   tab: string;
   switchTab(id: string): void;
+  openSettings(): void;
   open(route: Route): void;
   back(): void;
   play(playable: Playable, fromStart?: boolean): void;

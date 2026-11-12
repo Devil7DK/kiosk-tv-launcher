@@ -6,7 +6,7 @@ import { useLoad } from '../../api/useLoad';
 import { Message } from '../../components/Message';
 import { Row } from '../../components/Row';
 import { Tile } from '../../components/Tile';
-import { TopBar } from '../../components/TopBar';
+import { isSettings, TopBar, topBarLength } from '../../components/TopBar';
 import {
   clampFocus,
   columnOf,
@@ -43,7 +43,7 @@ export function HomeScreen({
 }) {
   const loaded = useLoad(() => api.home(), version);
   const home = loaded.state === 'ready' ? loaded.value : undefined;
-  const lengths = rowsOf(home, navigation.tabs.length);
+  const lengths = rowsOf(home, topBarLength(navigation.tabs));
   // Start on the first row with something to watch, not on the tabs.
   const [focus, setFocus] = useState(() => startFocus(1));
   useEffect(() => {
@@ -56,8 +56,10 @@ export function HomeScreen({
       return;
     }
     const column = columnOf(focus);
-    if (focus.row === 0)
+    if (focus.row === 0) {
+      if (isSettings(navigation.tabs, column)) return navigation.openSettings();
       return navigation.switchTab(navigation.tabs[column]!.id);
+    }
     if (!home) return;
     if (focus.row === 1) return navigation.play(home.continueWatching[column]!);
     if (focus.row === 2) {

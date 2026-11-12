@@ -1,0 +1,44 @@
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgb(0 0 0 / 70%);
+}
+
+.dialog {
+  min-width: 40vw;
+  padding: 1.2em 1.6em;
+  border-radius: 0.6rem;
+  background: var(--surface);
+  border: 0.15rem solid #3a3d44;
+}
+
+.dialog h2 {
+  margin: 0 0 0.6em;
+  font-size: 1.3rem;
+}
+
+.dialog-label {
+  color: var(--muted);
+  font-size: 1rem;
+  margin-bottom: 0.5em;
+}
+
+.dialog-size {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.dialog-size-value {
+  min-width: 4.5em;
+  text-align: center;
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.dialog-done {
+  margin-top: 1.2em;
+}

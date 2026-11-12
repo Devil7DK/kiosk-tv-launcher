@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { nextScale } from '../../src/screens/SizeScreen';
+import { nextScale } from '../../src/components/SettingsDialog';
 
 describe('nextScale', () => {
   it('steps by a tenth without drifting from rounding', () => {

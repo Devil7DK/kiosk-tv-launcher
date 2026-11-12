@@ -25,3 +25,25 @@
   border-color: var(--focus);
   color: var(--focus);
 }
+
+.top-bar-settings {
+  flex: 0 0 auto;
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  padding: 0.25em 0.5em;
+  border-radius: 999px;
+  border: 0.15rem solid transparent;
+  color: var(--muted);
+}
+
+.top-bar-settings svg {
+  width: 1.3em;
+  height: 1.3em;
+  fill: currentColor;
+}
+
+.top-bar-settings.focused {
+  border-color: var(--focus);
+  color: var(--focus);
+}

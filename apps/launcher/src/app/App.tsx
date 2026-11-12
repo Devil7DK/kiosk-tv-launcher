@@ -17,6 +17,7 @@ import {
 import { api } from '../api/api.client';
 import { useServerEvents } from '../api/useServerEvents';
 import { Message } from '../components/Message';
+import { SettingsDialog } from '../components/SettingsDialog';
 import {
   itemName,
   type Navigation,
@@ -25,7 +26,6 @@ import {
 import { useRemote } from '../remote/useRemote';
 import { HomeScreen } from '../screens/HomeScreen';
 import { ProviderScreen } from '../screens/ProviderScreen';
-import { SizeScreen } from '../screens/SizeScreen';
 import { TitleScreen } from '../screens/TitleScreen';
 import { UpNextScreen } from '../screens/UpNextScreen';
 
@@ -60,6 +60,7 @@ export function App() {
   const [stack, setStack] = useState<Route[]>([{ kind: 'home' }]);
   const [version, setVersion] = useState(0);
   const [scale, setScale] = useState(1);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   useEffect(() => {
     const root = document.getElementById('app');
     if (!root) return;
@@ -76,7 +77,6 @@ export function App() {
       ...providers
         .filter(usable)
         .map((p) => ({ id: p.manifest.id, label: p.manifest.name })),
-      { id: 'size', label: 'Size' },
     ],
     [providers],
   );
@@ -133,15 +133,10 @@ export function App() {
     tabs,
     tab: tabOf(stack),
     switchTab: (id) =>
-      setStack([
-        id === 'home'
-          ? { kind: 'home' }
-          : id === 'size'
-            ? { kind: 'size' }
-            : { kind: 'provider', id },
-      ]),
+      setStack([id === 'home' ? { kind: 'home' } : { kind: 'provider', id }]),
     open: (route) => setStack((s) => [...s, route]),
     back: () => setStack((s) => (s.length > 1 ? s.slice(0, -1) : s)),
+    openSettings: () => setSettingsOpen(true),
     play: (playable, fromStart) => {
       setPlayback({ state: 'starting', playable });
       api.play(playable, fromStart).catch(() => {
@@ -163,7 +158,7 @@ export function App() {
     <>
       {stack.map((route, index) => {
         const top = index === stack.length - 1;
-        const active = top && !starting;
+        const active = top && !starting && !settingsOpen;
         return (
           <div key={index} class='screen' hidden={!top}>
             {route.kind === 'home' && (
@@ -196,13 +191,6 @@ export function App() {
                 onShowEpisodes={() => void showEpisodesOf(route.finished)}
               />
             )}
-            {route.kind === 'size' && (
-              <SizeScreen
-                scale={scale}
-                navigation={navigation}
-                active={active}
-              />
-            )}
             {route.kind === 'notice' && (
               <NoticeScreen
                 route={route}
@@ -213,6 +201,9 @@ export function App() {
           </div>
         );
       })}
+      {settingsOpen && (
+        <SettingsDialog scale={scale} onClose={() => setSettingsOpen(false)} />
+      )}
       {starting && (
         <div class='starting'>Starting {itemName(playback.playable)}…</div>
       )}
