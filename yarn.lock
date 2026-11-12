@@ -467,7 +467,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kiosk-tv/shared@workspace:packages/shared":
+"@kiosk-tv/provider-kit@workspace:packages/provider-kit":
+  version: 0.0.0-use.local
+  resolution: "@kiosk-tv/provider-kit@workspace:packages/provider-kit"
+  dependencies:
+    "@kiosk-tv/shared": "workspace:*"
+    eslint: "npm:^10.14.0"
+    playwright-core: "npm:^1.65.0"
+    prettier: "npm:^3.9.10"
+    typescript: "npm:~6.0.0"
+    vite: "npm:^8.3.5"
+    vitest: "npm:^5.1.0"
+    zod: "npm:^4.6.7"
+  languageName: unknown
+  linkType: soft
+
+"@kiosk-tv/shared@workspace:*, @kiosk-tv/shared@workspace:packages/shared":
   version: 0.0.0-use.local
   resolution: "@kiosk-tv/shared@workspace:packages/shared"
   dependencies:
@@ -2282,6 +2297,15 @@ __metadata:
   version: 4.0.7
   resolution: "picomatch@npm:4.0.7"
   checksum: 10c0/beb6ae02c43ae44e84883b90830196d9046b1726ead292adcf7f57945e0bb0d992d68563d87e03b484b6f3c9a5c6defda7523477f047d7f0e663f126cc01787f
+  languageName: node
+  linkType: hard
+
+"playwright-core@npm:^1.65.0":
+  version: 1.65.0
+  resolution: "playwright-core@npm:1.65.0"
+  bin:
+    playwright-core: cli.js
+  checksum: 10c0/ed905c6fc2457a725c3fdb3ad4500f43c7a1bb2c6e4e8c708e1e314930c7dce446a5756ad073425bf3c6e3ca975e5a35fb0221118e2d51ef7b4b6c6d13d0644c
   languageName: node
   linkType: hard
 

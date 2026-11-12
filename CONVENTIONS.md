@@ -17,10 +17,11 @@ The code is MIT licensed. Every `package.json` is `"private": true` with
 `"license": "MIT"`. A dependency whose licence would bind the code (AGPL, GPL,
 non-commercial terms) needs agreement before it is added.
 
-**The shared package is the contract.** The provider interface, the domain types
-(show, episode, playback state), the controller ↔ launcher API schemas and the
-remote's key names live in `packages/shared` and are imported by everyone.
-Nothing duplicates a shape the shared package already describes.
+**The shared package is the contract.** The domain types (show, episode,
+provider manifest, playback state), the controller ↔ launcher API schemas and
+the remote's key names live in `packages/shared` and are imported by everyone.
+Nothing duplicates a shape the shared package already describes. The launcher
+bundles it, so it holds nothing that only runs in Node.
 
 Inside a package, group by feature, not by kind:
 
@@ -38,13 +39,15 @@ A component folder holds its own parts: `ShowRow.tsx`, `ShowRow.css`,
 A provider is one streaming service (YouTube, Hotstar, SunNXT, Zee5). Providers
 are the main swappable part, and adding one must never mean editing a caller.
 
-- **One interface**, `Provider` in `packages/shared`, is all the controller and
-  launcher know about. Optional capabilities (search, skip intro) are declared
-  in the provider's manifest, and the UI hides what a provider does not offer.
+- **One interface**, `Provider` in `packages/provider-kit`, is all the
+  controller knows about. Optional features (continue watching, search) are
+  optional methods; the controller reports which ones a provider has, and the
+  launcher hides what it does not offer.
 - **One package per provider**, `packages/provider-<id>`, named
-  `@kiosk-tv/provider-<id>`. Its entry exports a `ProviderModule`: a manifest and
-  a `create(context)` factory. A provider talks to the browser only through the
-  context it is given, never by starting or finding a browser itself.
+  `@kiosk-tv/provider-<id>`. Its default export is a `ProviderModule` made with
+  `defineProvider`: a manifest, a config schema and a `create(context)` factory.
+  A provider talks to the browser only through the pages its context hands it,
+  never by starting or finding a browser itself.
 - **Chosen once, at startup, from configuration.** `config/tv.json` lists the
   enabled providers and their settings. The controller loads each one by package
   name; the choice is never re-made inside feature code.
