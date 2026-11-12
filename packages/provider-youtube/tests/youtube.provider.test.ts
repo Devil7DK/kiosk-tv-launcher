@@ -138,9 +138,10 @@ describe('YouTube provider', () => {
     ).toBe(true);
   });
 
-  it('starts the tab with the feed of new videos, then one row per channel', async () => {
+  it('starts the tab with YouTube’s suggestions and new videos, then one row per channel', async () => {
     const { page } = fakeSite([
       channels,
+      { match: browseId('FEwhat_to_watch'), body: fixture('channel-videos') },
       { match: browseId('FEsubscriptions'), body: fixture('channel-videos') },
       {
         match: (r) =>
@@ -152,6 +153,7 @@ describe('YouTube provider', () => {
       languages: ['ta'],
     });
     expect(shelves.items.map((s) => s.title)).toEqual([
+      'Suggested for you',
       'New from your channels',
       'Example Kitchen',
       'Example Songs',

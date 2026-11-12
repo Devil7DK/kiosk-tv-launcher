@@ -20,7 +20,15 @@ import {
 
 /** The Videos tab of a channel, newest first. */
 const CHANNEL_VIDEOS = 'EgZ2aWRlb3PyBgQKAjoA';
-const SUBSCRIPTIONS = 'subscriptions';
+/** Rows of YouTube's own feeds, before one row per subscribed channel. */
+const FEEDS: Record<string, { browseId: string; title: string }> = {
+  // Much of what is watched is not from a subscribed channel.
+  suggested: { browseId: 'FEwhat_to_watch', title: 'Suggested for you' },
+  subscriptions: {
+    browseId: 'FEsubscriptions',
+    title: 'New from your channels',
+  },
+};
 const SHELVES_PER_CALL = 4;
 const PLAYLIST_PAGE = 50;
 /** A whole playlist is read at once (100 videos per request), up to this many. */
@@ -181,7 +189,7 @@ export function createYouTubeProvider(
 
     async shelves(options) {
       const all = [
-        SUBSCRIPTIONS,
+        ...Object.keys(FEEDS),
         ...(await subscribedChannels()).map((c) => c.ref.id),
       ];
       const named = new Map(
@@ -192,20 +200,17 @@ export function createYouTubeProvider(
       let index = start;
       for (; index < all.length && shelves.length < SHELVES_PER_CALL; index++) {
         const id = all[index]!;
-        const items =
-          id === SUBSCRIPTIONS
-            ? await videos({ browseId: 'FEsubscriptions' })
-            : await videos(listOf({ provider: 'youtube', id }), {
-                id,
-                name: named.get(id) ?? '',
-              });
+        const feed = FEEDS[id];
+        const items = feed
+          ? await videos({ browseId: feed.browseId })
+          : await videos(listOf({ provider: 'youtube', id }), {
+              id,
+              name: named.get(id) ?? '',
+            });
         if (items.items.length === 0) continue;
         shelves.push({
           id,
-          title:
-            id === SUBSCRIPTIONS
-              ? 'New from your channels'
-              : (named.get(id) ?? 'Channel'),
+          title: feed?.title ?? named.get(id) ?? 'Channel',
           items,
         });
       }
