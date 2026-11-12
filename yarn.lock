@@ -736,6 +736,7 @@ __metadata:
     "@kiosk-tv/provider-kit": "workspace:*"
     "@kiosk-tv/shared": "workspace:*"
     eslint: "npm:^10.14.0"
+    playwright-core: "npm:^1.65.0"
     prettier: "npm:^3.9.10"
     typescript: "npm:~6.0.0"
     vite: "npm:^8.3.5"

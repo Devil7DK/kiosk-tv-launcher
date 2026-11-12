@@ -1,0 +1,239 @@
+{
+  "code": 200,
+  "status": "SUCCESS",
+  "title": "Mixed",
+  "results": [
+    {
+      "_id": "277752",
+      "title": "Sun Singer 2026",
+      "globalServiceId": "GID_277752",
+      "globalServiceName": "Sun Singer 2026",
+      "generalInfo": {
+        "_id": "277752",
+        "type": "vodchannel",
+        "title": "Sun Singer 2026",
+        "displayTitle": "Oct 04, 2026",
+        "briefDescription": "The stage is set for a musical celebration as Sun Singer returns grander with 20 young singing sensations. Watch them showcase their extraordinary voices and compete for the title, guided by your favourite judges, with music, fun and entertainment.",
+        "showDisplayTabs": {
+          "showDisplayText": "MMM-YY",
+          "showDisplaySuffix": "",
+          "showDisplayType": "monthly",
+          "showAirStatus": "running",
+          "showDisplayOrder": "desc",
+          "showDisplayfrequency": "",
+          "showDisplayStart": "2026-10-04",
+          "showDisplayEnd": ""
+        }
+      },
+      "content": {
+        "serialNo": null,
+        "seasonNo": null,
+        "releaseDate": "2026-10-04T12:30:00.000Z",
+        "duration": "0:44:00",
+        "language": ["tamil"]
+      },
+      "images": {
+        "values": [
+          {
+            "type": "preview",
+            "profile": "xxhdpi",
+            "resolution": "1600x1200",
+            "link": "https://sund-images.sunnxt.com/277752/1600x1200_SunSinger_277752_32cf27a7-3e00-48e9-a149-c83b7d63f311.jpg"
+          },
+          {
+            "type": "thumbnail",
+            "profile": "hdpi",
+            "resolution": "500x750",
+            "link": "https://sund-images.sunnxt.com/277752/500x750_SunSinger_277752_eb789f5f-464f-4326-bad4-c9c522f2e2c8.jpg"
+          },
+          {
+            "type": "coverposter",
+            "profile": "mdpi",
+            "resolution": "640x360",
+            "link": "https://sund-images.sunnxt.com/277752/640x360_SunSinger_277752_d6f69e71-8293-45f0-83af-c1f901b319c7.jpg"
+          },
+          {
+            "type": "coverposter",
+            "profile": "xxhdpi",
+            "resolution": "1920x1080",
+            "link": "https://sund-images.sunnxt.com/277752/1920x1080_SunSinger_277752_d6f69e71-8293-45f0-83af-c1f901b319c7.jpg"
+          },
+          {
+            "type": "contenttitleimage",
+            "profile": "xhdpi",
+            "resolution": "defaultwidthxdefaultheight",
+            "link": "https://sund-images.sunnxt.com/277752/SunSinger_277752_c725ea19-8bac-4920-b30e-cd21ba95edc2.png"
+          }
+        ]
+      }
+    },
+    {
+      "_id": "280953",
+      "title": "Bhairavi",
+      "globalServiceId": "GID_280953",
+      "globalServiceName": "Bhairavi",
+      "generalInfo": {
+        "_id": "280953",
+        "type": "vodchannel",
+        "title": "Bhairavi",
+        "displayTitle": "Oct 26, 2026",
+        "briefDescription": "Starting afresh after losing her family in an accident, Bhairavi faces hostility at her new home and workplace. With Kathir's support and Varun's affection complicating her life, she strives to uncover the conspiracy behind her family's death.",
+        "showDisplayTabs": {
+          "showDisplayText": "MMM-YY",
+          "showDisplaySuffix": "",
+          "showDisplayType": "monthly",
+          "showAirStatus": "running",
+          "showDisplayOrder": "desc",
+          "showDisplayfrequency": "",
+          "showDisplayStart": "2026-10-26",
+          "showDisplayEnd": ""
+        }
+      },
+      "content": {
+        "serialNo": null,
+        "seasonNo": null,
+        "releaseDate": "2026-10-26T19:30:00.000Z",
+        "duration": "0:22:00",
+        "language": ["tamil"]
+      },
+      "images": {
+        "values": [
+          {
+            "type": "preview",
+            "profile": "xxhdpi",
+            "resolution": "1600x1200",
+            "link": "https://sund-images.sunnxt.com/280953/1600x1200_Bhairavi_280953_a12299ba-000e-4ed4-b62a-3c5304a9f2cd.jpg"
+          },
+          {
+            "type": "thumbnail",
+            "profile": "hdpi",
+            "resolution": "500x750",
+            "link": "https://sund-images.sunnxt.com/280953/500x750_Bhairavi_280953_715dc877-2a56-4f68-bc5d-c29ca4faed53.jpg"
+          },
+          {
+            "type": "coverposter",
+            "profile": "mdpi",
+            "resolution": "640x360",
+            "link": "https://sund-images.sunnxt.com/280953/640x360_Bhairavi_280953_41268516-88c5-48ee-97ad-4ddc535b9464.jpg"
+          },
+          {
+            "type": "coverposter",
+            "profile": "xxhdpi",
+            "resolution": "1920x1080",
+            "link": "https://sund-images.sunnxt.com/280953/1920x1080_Bhairavi_280953_41268516-88c5-48ee-97ad-4ddc535b9464.jpg"
+          },
+          {
+            "type": "contenttitleimage",
+            "profile": "xhdpi",
+            "resolution": "defaultwidthxdefaultheight",
+            "link": "https://sund-images.sunnxt.com/280953/Bhairavi_280953_a05bddbf-8c83-42fb-840a-712abf94698c.png"
+          }
+        ]
+      }
+    },
+    {
+      "_id": "194403",
+      "title": "Sun TV HD",
+      "globalServiceId": null,
+      "globalServiceName": "",
+      "generalInfo": {
+        "_id": "194403",
+        "type": "live",
+        "title": "Sun TV HD",
+        "displayTitle": "Apr 21, 2020",
+        "briefDescription": "Sun TV Live",
+        "showDisplayTabs": {}
+      },
+      "content": {
+        "serialNo": null,
+        "seasonNo": null,
+        "releaseDate": "2020-04-21T00:00:00.000Z",
+        "duration": "0:5:00",
+        "language": ["tamil"]
+      },
+      "images": {
+        "values": [
+          {
+            "type": "preview",
+            "profile": "xxhdpi",
+            "resolution": "1600x1200",
+            "link": "https://sund-images.sunnxt.com/194403/1600x1200_SunTVHD_194403_4fcf48c1-ad41-4f91-a493-886ce54889c1.png"
+          },
+          {
+            "type": "thumbnail",
+            "profile": "hdpi",
+            "resolution": "500x750",
+            "link": "https://sund-images.sunnxt.com/194403/500x750_SunTVHD_194403_012b1554-d348-4584-9796-cdadcdda6929.jpg"
+          },
+          {
+            "type": "coverposter",
+            "profile": "mdpi",
+            "resolution": "640x360",
+            "link": "https://sund-images.sunnxt.com/194403/640x360_SunTVHD_194403_0e8d71b9-0c66-443d-b2de-3f2221ddac74.jpg"
+          },
+          {
+            "type": "coverposter",
+            "profile": "xxhdpi",
+            "resolution": "1920x1080",
+            "link": "https://sund-images.sunnxt.com/194403/1920x1080_SunTVHD_194403_0e8d71b9-0c66-443d-b2de-3f2221ddac74.jpg"
+          }
+        ]
+      }
+    },
+    {
+      "_id": "282305",
+      "title": "The Grandmaster",
+      "globalServiceId": null,
+      "globalServiceName": "",
+      "generalInfo": {
+        "_id": "282305",
+        "type": "movie",
+        "title": "The Grandmaster",
+        "displayTitle": "Sep 25, 2026",
+        "briefDescription": "Young Nandhan strives to become a chess champion, while his mother, Vellaiyamma, supports him through financial struggles, caste discrimination and repeated rejections. Can his talent and determination help him turn his dream into reality?",
+        "showDisplayTabs": {}
+      },
+      "content": {
+        "serialNo": null,
+        "seasonNo": null,
+        "releaseDate": "2026-09-25T00:00:00.000Z",
+        "duration": "2:10:00",
+        "language": ["tamil"]
+      },
+      "images": {
+        "values": [
+          {
+            "type": "preview",
+            "profile": "xxhdpi",
+            "resolution": "1600x1200",
+            "link": "https://sund-images.sunnxt.com/282305/1600x1200_TheGrandmaster_282305_44243616-5b93-4b62-9925-112671f82236.jpg"
+          },
+          {
+            "type": "thumbnail",
+            "profile": "hdpi",
+            "resolution": "500x750",
+            "link": "https://sund-images.sunnxt.com/282305/500x750_TheGrandmaster_282305_19f277fb-425c-4121-82c4-b76d4941b0d8.jpg"
+          },
+          {
+            "type": "coverposter",
+            "profile": "mdpi",
+            "resolution": "640x360",
+            "link": "https://sund-images.sunnxt.com/282305/640x360_TheGrandmaster_282305_f388ec10-e069-4db2-a9ca-2273fda95150.jpg"
+          },
+          {
+            "type": "coverposter",
+            "profile": "xxhdpi",
+            "resolution": "1920x1080",
+            "link": "https://sund-images.sunnxt.com/282305/1920x1080_TheGrandmaster_282305_f388ec10-e069-4db2-a9ca-2273fda95150.jpg"
+          },
+          {
+            "type": "contenttitleimage",
+            "profile": "xhdpi",
+            "resolution": "defaultwidthxdefaultheight",
+            "link": "https://sund-images.sunnxt.com/282305/TheGrandmaster_282305_2ddb56ae-e67b-4d8e-9561-94ed3ec6edea.png"
+          }
+        ]
+      }
+    }
+  ]
+}

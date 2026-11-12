@@ -1,0 +1,70 @@
+{
+  "code": 200,
+  "status": "SUCCESS",
+  "results": [
+    {
+      "_id": "198692",
+      "title": null,
+      "globalServiceId": "GID_198692",
+      "globalServiceName": null,
+      "generalInfo": {
+        "_id": "198692",
+        "type": "vodchannel",
+        "title": "Moondru Mudichu",
+        "displayTitle": "Aug 19, 2024",
+        "briefDescription": "Nandini is a self-assured girl who puts her family’s happiness above hers. On the other hand Surya hates his mother due to lingering resentments and deliberately bonds with Nandini to cause strife. Watch what destiny has in store for Nandini & Surya.",
+        "showDisplayTabs": {
+          "showDisplayText": "MMM-YY",
+          "showDisplaySuffix": "",
+          "showDisplayType": "monthly",
+          "showAirStatus": "running",
+          "showDisplayOrder": "desc",
+          "showDisplayfrequency": "",
+          "showDisplayStart": "2024-08-19",
+          "showDisplayEnd": ""
+        }
+      },
+      "content": {
+        "serialNo": "",
+        "seasonNo": "",
+        "releaseDate": "2024-08-19T12:00:00.000Z",
+        "duration": "0:22:00",
+        "language": ["tamil"]
+      },
+      "images": {
+        "values": [
+          {
+            "type": "preview",
+            "profile": "xxhdpi",
+            "resolution": "1600x1200",
+            "link": "https://sund-images.sunnxt.com/198692/1600x1200_MoondruMudichu_198692_46371e7d-7430-49c0-a1e1-e65b86a8b121.jpg"
+          },
+          {
+            "type": "thumbnail",
+            "profile": "hdpi",
+            "resolution": "500x750",
+            "link": "https://sund-images.sunnxt.com/198692/500x750_MoondruMudichu_198692_50912781-f357-4733-99ec-10254fc23ff8.jpg"
+          },
+          {
+            "type": "coverposter",
+            "profile": "mdpi",
+            "resolution": "640x360",
+            "link": "https://sund-images.sunnxt.com/198692/640x360_MoondruMudichu_198692_f077ec36-30a9-4e5c-bfb9-ff97b5320814.jpg"
+          },
+          {
+            "type": "coverposter",
+            "profile": "xxhdpi",
+            "resolution": "1920x1080",
+            "link": "https://sund-images.sunnxt.com/198692/1920x1080_MoondruMudichu_198692_f077ec36-30a9-4e5c-bfb9-ff97b5320814.jpg"
+          },
+          {
+            "type": "contenttitleimage",
+            "profile": "xhdpi",
+            "resolution": "defaultwidthxdefaultheight",
+            "link": "https://sund-images.sunnxt.com/198692/MoondruMudichu_198692_91cda4f0-106a-453e-a8e4-ab2c2b00dc72.png"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -14,7 +14,7 @@
     "build": "tsc -p tsconfig.build.json",
     "dev": "tsc -p tsconfig.build.json --watch --preserveWatchOutput",
     "typecheck": "tsc -p tsconfig.json",
-    "test": "vitest run --passWithNoTests",
+    "test": "vitest run",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write ."
@@ -22,6 +22,7 @@
   "dependencies": {
     "@kiosk-tv/provider-kit": "workspace:*",
     "@kiosk-tv/shared": "workspace:*",
+    "playwright-core": "^1.65.0",
     "zod": "^4.6.7"
   },
   "devDependencies": {

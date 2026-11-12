@@ -1,0 +1,153 @@
+{
+  "code": 200,
+  "status": "SUCCESS",
+  "results": [
+    {
+      "_id": "282534",
+      "title": "Moondru Mudichu - Nov 11, 2026",
+      "globalServiceId": "GID_198692",
+      "globalServiceName": "Moondru Mudichu",
+      "generalInfo": {
+        "_id": "282534",
+        "type": "vod",
+        "title": "Moondru Mudichu - Nov 11, 2026",
+        "displayTitle": "E688 - Nov 11, 2026",
+        "briefDescription": "Nandini is a self-assured girl who puts her family’s happiness above hers. On the other hand Surya hates his mother due to lingering resentments and deliberately bonds with Nandini to cause strife. Watch what destiny has in store for Nandini & Surya.",
+        "showDisplayTabs": {}
+      },
+      "content": {
+        "serialNo": "688",
+        "seasonNo": null,
+        "releaseDate": "2026-11-11T20:30:00.000Z",
+        "duration": "0:22:00",
+        "language": ["tamil"]
+      },
+      "images": {
+        "values": [
+          {
+            "type": "preview",
+            "profile": "xxhdpi",
+            "resolution": "1600x1200",
+            "link": "https://sund-images.sunnxt.com/282534/1600x1200_MoondruMudichuNov112026_282534_c789a954-bf85-43d1-b9af-277859ce8840.jpg"
+          },
+          {
+            "type": "thumbnail",
+            "profile": "hdpi",
+            "resolution": "500x750",
+            "link": "https://sund-images.sunnxt.com/282534/500x750_MoondruMudichuNov112026_282534_d4210dd4-0fd8-4759-bcb7-1c7b3121b0e0.jpg"
+          },
+          {
+            "type": "coverposter",
+            "profile": "mdpi",
+            "resolution": "640x360",
+            "link": "https://sund-images.sunnxt.com/282534/640x360_MoondruMudichuNov112026_282534_95782cc9-fdb2-40f0-bc4c-5118e524995a.jpg"
+          },
+          {
+            "type": "coverposter",
+            "profile": "xxhdpi",
+            "resolution": "1920x1080",
+            "link": "https://sund-images.sunnxt.com/282534/1920x1080_MoondruMudichuNov112026_282534_95782cc9-fdb2-40f0-bc4c-5118e524995a.jpg"
+          }
+        ]
+      }
+    },
+    {
+      "_id": "282510",
+      "title": "Moondru Mudichu - Nov 10, 2026",
+      "globalServiceId": "GID_198692",
+      "globalServiceName": "Moondru Mudichu",
+      "generalInfo": {
+        "_id": "282510",
+        "type": "vod",
+        "title": "Moondru Mudichu - Nov 10, 2026",
+        "displayTitle": "E687 - Nov 10, 2026",
+        "briefDescription": "Nandini is a self-assured girl who puts her family’s happiness above hers. On the other hand Surya hates his mother due to lingering resentments and deliberately bonds with Nandini to cause strife. Watch what destiny has in store for Nandini & Surya.",
+        "showDisplayTabs": {}
+      },
+      "content": {
+        "serialNo": "687",
+        "seasonNo": null,
+        "releaseDate": "2026-11-10T20:30:00.000Z",
+        "duration": "0:22:00",
+        "language": ["tamil"]
+      },
+      "images": {
+        "values": [
+          {
+            "type": "preview",
+            "profile": "xxhdpi",
+            "resolution": "1600x1200",
+            "link": "https://sund-images.sunnxt.com/282510/1600x1200_MoondruMudichuNov102026_282510_0e2ae31b-34b8-4977-b4de-98670289094f.jpg"
+          },
+          {
+            "type": "thumbnail",
+            "profile": "hdpi",
+            "resolution": "500x750",
+            "link": "https://sund-images.sunnxt.com/282510/500x750_MoondruMudichuNov102026_282510_b55cbdf7-d15b-4f7e-b712-310279867521.jpg"
+          },
+          {
+            "type": "coverposter",
+            "profile": "mdpi",
+            "resolution": "640x360",
+            "link": "https://sund-images.sunnxt.com/282510/640x360_MoondruMudichuNov102026_282510_c0738317-6d39-4564-b090-b3a655109ca8.jpg"
+          },
+          {
+            "type": "coverposter",
+            "profile": "xxhdpi",
+            "resolution": "1920x1080",
+            "link": "https://sund-images.sunnxt.com/282510/1920x1080_MoondruMudichuNov102026_282510_c0738317-6d39-4564-b090-b3a655109ca8.jpg"
+          }
+        ]
+      }
+    },
+    {
+      "_id": "282486",
+      "title": "Moondru Mudichu - Nov 09, 2026",
+      "globalServiceId": "GID_198692",
+      "globalServiceName": "Moondru Mudichu",
+      "generalInfo": {
+        "_id": "282486",
+        "type": "vod",
+        "title": "Moondru Mudichu - Nov 09, 2026",
+        "displayTitle": "E686 - Nov 09, 2026",
+        "briefDescription": "Nandini is a self-assured girl who puts her family’s happiness above hers. On the other hand Surya hates his mother due to lingering resentments and deliberately bonds with Nandini to cause strife. Watch what destiny has in store for Nandini & Surya.",
+        "showDisplayTabs": {}
+      },
+      "content": {
+        "serialNo": "686",
+        "seasonNo": null,
+        "releaseDate": "2026-11-09T20:30:00.000Z",
+        "duration": "0:22:00",
+        "language": ["tamil"]
+      },
+      "images": {
+        "values": [
+          {
+            "type": "preview",
+            "profile": "xxhdpi",
+            "resolution": "1600x1200",
+            "link": "https://sund-images.sunnxt.com/282486/1600x1200_MoondruMudichuNov092026_282486_ffbf2166-f1ce-411c-8108-9d59725c31cf.jpg"
+          },
+          {
+            "type": "thumbnail",
+            "profile": "hdpi",
+            "resolution": "500x750",
+            "link": "https://sund-images.sunnxt.com/282486/500x750_MoondruMudichuNov092026_282486_25ec5b1c-2c4e-4c05-96a8-6c90b79cf606.jpg"
+          },
+          {
+            "type": "coverposter",
+            "profile": "mdpi",
+            "resolution": "640x360",
+            "link": "https://sund-images.sunnxt.com/282486/640x360_MoondruMudichuNov092026_282486_7067865a-d045-4fd6-9703-3d2801879007.jpg"
+          },
+          {
+            "type": "coverposter",
+            "profile": "xxhdpi",
+            "resolution": "1920x1080",
+            "link": "https://sund-images.sunnxt.com/282486/1920x1080_MoondruMudichuNov092026_282486_7067865a-d045-4fd6-9703-3d2801879007.jpg"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "code": 200,
+  "status": "SUCCESS",
+  "results": [
+    {
+      "_id": "198904",
+      "title": "Moondru Mudichu - Aug 19, 2024",
+      "globalServiceId": "GID_198692",
+      "globalServiceName": "Moondru Mudichu",
+      "generalInfo": {
+        "_id": "198904",
+        "type": "vod",
+        "title": "Moondru Mudichu - Aug 19, 2024",
+        "displayTitle": "E1 - Aug 19, 2024",
+        "briefDescription": "Nandini is a self-assured girl who puts her family’s happiness above hers. On the other hand Surya hates his mother due to lingering resentments and deliberately bonds with Nandini to cause strife. Watch what destiny has in store for Nandini & Surya.",
+        "showDisplayTabs": {}
+      },
+      "content": {
+        "serialNo": "1",
+        "seasonNo": "",
+        "releaseDate": "2024-08-19T20:30:00.000Z",
+        "duration": "0:22:00",
+        "language": ["tamil"]
+      },
+      "images": {
+        "values": [
+          {
+            "type": "preview",
+            "profile": "xxhdpi",
+            "resolution": "1600x1200",
+            "link": "https://sund-images.sunnxt.com/198904/1600x1200_MoondruMudichuAug192024_198904_4cb7e758-b111-4fad-a77a-d2ab4537ba0d.jpg"
+          },
+          {
+            "type": "thumbnail",
+            "profile": "hdpi",
+            "resolution": "500x750",
+            "link": "https://sund-images.sunnxt.com/198904/500x750_MoondruMudichuAug192024_198904_fcc08a35-0891-4ec9-ac96-5dca6ea097d7.jpg"
+          },
+          {
+            "type": "coverposter",
+            "profile": "mdpi",
+            "resolution": "640x360",
+            "link": "https://sund-images.sunnxt.com/198904/640x360_MoondruMudichuAug192024_198904_2b5af9fa-1be7-4253-af78-d8527af43a0a.jpg"
+          },
+          {
+            "type": "coverposter",
+            "profile": "xxhdpi",
+            "resolution": "1920x1080",
+            "link": "https://sund-images.sunnxt.com/198904/1920x1080_MoondruMudichuAug192024_198904_2b5af9fa-1be7-4253-af78-d8527af43a0a.jpg"
+          }
+        ]
+      }
+    }
+  ]
+}

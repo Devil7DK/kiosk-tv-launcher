@@ -1,0 +1,34 @@
+{
+  "code": 200,
+  "status": "SUCCESS",
+  "results": [
+    {
+      "name": "portalTvshowsLatestEpisodes",
+      "title": "Fresh Episodes",
+      "layoutType": "weeklyTrendingSmallItem",
+      "pageSize": 5,
+      "enableShowAll": true
+    },
+    {
+      "name": "liveChannelsPortal3ptO",
+      "title": "Popular Channels",
+      "layoutType": "smallSquareItemV2",
+      "pageSize": 45,
+      "enableShowAll": true
+    },
+    {
+      "name": "Suntvshowsprtl",
+      "title": "Tamil TV Shows",
+      "layoutType": "anchoredRail",
+      "pageSize": 25,
+      "enableShowAll": true
+    },
+    {
+      "name": "browsebyyeartvshowsprtl",
+      "title": "Browse by Year",
+      "layoutType": "weeklyTrendingSmallItem",
+      "pageSize": 10,
+      "enableShowAll": true
+    }
+  ]
+}

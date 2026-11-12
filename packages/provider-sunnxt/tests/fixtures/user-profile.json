@@ -1,0 +1,13 @@
+{
+  "code": 200,
+  "status": "SUCCESS",
+  "result": {
+    "profile": {
+      "_id": 1001,
+      "first": "Owner",
+      "parent_id": 1001,
+      "isKid": false,
+      "subscriptionStatus": "Active"
+    }
+  }
+}
