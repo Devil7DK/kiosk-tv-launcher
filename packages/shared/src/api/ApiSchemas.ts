@@ -99,6 +99,10 @@ export type ServerEvent = z.infer<typeof ServerEventSchema>;
 export const FollowRequestSchema = z.object({ title: TitleSchema });
 export type FollowRequest = z.infer<typeof FollowRequestSchema>;
 
+/** A link copied from a service's website or app, to a show, channel or playlist. */
+export const FollowLinkRequestSchema = z.object({ url: z.url() });
+export type FollowLinkRequest = z.infer<typeof FollowLinkRequestSchema>;
+
 export const PlaylistCreateSchema = z.object({
   name: z.string().trim().min(1),
   source: PlaylistSourceSchema,
