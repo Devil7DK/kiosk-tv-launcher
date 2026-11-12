@@ -38,7 +38,10 @@ const config = await loadTvConfig(configPath);
 const launcherUrl =
   config.launcherUrl ?? `http://127.0.0.1:${config.server.port}/`;
 
-const browser = await connectTvBrowser(config.browser);
+const browser = await connectTvBrowser({
+  ...config.browser,
+  startUrl: launcherUrl,
+});
 const events = new EventHub();
 const registry = await ProviderRegistry.start(config.providers, {
   pagesFor: (manifest) => ({
