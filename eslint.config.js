@@ -32,4 +32,10 @@ export default defineConfig(
       ],
     },
   },
+  {
+    files: ['apps/launcher/src/**/*.{ts,tsx}'],
+    languageOptions: {
+      globals: globals.browser,
+    },
+  },
 );

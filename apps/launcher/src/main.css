@@ -1,0 +1,16 @@
+:root {
+  color-scheme: dark;
+  --bg: #101114;
+  --fg: #f4f1ea;
+  font-family: system-ui, sans-serif;
+  font-size: clamp(24px, 2.2vw, 40px);
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  background: var(--bg);
+  color: var(--fg);
+  cursor: none;
+}
