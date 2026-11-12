@@ -82,6 +82,14 @@ export const RemoteStatusSchema = z.object({
 });
 export type RemoteStatus = z.infer<typeof RemoteStatusSchema>;
 
+/** The TV computer's own battery, where it has one. */
+export const TvBatterySchema = z.object({
+  percent: z.number().int().min(0).max(100),
+  /** On the charger, whether charging or already full. */
+  charging: z.boolean(),
+});
+export type TvBattery = z.infer<typeof TvBatterySchema>;
+
 /** Pushed to the launcher over server-sent events. */
 export const ServerEventSchema = z.discriminatedUnion('type', [
   z.object({ type: z.literal('playback'), playback: PlaybackStateSchema }),
@@ -93,6 +101,11 @@ export const ServerEventSchema = z.discriminatedUnion('type', [
   z.object({ type: z.literal('home') }),
   z.object({ type: z.literal('settings'), settings: SettingsSchema }),
   z.object({ type: z.literal('remote'), remote: RemoteStatusSchema }),
+  /** Absent `battery`: the computer has none, as a desktop PC. */
+  z.object({
+    type: z.literal('battery'),
+    battery: TvBatterySchema.optional(),
+  }),
 ]);
 export type ServerEvent = z.infer<typeof ServerEventSchema>;
 
