@@ -67,8 +67,9 @@ Bluetooth remote that acts as a keyboard needs no setup. While a video plays,
 OK pauses and resumes, left and right skip ten seconds, and Back stops and
 returns to the launcher.
 
-The last tab, **Size**, makes everything on the TV smaller or bigger, one
-step per press of OK, and keeps the choice.
+The gear at the right end of the tabs opens **Settings**, where Smaller and
+Bigger change the size of everything on the TV, one step per press of OK. Back
+or Done closes it; the choice is kept.
 
 ## Known limits
 
