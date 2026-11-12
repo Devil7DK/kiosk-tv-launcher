@@ -21,6 +21,8 @@
     "lint:fix": "turbo lint:fix"
   },
   "devDependencies": {
-    "turbo": "^2.11.10"
+    "@types/node": "^24",
+    "turbo": "^2.11.10",
+    "typescript": "~6.0.0"
   }
 }
