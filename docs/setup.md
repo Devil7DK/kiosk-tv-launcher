@@ -90,6 +90,10 @@ usermod -aG video,render,audio,input,dialout tv
 `dialout` lets the controller open the remote's dongle. The `tv` user needs no
 other rights.
 
+The power button beside the settings shuts the TV down or restarts it. It shows
+when `/etc/kiosk-tv/tv.json` has `"power": { "enabled": true }`, and works
+because the package lets the `tv` user do both through a polkit rule.
+
 The `tv` user logs in on the first console by itself, once the network is up,
 through a drop-in at `/etc/systemd/system/getty@tty1.service.d/`:
 
