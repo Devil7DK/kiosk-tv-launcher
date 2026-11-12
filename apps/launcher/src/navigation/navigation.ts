@@ -28,6 +28,9 @@ export interface Navigation {
   tab: string;
   switchTab(id: string): void;
   openSettings(): void;
+  /** Whether the TV may be shut down from the launcher. */
+  power: boolean;
+  openPower(): void;
   open(route: Route): void;
   back(): void;
   play(playable: Playable, fromStart?: boolean): void;

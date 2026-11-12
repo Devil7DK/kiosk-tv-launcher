@@ -13,6 +13,8 @@ import {
   type PlaybackCommand,
   type PlaylistCreate,
   type PlaylistUpdate,
+  type PowerAction,
+  PowerStatusSchema,
   type ProviderInfo,
   ProviderInfoSchema,
   type Ref,
@@ -119,6 +121,9 @@ export const api = {
   play: (playable: Playable, fromStart = false): Promise<void> =>
     post('/play', { playable, ...(fromStart ? { fromStart } : {}) }),
   remote: (): Promise<RemoteStatus> => get('/remote', RemoteStatusSchema),
+  powerAvailable: async (): Promise<boolean> =>
+    (await get('/power', PowerStatusSchema)).available,
+  power: (action: PowerAction): Promise<void> => post('/power', { action }),
   playback: (command: PlaybackCommand): Promise<void> =>
     post('/playback', command),
 };

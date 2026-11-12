@@ -18,6 +18,7 @@ import {
 import { api } from '../api/api.client';
 import { useServerEvents } from '../api/useServerEvents';
 import { Message } from '../components/Message';
+import { PowerDialog } from '../components/PowerDialog';
 import { SettingsDialog } from '../components/SettingsDialog';
 import {
   itemName,
@@ -64,6 +65,11 @@ export function App() {
   const [version, setVersion] = useState(0);
   const [scale, setScale] = useState(1);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [power, setPower] = useState(false);
+  const [powerOpen, setPowerOpen] = useState(false);
+  useEffect(() => {
+    api.powerAvailable().then(setPower, () => {});
+  }, []);
   const [remote, setRemote] = useState<RemoteStatus>({ batteryLow: false });
   useEffect(() => {
     const root = document.getElementById('app');
@@ -142,6 +148,8 @@ export function App() {
     open: (route) => setStack((s) => [...s, route]),
     back: () => setStack((s) => (s.length > 1 ? s.slice(0, -1) : s)),
     openSettings: () => setSettingsOpen(true),
+    power,
+    openPower: () => setPowerOpen(true),
     play: (playable, fromStart) => {
       setPlayback({ state: 'starting', playable });
       api.play(playable, fromStart).catch(() => {
@@ -163,7 +171,7 @@ export function App() {
     <RemoteStatusContext.Provider value={remote}>
       {stack.map((route, index) => {
         const top = index === stack.length - 1;
-        const active = top && !starting && !settingsOpen;
+        const active = top && !starting && !settingsOpen && !powerOpen;
         return (
           <div key={screenKey(route, index)} class='screen' hidden={!top}>
             {route.kind === 'home' && (
@@ -209,6 +217,7 @@ export function App() {
       {settingsOpen && (
         <SettingsDialog scale={scale} onClose={() => setSettingsOpen(false)} />
       )}
+      {powerOpen && <PowerDialog onClose={() => setPowerOpen(false)} />}
       {starting && (
         <div class='starting'>Starting {itemName(playback.playable)}…</div>
       )}

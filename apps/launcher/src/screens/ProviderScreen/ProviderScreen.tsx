@@ -5,7 +5,12 @@ import { api } from '../../api/api.client';
 import { Message } from '../../components/Message';
 import { Row } from '../../components/Row';
 import { Tile } from '../../components/Tile';
-import { isSettings, TopBar, topBarLength } from '../../components/TopBar';
+import {
+  isPower,
+  isSettings,
+  TopBar,
+  topBarLength,
+} from '../../components/TopBar';
 import {
   clampFocus,
   columnOf,
@@ -99,7 +104,7 @@ export function ProviderScreen({
 
   const shelves = loaded.state === 'ready' ? loaded.shelves : [];
   const lengths = [
-    topBarLength(navigation.tabs),
+    topBarLength(navigation.tabs, navigation.power),
     ...shelves.map((s) => s.items.items.length),
   ];
   // Going up to the tabs lands on this service's own tab.
@@ -131,6 +136,7 @@ export function ProviderScreen({
     const column = columnOf(focus);
     if (focus.row === 0) {
       if (isSettings(navigation.tabs, column)) return navigation.openSettings();
+      if (isPower(navigation.tabs, column)) return navigation.openPower();
       return navigation.switchTab(navigation.tabs[column]!.id);
     }
     const item = shelves[focus.row - 1]?.items.items[column];
@@ -141,6 +147,7 @@ export function ProviderScreen({
     <>
       <TopBar
         tabs={navigation.tabs}
+        power={navigation.power}
         selected={id}
         focusedIndex={active && focus.row === 0 ? columnOf(focus) : undefined}
       />

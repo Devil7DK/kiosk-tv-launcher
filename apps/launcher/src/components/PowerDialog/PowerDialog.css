@@ -1,0 +1,14 @@
+.power-choices {
+  display: flex;
+  gap: 1rem;
+}
+
+.power-saying {
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.power-failed {
+  color: var(--new);
+  margin-bottom: 0.6em;
+}
