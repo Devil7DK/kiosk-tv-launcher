@@ -1,5 +1,4 @@
 export * from './catalog/ArtworkSchemas.js';
-export * from './catalog/CatalogSchemas.js';
 export * from './catalog/ItemSchemas.js';
 export * from './catalog/ListingSchemas.js';
 export * from './catalog/ProgressSchemas.js';

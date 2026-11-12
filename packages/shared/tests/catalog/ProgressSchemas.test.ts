@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { newerProgress, progressAt } from '../../src/index.js';
+import { newerProgress, progressAt, ProgressSchema } from '../../src/index.js';
 
 describe('progressAt', () => {
   it('marks an episode stopped during the end credits as completed', () => {
@@ -29,5 +29,17 @@ describe('newerProgress', () => {
     const undated = progressAt(900, 1200, 'provider');
     expect(newerProgress(undated, launcher)).toBe(launcher);
     expect(newerProgress(launcher, undated)).toBe(launcher);
+  });
+});
+
+describe('ProgressSchema', () => {
+  it('rejects a fraction above 1, so a percentage is not mistaken for a fraction', () => {
+    expect(
+      ProgressSchema.safeParse({
+        fraction: 45,
+        completed: false,
+        source: 'provider',
+      }).success,
+    ).toBe(false);
   });
 });
