@@ -102,7 +102,16 @@ export function ProviderScreen({
     navigation.tabs.length,
     ...shelves.map((s) => s.items.items.length),
   ];
-  const [focus, setFocus] = useState(() => startFocus(1));
+  // Going up to the tabs lands on this service's own tab.
+  const [focus, setFocus] = useState(() => ({
+    ...startFocus(1),
+    columns: [
+      Math.max(
+        0,
+        navigation.tabs.findIndex((t) => t.id === id),
+      ),
+    ],
+  }));
   useEffect(() => {
     if (loaded.state === 'ready') setFocus((f) => clampFocus(f, lengths));
   }, [lengths.join()]);
