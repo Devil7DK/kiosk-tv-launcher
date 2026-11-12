@@ -63,11 +63,9 @@ export function App() {
   useEffect(() => {
     const root = document.getElementById('app');
     if (!root) return;
-    // zoom scales every unit, the vw-based tile widths included; the box is
-    // enlarged in step so the zoomed page still fills the screen exactly.
+    // zoom scales every unit, the vw-based tile widths included, while
+    // percentage sizes still fill the screen.
     root.style.zoom = String(scale);
-    root.style.width = `${100 / scale}%`;
-    root.style.height = `${100 / scale}%`;
   }, [scale]);
   const [playback, setPlayback] = useState<PlaybackState>({ state: 'idle' });
   const lastPlayback = useRef<PlaybackState>({ state: 'idle' });
