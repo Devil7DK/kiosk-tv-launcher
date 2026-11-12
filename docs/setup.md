@@ -140,6 +140,17 @@ sudo -u tv XDG_RUNTIME_DIR=/run/user/$(id -u tv) systemctl --user restart kiosk-
 
 The configuration in `/etc/kiosk-tv` survives upgrades.
 
+### Updates
+
+With the package come automatic updates, through `unattended-upgrades`: what
+Debian chooses by default (its security fixes and point releases) and Brave's
+releases. Node and this package are updated by hand. Nothing reboots by itself.
+
+A browser left running on replaced files can fail to open new tabs, so at 03:30
+a timer restarts the controller, and Brave with it, if Brave, Node or this
+package was installed since it started. A TV that is off at night gets the new
+version as it boots.
+
 ## The remote
 
 Arrow keys, OK (Enter) and Back (Escape, Backspace or the browser Back key). A
