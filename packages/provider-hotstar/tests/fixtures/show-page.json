@@ -1,0 +1,746 @@
+{
+  "success": {
+    "page": {
+      "template": "DesktopDetailsPage",
+      "spaces": {
+        "hero": {
+          "widget_wrappers": [
+            {
+              "template": "HeroGECWidget",
+              "widget": {
+                "@type": "type.googleapis.com/widget.HeroGECWidget",
+                "template": {
+                  "name": "HeroGECWidget",
+                  "version": "1"
+                },
+                "data": {
+                  "hero_img": {
+                    "src": "sources/r1/cms/prod/1639/1780683591639-i",
+                    "alt": "Siragadikka Aasai"
+                  },
+                  "content_info": {
+                    "title": "Siragadikka Aasai",
+                    "title_cutout": {
+                      "src": "sources/r1/cms/prod/2705/1780683572705-t",
+                      "alt": "Siragadikka Aasai",
+                      "dimension": {
+                        "width": 355,
+                        "height": 285
+                      }
+                    },
+                    "description": "Circumstances force Meena, a family-centric girl, to marry Muthu, a thug. Will this unfortunate marriage turn into love?",
+                    "subscript_tags": [
+                      {
+                        "type": "text",
+                        "value": "Drama",
+                        "text_tag": {
+                          "value": "Drama"
+                        }
+                      },
+                      {
+                        "type": "text",
+                        "value": "Family",
+                        "text_tag": {
+                          "value": "Family"
+                        }
+                      },
+                      {
+                        "type": "text",
+                        "value": "Common-Man Struggles",
+                        "text_tag": {
+                          "value": "Common-Man Struggles"
+                        }
+                      },
+                      {
+                        "type": "text",
+                        "value": "Opposites Attract",
+                        "text_tag": {
+                          "value": "Opposites Attract"
+                        }
+                      },
+                      {
+                        "type": "text",
+                        "value": "Couples",
+                        "text_tag": {
+                          "value": "Couples"
+                        }
+                      },
+                      {
+                        "type": "text",
+                        "value": "Tough Girls",
+                        "text_tag": {
+                          "value": "Tough Girls"
+                        }
+                      },
+                      {
+                        "type": "text",
+                        "value": "Heart-Warming",
+                        "text_tag": {
+                          "value": "Heart-Warming"
+                        }
+                      },
+                      {
+                        "type": "text",
+                        "value": "Small Town",
+                        "text_tag": {
+                          "value": "Small Town"
+                        }
+                      },
+                      {
+                        "type": "text",
+                        "value": "Free For You",
+                        "text_tag": {
+                          "value": "Free For You"
+                        }
+                      }
+                    ],
+                    "superscript_tags": [
+                      {
+                        "type": "text",
+                        "value": "2026",
+                        "text_tag": {
+                          "value": "2026"
+                        }
+                      },
+                      {
+                        "type": "badge",
+                        "value": "U/A 13+",
+                        "badge_tag": {
+                          "value": "U/A 13+"
+                        }
+                      },
+                      {
+                        "type": "text",
+                        "value": "Tamil",
+                        "text_tag": {
+                          "value": "Tamil"
+                        }
+                      }
+                    ],
+                    "core_meta_tags": [
+                      {
+                        "type": "text",
+                        "value": "2026",
+                        "text_tag": {
+                          "value": "2026"
+                        }
+                      },
+                      {
+                        "type": "badge",
+                        "value": "U/A 13+",
+                        "badge_tag": {
+                          "value": "U/A 13+"
+                        }
+                      },
+                      {
+                        "type": "text",
+                        "value": "Tamil",
+                        "text_tag": {
+                          "value": "Tamil"
+                        }
+                      }
+                    ],
+                    "enriched_meta_tags": [
+                      {
+                        "type": "text",
+                        "value": "Drama",
+                        "text_tag": {
+                          "value": "Drama"
+                        }
+                      },
+                      {
+                        "type": "text",
+                        "value": "Family",
+                        "text_tag": {
+                          "value": "Family"
+                        }
+                      },
+                      {
+                        "type": "text",
+                        "value": "Common-Man Struggles",
+                        "text_tag": {
+                          "value": "Common-Man Struggles"
+                        }
+                      },
+                      {
+                        "type": "text",
+                        "value": "Opposites Attract",
+                        "text_tag": {
+                          "value": "Opposites Attract"
+                        }
+                      },
+                      {
+                        "type": "text",
+                        "value": "Couples",
+                        "text_tag": {
+                          "value": "Couples"
+                        }
+                      },
+                      {
+                        "type": "text",
+                        "value": "Tough Girls",
+                        "text_tag": {
+                          "value": "Tough Girls"
+                        }
+                      },
+                      {
+                        "type": "text",
+                        "value": "Heart-Warming",
+                        "text_tag": {
+                          "value": "Heart-Warming"
+                        }
+                      },
+                      {
+                        "type": "text",
+                        "value": "Small Town",
+                        "text_tag": {
+                          "value": "Small Town"
+                        }
+                      },
+                      {
+                        "type": "text",
+                        "value": "Free For You",
+                        "text_tag": {
+                          "value": "Free For You"
+                        }
+                      }
+                    ],
+                    "content_language_selector": {
+                      "languages": [
+                        {
+                          "language": {
+                            "name": "Tamil",
+                            "display_name": "Tamil",
+                            "iso2code": "ta",
+                            "iso3code": "tam"
+                          },
+                          "description": "Original",
+                          "is_selected": true
+                        }
+                      ],
+                      "alt": {
+                        "label": "language, 1 items"
+                      }
+                    },
+                    "callout_meta_tags": [
+                      {
+                        "callout_tag": {
+                          "txt": {
+                            "text": "Free For You",
+                            "text_v2": {
+                              "segments": [
+                                {
+                                  "text": "Free For You",
+                                  "attributes": {
+                                    "color": {
+                                      "hex_code": "#1492FF"
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          "tag_template_name": "TextTag"
+                        }
+                      }
+                    ],
+                    "alt": {
+                      "label": "Siragadikka Aasai, Show"
+                    },
+                    "core_meta_tags_alt": {
+                      "label": "Release Year: 2026, Age Rating: U/A 13+, Language:  Tamil"
+                    },
+                    "enriched_meta_tags_alt": {
+                      "label": "Genres: Drama, Family, Common-Man Struggles, Opposites Attract, Couples, Tough Girls, Heart-Warming, Small Town, Free For You, "
+                    },
+                    "callout_meta_tags_alt": {
+                      "label": "Free For You"
+                    },
+                    "content_id": "1260129356"
+                  }
+                }
+              },
+              "id": "3798",
+              "defer_id": "3798",
+              "unique_identifier": "2"
+            }
+          ]
+        },
+        "tray": {
+          "widget_wrappers": [
+            {
+              "template": "CategoryTrayWidget",
+              "widget": {
+                "@type": "type.googleapis.com/widget.CategoryTrayWidget",
+                "data": {
+                  "title": "Episodes",
+                  "start_collapsed": true,
+                  "category_picker": {
+                    "data": {
+                      "tabs": [
+                        {
+                          "tab": {
+                            "data": {
+                              "title": "Nov",
+                              "is_selected": true,
+                              "selected_title": "Nov",
+                              "tray_widget_url": "/v2/pages/978/spaces/12545/widgets/90986/widgets/168/items?content_id=1260129356&fromBroadcastDate=1793547000&navigationType=yearMonth&page_enum=detail&toBroadcastDate=1794497400&wti_name=EpisodeNavigation"
+                            }
+                          }
+                        },
+                        {
+                          "tab": {
+                            "data": {
+                              "title": "Oct",
+                              "selected_title": "Oct",
+                              "tray_widget_url": "/v2/pages/978/spaces/12545/widgets/90986/widgets/168/items?content_id=1260129356&fromBroadcastDate=1790868600&navigationType=yearMonth&page_enum=detail&toBroadcastDate=1793460600&wti_name=EpisodeNavigation"
+                            }
+                          }
+                        }
+                      ],
+                      "dropdown_button": {
+                        "button_type": "GHOST",
+                        "data": {
+                          "text": "2026",
+                          "trailing_icon": "icon-caret-down"
+                        },
+                        "actions": {
+                          "on_click": [
+                            {
+                              "open_widget_overlay": {
+                                "widget_wrapper": {
+                                  "template": "ListV2Widget",
+                                  "widget": {
+                                    "@type": "type.googleapis.com/widget.ListV2Widget",
+                                    "data": {
+                                      "list_header": {
+                                        "title_bar_header": {
+                                          "title": "Select Year",
+                                          "button": {
+                                            "button_type": "GHOST",
+                                            "data": {
+                                              "trailing_icon": "icon-close"
+                                            },
+                                            "actions": {
+                                              "on_click": [
+                                                {
+                                                  "close_overlay": {}
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        }
+                                      },
+                                      "list_item": [
+                                        {
+                                          "selectable_list_item_widget": {
+                                            "data": {
+                                              "id": "2026",
+                                              "icon": {
+                                                "icon": "icon-check"
+                                              },
+                                              "title": {
+                                                "segments": [
+                                                  {
+                                                    "text": "2026",
+                                                    "attributes": {
+                                                      "color": {
+                                                        "hex_code": "#FFFFFFFF"
+                                                      },
+                                                      "font_style": "BUTTON_SEMIBOLD_1",
+                                                      "format": [
+                                                        "DEFAULT_FORMAT"
+                                                      ]
+                                                    }
+                                                  }
+                                                ]
+                                              },
+                                              "description": {
+                                                "segments": [
+                                                  {
+                                                    "text": "284 Eps",
+                                                    "attributes": {
+                                                      "color": {
+                                                        "hex_code": "#99FFFFFF"
+                                                      },
+                                                      "font_style": "BODY_REGULAR_2",
+                                                      "format": [
+                                                        "DEFAULT_FORMAT"
+                                                      ]
+                                                    }
+                                                  }
+                                                ]
+                                              },
+                                              "selected": true,
+                                              "actions": {
+                                                "on_click": [
+                                                  {
+                                                    "publish_message_action": {
+                                                      "messages": [
+                                                        {
+                                                          "message_name": "UPDATE_BFF_ACTIONS",
+                                                          "data": {
+                                                            "update_actions": {
+                                                              "actions": [
+                                                                {
+                                                                  "@type": "type.googleapis.com/base.Actions.Action",
+                                                                  "reload_action": {
+                                                                    "context": {
+                                                                      "widget_context": {
+                                                                        "reload_with_url": "/v2/pages/978/spaces/12545/widgets/90986?content_id=1260129356&page_enum=detail&selected_year=2026&wti_name=EpisodeNavigation"
+                                                                      }
+                                                                    }
+                                                                  }
+                                                                }
+                                                              ]
+                                                            },
+                                                            "disableMessageCaching": true
+                                                          }
+                                                        }
+                                                      ]
+                                                    }
+                                                  },
+                                                  {
+                                                    "close_overlay": {}
+                                                  }
+                                                ]
+                                              }
+                                            }
+                                          }
+                                        },
+                                        {
+                                          "selectable_list_item_widget": {
+                                            "data": {
+                                              "id": "2025",
+                                              "title": {
+                                                "segments": [
+                                                  {
+                                                    "text": "2025",
+                                                    "attributes": {
+                                                      "color": {
+                                                        "hex_code": "#FFE1E6F0"
+                                                      },
+                                                      "font_style": "BUTTON_SEMIBOLD_1",
+                                                      "format": [
+                                                        "DEFAULT_FORMAT"
+                                                      ]
+                                                    }
+                                                  }
+                                                ]
+                                              },
+                                              "description": {
+                                                "segments": [
+                                                  {
+                                                    "text": "311 Eps",
+                                                    "attributes": {
+                                                      "color": {
+                                                        "hex_code": "#FF8F98B2"
+                                                      },
+                                                      "font_style": "BODY_REGULAR_2",
+                                                      "format": [
+                                                        "DEFAULT_FORMAT"
+                                                      ]
+                                                    }
+                                                  }
+                                                ]
+                                              },
+                                              "actions": {
+                                                "on_click": [
+                                                  {
+                                                    "publish_message_action": {
+                                                      "messages": [
+                                                        {
+                                                          "message_name": "UPDATE_BFF_ACTIONS",
+                                                          "data": {
+                                                            "update_actions": {
+                                                              "actions": [
+                                                                {
+                                                                  "@type": "type.googleapis.com/base.Actions.Action",
+                                                                  "reload_action": {
+                                                                    "context": {
+                                                                      "widget_context": {
+                                                                        "reload_with_url": "/v2/pages/978/spaces/12545/widgets/90986?content_id=1260129356&page_enum=detail&selected_year=2025&wti_name=EpisodeNavigation"
+                                                                      }
+                                                                    }
+                                                                  }
+                                                                }
+                                                              ]
+                                                            },
+                                                            "disableMessageCaching": true
+                                                          }
+                                                        }
+                                                      ]
+                                                    }
+                                                  },
+                                                  {
+                                                    "close_overlay": {}
+                                                  }
+                                                ]
+                                              }
+                                            }
+                                          }
+                                        },
+                                        {
+                                          "selectable_list_item_widget": {
+                                            "data": {
+                                              "id": "2024",
+                                              "title": {
+                                                "segments": [
+                                                  {
+                                                    "text": "2024",
+                                                    "attributes": {
+                                                      "color": {
+                                                        "hex_code": "#FFE1E6F0"
+                                                      },
+                                                      "font_style": "BUTTON_SEMIBOLD_1",
+                                                      "format": [
+                                                        "DEFAULT_FORMAT"
+                                                      ]
+                                                    }
+                                                  }
+                                                ]
+                                              },
+                                              "description": {
+                                                "segments": [
+                                                  {
+                                                    "text": "311 Eps",
+                                                    "attributes": {
+                                                      "color": {
+                                                        "hex_code": "#FF8F98B2"
+                                                      },
+                                                      "font_style": "BODY_REGULAR_2",
+                                                      "format": [
+                                                        "DEFAULT_FORMAT"
+                                                      ]
+                                                    }
+                                                  }
+                                                ]
+                                              },
+                                              "actions": {
+                                                "on_click": [
+                                                  {
+                                                    "publish_message_action": {
+                                                      "messages": [
+                                                        {
+                                                          "message_name": "UPDATE_BFF_ACTIONS",
+                                                          "data": {
+                                                            "update_actions": {
+                                                              "actions": [
+                                                                {
+                                                                  "@type": "type.googleapis.com/base.Actions.Action",
+                                                                  "reload_action": {
+                                                                    "context": {
+                                                                      "widget_context": {
+                                                                        "reload_with_url": "/v2/pages/978/spaces/12545/widgets/90986?content_id=1260129356&page_enum=detail&selected_year=2024&wti_name=EpisodeNavigation"
+                                                                      }
+                                                                    }
+                                                                  }
+                                                                }
+                                                              ]
+                                                            },
+                                                            "disableMessageCaching": true
+                                                          }
+                                                        }
+                                                      ]
+                                                    }
+                                                  },
+                                                  {
+                                                    "close_overlay": {}
+                                                  }
+                                                ]
+                                              }
+                                            }
+                                          }
+                                        },
+                                        {
+                                          "selectable_list_item_widget": {
+                                            "data": {
+                                              "id": "2023",
+                                              "title": {
+                                                "segments": [
+                                                  {
+                                                    "text": "2023",
+                                                    "attributes": {
+                                                      "color": {
+                                                        "hex_code": "#FFE1E6F0"
+                                                      },
+                                                      "font_style": "BUTTON_SEMIBOLD_1",
+                                                      "format": [
+                                                        "DEFAULT_FORMAT"
+                                                      ]
+                                                    }
+                                                  }
+                                                ]
+                                              },
+                                              "description": {
+                                                "segments": [
+                                                  {
+                                                    "text": "267 Eps",
+                                                    "attributes": {
+                                                      "color": {
+                                                        "hex_code": "#FF8F98B2"
+                                                      },
+                                                      "font_style": "BODY_REGULAR_2",
+                                                      "format": [
+                                                        "DEFAULT_FORMAT"
+                                                      ]
+                                                    }
+                                                  }
+                                                ]
+                                              },
+                                              "actions": {
+                                                "on_click": [
+                                                  {
+                                                    "publish_message_action": {
+                                                      "messages": [
+                                                        {
+                                                          "message_name": "UPDATE_BFF_ACTIONS",
+                                                          "data": {
+                                                            "update_actions": {
+                                                              "actions": [
+                                                                {
+                                                                  "@type": "type.googleapis.com/base.Actions.Action",
+                                                                  "reload_action": {
+                                                                    "context": {
+                                                                      "widget_context": {
+                                                                        "reload_with_url": "/v2/pages/978/spaces/12545/widgets/90986?content_id=1260129356&page_enum=detail&selected_year=2023&wti_name=EpisodeNavigation"
+                                                                      }
+                                                                    }
+                                                                  }
+                                                                }
+                                                              ]
+                                                            },
+                                                            "disableMessageCaching": true
+                                                          }
+                                                        }
+                                                      ]
+                                                    }
+                                                  },
+                                                  {
+                                                    "close_overlay": {}
+                                                  }
+                                                ]
+                                              }
+                                            }
+                                          }
+                                        }
+                                      ],
+                                      "scroll_config": {
+                                        "scroll_enabled": true
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  "tray_items": {
+                    "data": {
+                      "items": [
+                        {
+                          "playable_content": {
+                            "data": {
+                              "poster": {
+                                "src": "sources/r1/cms/prod/2949/1794426862949-h",
+                                "alt": "Meena Suspects Shruthi"
+                              },
+                              "title": "Meena Suspects Shruthi",
+                              "tags": [
+                                {
+                                  "value": "S1 E1173"
+                                },
+                                {
+                                  "value": "12 Nov 2026"
+                                },
+                                {
+                                  "value": "19m"
+                                }
+                              ],
+                              "description": "Ravi quits his job at Shruthi's restaurant and asks his family to ignore her until she repents. Later, Meena suspects Shruthi has not terminated her pregnancy and tells Muthu.",
+                              "cw_info": {
+                                "content_id": "1641041064",
+                                "resume_at": "336000",
+                                "duration": "1186000",
+                                "timestamp": "1794465970000",
+                                "watch_state": "WATCHING",
+                                "watch_ratio": 0.2839477062225342,
+                                "parent_content_id": "1260129356"
+                              },
+                              "content_id": "1641041064",
+                              "actions": {
+                                "on_click": [
+                                  {},
+                                  {
+                                    "page_navigation": {
+                                      "page_type": "WatchPage",
+                                      "page_url": "/v2/pages/watch?content_id=1641041064&filters=content_type%3Depisode&ulp_id=1260129356",
+                                      "page_slug": "/in/shows/siragadikka-aasai/1260129356/meena-suspects-shruthi/1641041064/watch?ulp_id=1260129356"
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          }
+                        },
+                        {
+                          "playable_content": {
+                            "data": {
+                              "poster": {
+                                "src": "sources/r1/cms/prod/6804/1794337096804-h",
+                                "alt": "Ravi Fumes at Shruthi"
+                              },
+                              "title": "Ravi Fumes at Shruthi",
+                              "tags": [
+                                {
+                                  "value": "S1 E1172"
+                                },
+                                {
+                                  "value": "11 Nov 2026"
+                                },
+                                {
+                                  "value": "20m"
+                                }
+                              ],
+                              "description": "Vijaya and Ravi are furious, believing Shruthi has terminated her pregnancy. As Meena and Muthu struggle to cope, Annamalai urges Vijaya to respect Shruthi's personal choices.",
+                              "cw_info": {
+                                "content_id": "1641040938",
+                                "parent_content_id": "1260129356"
+                              },
+                              "content_id": "1641040938",
+                              "actions": {
+                                "on_click": [
+                                  {},
+                                  {
+                                    "page_navigation": {
+                                      "page_type": "WatchPage",
+                                      "page_url": "/v2/pages/watch?content_id=1641040938&filters=content_type%3Depisode&ulp_id=1260129356",
+                                      "page_slug": "/in/shows/siragadikka-aasai/1260129356/ravi-fumes-at-shruthi/1641040938/watch?ulp_id=1260129356"
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          }
+                        }
+                      ],
+                      "next_tray_url": "/v2/pages/978/spaces/12545/widgets/90986/widgets/168/items?content_id=1260129356&fromBroadcastDate=1793547000&navigationType=yearMonth&page_enum=detail&toBroadcastDate=1794497400&token=%7B%22pageNo%22%3A2%2C%22pageSize%22%3A10%2C%22sortOrder%22%3A%22desc%22%7D&wti_name=EpisodeNavigation"
+                    }
+                  },
+                  "tray_action_collapse_label": "View Less",
+                  "tray_action_expand_label": "View More"
+                }
+              },
+              "id": "90986",
+              "defer_id": "90986",
+              "unique_identifier": "6594"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "success": {
+    "page": {
+      "template": "OnboardingPage",
+      "spaces": {
+        "content": {
+          "widget_wrappers": [
+            {
+              "template": "ProfilesContainerWidget",
+              "widget": {
+                "@type": "type.googleapis.com/widget.ProfilesContainerWidget",
+                "data": {
+                  "profile_selection": {
+                    "data": {
+                      "profiles": [
+                        {
+                          "id": "home0000000000000000000000000001",
+                          "profile_name": "Home",
+                          "is_default": true,
+                          "select_profile": {
+                            "on_click": [
+                              {},
+                              {
+                                "fetch_widget": {
+                                  "url": "/v2/pages/136/spaces/133/widgets/119?action=switchProfile&position=0&profileType=ADULT"
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "id": "owner000000000000000000000000002",
+                          "profile_name": "Owner",
+                          "select_profile": {
+                            "on_click": [
+                              {},
+                              {
+                                "fetch_widget": {
+                                  "url": "/v2/pages/136/spaces/133/widgets/119?action=switchProfile&position=1&profileType=ADULT"
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "id": "test00000000000000000000000000003",
+                          "profile_name": "Test",
+                          "select_profile": {
+                            "on_click": [
+                              {},
+                              {
+                                "fetch_widget": {
+                                  "url": "/v2/pages/136/spaces/133/widgets/119?action=switchProfile&position=4&profileType=ADULT"
+                                }
+                              }
+                            ]
+                          },
+                          "is_selected": true
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "id": "86317",
+              "defer_id": "86317",
+              "unique_identifier": "2645"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

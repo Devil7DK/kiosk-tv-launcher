@@ -1,6 +1,8 @@
 import { defineProvider } from '@kiosk-tv/provider-kit';
 import { z } from 'zod';
 
+import { createHotstarProvider } from './hotstar.provider.js';
+
 export const hotstarConfigSchema = z.object({
   /** The viewer profile to watch as, by the name the site shows for it. */
   profile: z.string().min(1),
@@ -14,7 +16,5 @@ export default defineProvider({
     origins: ['https://www.hotstar.com'],
   },
   configSchema: hotstarConfigSchema,
-  create() {
-    throw new Error('The JioHotstar provider is not implemented yet');
-  },
+  create: (context) => createHotstarProvider(context),
 });

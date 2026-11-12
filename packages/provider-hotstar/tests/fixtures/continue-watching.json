@@ -1,0 +1,139 @@
+{
+  "success": {
+    "page": {
+      "template": "TrayDetailsPage",
+      "spaces": {
+        "tray": {
+          "widget_wrappers": [
+            {
+              "template": "GridWidget",
+              "widget": {
+                "@type": "type.googleapis.com/widget.GridWidget",
+                "data": {
+                  "column_number": 5,
+                  "items": [
+                    {
+                      "cw_card": {
+                        "template": {
+                          "name": "CWCardWidget",
+                          "version": "1"
+                        },
+                        "data": {
+                          "image": {
+                            "src": "sources/r1/cms/prod/2619/1780683492619-h",
+                            "alt": "Ravi Fumes at Shruthi",
+                            "dimension": {
+                              "width": 1920,
+                              "height": 1080
+                            }
+                          },
+                          "actions": {
+                            "on_click": [
+                              {
+                                "page_navigation": {
+                                  "page_type": "WatchPage",
+                                  "page_url": "/v2/pages/watch?content_id=1641040938&filters=content_type%3Depisode&ulp_id=1260129356",
+                                  "page_slug": "/in/shows/siragadikka-aasai/1260129356/ravi-fumes-at-shruthi/1641040938/watch?ulp_id=1260129356",
+                                  "params": {
+                                    "watch_params": {
+                                      "loading_image": {
+                                        "src": "sources/r1/cms/prod/2705/1780683572705-t",
+                                        "alt": "Ravi Fumes at Shruthi",
+                                        "dimension": {
+                                          "width": 355,
+                                          "height": 285
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            ]
+                          },
+                          "cw_info": {
+                            "content_id": "1641040938",
+                            "resume_at": "311000",
+                            "duration": "1214000",
+                            "timestamp": "1794470977000",
+                            "watch_state": "WATCHING",
+                            "watch_ratio": 0.256633460521698,
+                            "parent_content_id": "1260129356"
+                          },
+                          "footer": {
+                            "title": "S1 E1172 • 11 Nov"
+                          },
+                          "expanded_content_poster": {
+                            "title": "S1 E1172 • 11 Nov",
+                            "primary_cta": {
+                              "icon_name": "icon-play-fill",
+                              "label": "Resume",
+                              "actions": {
+                                "on_click": [
+                                  {
+                                    "page_navigation": {
+                                      "page_type": "WatchPage",
+                                      "page_url": "/v2/pages/watch?content_id=1641040938&filters=content_type%3Depisode&ulp_id=1260129356",
+                                      "page_slug": "/in/shows/siragadikka-aasai/1260129356/ravi-fumes-at-shruthi/1641040938/watch?ulp_id=1260129356",
+                                      "params": {
+                                        "watch_params": {
+                                          "loading_image": {
+                                            "src": "sources/r1/cms/prod/2705/1780683572705-t",
+                                            "alt": "Ravi Fumes at Shruthi",
+                                            "dimension": {
+                                              "width": 355,
+                                              "height": 285
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            "remove_cw_cta": {
+                              "icon_name": "icon-close",
+                              "label": "Remove from Continue Watching"
+                            },
+                            "see_more_cta": {
+                              "icon_name": "icon-caret-forward",
+                              "label": "View More Details",
+                              "actions": {
+                                "on_click": [
+                                  {},
+                                  {
+                                    "open_page_overlay": {
+                                      "page_type": "DesktopDetailsPage",
+                                      "page_url": "/v2/pages/detail?content_id=1260129356&filters=content_type%3Depisode",
+                                      "page_slug": "/in/shows/ravi-fumes-at-shruthi/1260129356"
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          },
+                          "meta_info": {
+                            "content_type": "EPISODE",
+                            "continue_watching_type": "CONTINUE",
+                            "episode_number": 1172,
+                            "season_number": 1
+                          },
+                          "alt": {
+                            "label": "Siragadikka Aasai, Show, Season 1, Episode 1172, 15 minutes left"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              "id": "54233",
+              "defer_id": "54233",
+              "unique_identifier": "1446"
+            }
+          ]
+        }
+      }
+    }
+  }
+}
