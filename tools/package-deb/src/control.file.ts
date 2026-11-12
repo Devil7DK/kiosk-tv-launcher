@@ -32,7 +32,7 @@ export function controlFile({
     `Maintainer: ${maintainer}`,
     `Installed-Size: ${installedKiB}`,
     'Depends: nodejs (>= 24), udev',
-    'Recommends: brave-browser, cage, xwayland, pipewire, wireplumber, unattended-upgrades',
+    'Recommends: brave-browser, cage, xwayland, pipewire, wireplumber, unattended-upgrades, bluez, libspa-0.2-bluetooth',
     'Section: video',
     'Priority: optional',
     'Description: TV launcher for streaming services, driven by a remote',
