@@ -16,6 +16,7 @@ import { HomeService } from './home/home.service.js';
 import { LibraryStore } from './library/library.store.js';
 import { createLogger } from './logging/logger.js';
 import { PlaybackService } from './playback/playback.service.js';
+import { powerTv } from './power/system-power.js';
 import { ProviderRegistry } from './providers/provider.registry.js';
 import { DongleConnection } from './remote/dongle.connection.js';
 import { createRemoteInput } from './remote/remote.input.js';
@@ -150,6 +151,7 @@ app.route(
     watch,
     events,
     remote: () => remoteStatus.current,
+    ...(config.power.enabled ? { power: powerTv } : {}),
     log,
   }),
 );

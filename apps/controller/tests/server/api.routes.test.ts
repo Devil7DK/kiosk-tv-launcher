@@ -2,7 +2,7 @@ import { mkdtemp } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-import { progressAt } from '@kiosk-tv/shared';
+import { type PowerAction, progressAt } from '@kiosk-tv/shared';
 import { describe, expect, it } from 'vitest';
 
 import { CatalogService } from '../../src/catalog/catalog.service.js';
@@ -28,7 +28,7 @@ async function api() {
   return (await setup()).app;
 }
 
-async function setup() {
+async function setup(power?: (action: PowerAction) => Promise<void>) {
   const fake = fakeProvider([
     { title: serial, episodes: [episode(serial, 1)] },
   ]);
@@ -70,6 +70,7 @@ async function setup() {
     homeService,
     home: () => homeService.build(),
     remote: () => ({ batteryLow: false }),
+    ...(power ? { power } : {}),
     log: silentLog,
   });
   return { app, watch };
@@ -166,5 +167,29 @@ describe('API', () => {
       json({ url: 'https://example.org/somewhere' }),
     );
     expect(res.status).toBe(400);
+  });
+
+  it('refuses to shut down a computer not set up for it, and says so', async () => {
+    const app = await api();
+    expect(await (await app.request('/power')).json()).toEqual({
+      available: false,
+    });
+    const res = await app.request('/power', json({ action: 'shutdown' }));
+    expect(res.status).toBe(404);
+  });
+
+  it('answers before restarting, so the launcher hears back', async () => {
+    const asked: PowerAction[] = [];
+    const { app } = await setup(async (action) => {
+      asked.push(action);
+    });
+    expect(await (await app.request('/power')).json()).toEqual({
+      available: true,
+    });
+    const res = await app.request('/power', json({ action: 'restart' }));
+    expect(res.status).toBe(202);
+    expect(asked).toEqual([]);
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    expect(asked).toEqual(['restart']);
   });
 });

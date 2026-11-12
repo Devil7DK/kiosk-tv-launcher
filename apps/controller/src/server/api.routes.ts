@@ -7,6 +7,8 @@ import {
   PlaylistCreateSchema,
   PlaylistUpdateSchema,
   PlayRequestSchema,
+  type PowerAction,
+  PowerRequestSchema,
   type Ref,
   RemoteKeySchema,
   type RemoteStatus,
@@ -43,6 +45,8 @@ export interface ApiDeps {
   events: EventHub;
   /** The remote as last heard from. */
   remote: () => RemoteStatus;
+  /** Absent where the launcher may not shut the computer down. */
+  power?: (action: PowerAction) => Promise<void>;
   log: Logger;
 }
 
@@ -240,6 +244,28 @@ export function createApi(deps: ApiDeps): Hono {
     deps.homeService.refreshAccounts();
     return c.json(library);
   });
+  api.get('/power', (c) => c.json({ available: deps.power !== undefined }));
+  api.post('/power', async (c) => {
+    const { action } = await body(c, PowerRequestSchema);
+    const power = deps.power;
+    if (!power) {
+      throw new HTTPException(404, {
+        message: 'This TV is not set up to shut down from the launcher',
+      });
+    }
+    deps.log.info('power', { action });
+    // Answered first: the controller may be stopped before the command returns.
+    setTimeout(() => {
+      power(action).catch((error: unknown) =>
+        deps.log.error('could not shut down or restart', {
+          action,
+          error: String(error),
+        }),
+      );
+    }, 200);
+    return c.body(null, 202);
+  });
+
   api.post('/refresh', async (c) => {
     await deps.registry.refreshStatus();
     deps.homeService.refreshAccounts();

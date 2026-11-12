@@ -36,6 +36,8 @@ export const TvConfigSchema = z.object({
       port: z.string().min(1).optional(),
     })
     .prefault({}),
+  /** Lets the launcher shut down and restart the computer; left off on a development machine. */
+  power: z.object({ enabled: z.boolean().default(false) }).prefault({}),
   /** Library, watch history and caches. */
   dataDir: path.prefault('~/.local/share/kiosk-tv/data'),
   /** What the launcher tab opens. Defaults to the controller's own address. */
