@@ -43,23 +43,27 @@ export interface TvBrowser {
  * clears `window.name` when a tab moves to another site.
  */
 class TabRoles {
+  private roles: Promise<Record<string, string>> | undefined;
+  private writing: Promise<void> = Promise.resolve();
+
   constructor(private readonly file: string) {}
 
-  async read(): Promise<Record<string, string>> {
-    try {
-      return JSON.parse(await readFile(this.file, 'utf8')) as Record<
-        string,
-        string
-      >;
-    } catch {
-      return {};
-    }
+  read(): Promise<Record<string, string>> {
+    this.roles ??= readFile(this.file, 'utf8')
+      .then((text) => JSON.parse(text) as Record<string, string>)
+      .catch(() => ({}));
+    return this.roles;
   }
 
+  /** Writes one at a time from the copy in memory, so roles set together all stay. */
   async set(role: string, targetId: string): Promise<void> {
-    const roles = { ...(await this.read()), [role]: targetId };
-    await mkdir(dirname(this.file), { recursive: true });
-    await writeFile(this.file, JSON.stringify(roles, null, 2) + '\n');
+    const roles = await this.read();
+    roles[role] = targetId;
+    this.writing = this.writing.then(async () => {
+      await mkdir(dirname(this.file), { recursive: true });
+      await writeFile(this.file, JSON.stringify(roles, null, 2) + '\n');
+    });
+    await this.writing;
   }
 }
 
