@@ -18,8 +18,11 @@ export function TopBar({
 }) {
   const element = useRef<HTMLElement>(null);
   useEffect(() => {
-    if (focusedIndex !== undefined)
-      element.current?.scrollIntoView({ block: 'start' });
+    if (focusedIndex === undefined) return;
+    element.current?.scrollIntoView({ block: 'start' });
+    element.current
+      ?.querySelector('.focused')
+      ?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
   }, [focusedIndex]);
   return (
     <nav ref={element} class='top-bar'>

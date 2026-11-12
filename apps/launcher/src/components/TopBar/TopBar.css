@@ -2,9 +2,13 @@
   display: flex;
   gap: 1rem;
   padding: 0.8em var(--gutter) 0.2em;
+  overflow-x: auto;
+  scrollbar-width: none;
 }
 
 .top-bar-tab {
+  flex: 0 0 auto;
+  white-space: nowrap;
   padding: 0.25em 0.8em;
   border-radius: 999px;
   font-size: 1rem;
