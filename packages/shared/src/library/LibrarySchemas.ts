@@ -35,9 +35,13 @@ export const ContinueWatchingModeSchema = z.enum(['launcher', 'all']);
 /** Provider tabs show only titles in these languages. */
 export const LanguagesSchema = z.array(LanguageSchema).min(1);
 
+/** How large the TV draws everything, as a factor of the normal size. */
+export const ScaleSchema = z.number().min(0.6).max(1.6);
+
 export const SettingsSchema = z.object({
   continueWatching: ContinueWatchingModeSchema.default('launcher'),
   languages: LanguagesSchema.default(['ta']),
+  scale: ScaleSchema.default(1),
 });
 export type Settings = z.infer<typeof SettingsSchema>;
 

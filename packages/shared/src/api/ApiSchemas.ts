@@ -10,6 +10,8 @@ import {
   ContinueWatchingModeSchema,
   LanguagesSchema,
   PlaylistSourceSchema,
+  ScaleSchema,
+  SettingsSchema,
 } from '../library/LibrarySchemas.js';
 import {
   ProviderCapabilitySchema,
@@ -79,6 +81,7 @@ export const ServerEventSchema = z.discriminatedUnion('type', [
   }),
   /** Home changed; fetch it again. */
   z.object({ type: z.literal('home') }),
+  z.object({ type: z.literal('settings'), settings: SettingsSchema }),
 ]);
 export type ServerEvent = z.infer<typeof ServerEventSchema>;
 
@@ -102,5 +105,6 @@ export type PlaylistUpdate = z.infer<typeof PlaylistUpdateSchema>;
 export const SettingsUpdateSchema = z.object({
   continueWatching: ContinueWatchingModeSchema.optional(),
   languages: LanguagesSchema.optional(),
+  scale: ScaleSchema.optional(),
 });
 export type SettingsUpdate = z.infer<typeof SettingsUpdateSchema>;

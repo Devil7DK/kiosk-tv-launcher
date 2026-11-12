@@ -7,7 +7,7 @@ describe('LibrarySchema', () => {
     expect(LibrarySchema.parse({})).toEqual({
       follows: [],
       playlists: [],
-      settings: { continueWatching: 'launcher', languages: ['ta'] },
+      settings: { continueWatching: 'launcher', languages: ['ta'], scale: 1 },
     });
   });
 
@@ -40,6 +40,15 @@ describe('LibrarySchema', () => {
       ],
     });
     expect(library.playlists[0]?.source).toMatchObject({ type: 'manual' });
+  });
+
+  it('refuses a size so small or large the screen would be unusable', () => {
+    expect(LibrarySchema.safeParse({ settings: { scale: 0.2 } }).success).toBe(
+      false,
+    );
+    expect(LibrarySchema.safeParse({ settings: { scale: 3 } }).success).toBe(
+      false,
+    );
   });
 
   it('refuses to save no languages at all, which would empty every provider tab', () => {
