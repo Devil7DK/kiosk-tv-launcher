@@ -1,0 +1,208 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="920" viewBox="0 0 1200 920" font-family="DejaVu Sans, Arial, sans-serif">
+  <title>Remote wiring: XIAO ESP32-S3, eight buttons, LiPo battery and battery level</title>
+  <rect width="1200" height="920" fill="#ffffff"/>
+
+  <style>
+    .wire { stroke: #333; stroke-width: 2.5; fill: none; }
+    .gnd { stroke: #1b7f3b; stroke-width: 3; fill: none; }
+    .red { stroke: #d32f2f; stroke-width: 3.5; fill: none; }
+    .black { stroke: #111; stroke-width: 3.5; fill: none; }
+    .pin { fill: #e0b040; stroke: #8a6a10; stroke-width: 1.5; }
+    .pinlabel { fill: #ffffff; font-size: 15px; font-weight: bold; }
+    .label { fill: #222; font-size: 16px; }
+    .small { fill: #555; font-size: 13px; }
+    .button-name { fill: #0b3d91; font-size: 16px; font-weight: bold; }
+    .contact { fill: #fff; stroke: #333; stroke-width: 2; }
+    .net { fill: #fff3cd; stroke: #c99a00; stroke-width: 1.5; }
+  </style>
+
+  <!-- Title -->
+  <text x="40" y="48" font-size="26" font-weight="bold" fill="#111">Remote wiring: XIAO ESP32-S3</text>
+  <text x="40" y="76" class="small">Each button goes between its pin and GND. No resistors or diodes on the buttons.</text>
+
+  <!-- GND: left rail, bottom bus, right rail -->
+  <path class="gnd" d="M150 210 V 640 H 1050 V 260"/>
+  <text x="560" y="632" class="label" fill="#1b7f3b">GND (all buttons share it)</text>
+
+  <!-- The board -->
+  <rect x="480" y="170" width="240" height="400" rx="14" fill="#2b2f36"/>
+  <rect x="568" y="148" width="64" height="30" rx="6" fill="#9aa0a6" stroke="#555"/>
+  <text x="600" y="136" text-anchor="middle" class="small">USB-C: charging and flashing</text>
+  <text x="600" y="345" text-anchor="middle" fill="#fff" font-size="19" font-weight="bold">XIAO</text>
+  <text x="600" y="370" text-anchor="middle" fill="#fff" font-size="17">ESP32-S3</text>
+  <text x="600" y="394" text-anchor="middle" fill="#bbb" font-size="13">(top side)</text>
+
+  <!-- Left pins -->
+  <circle cx="480" cy="210" r="8" class="pin"/><text x="496" y="215" class="pinlabel">D0</text>
+  <circle cx="480" cy="260" r="8" class="pin"/><text x="496" y="265" class="pinlabel">D1</text>
+  <circle cx="480" cy="310" r="8" class="pin"/><text x="496" y="315" class="pinlabel">D2</text>
+  <circle cx="480" cy="360" r="8" class="pin"/><text x="496" y="365" class="pinlabel">D3</text>
+  <circle cx="480" cy="410" r="8" class="pin"/><text x="496" y="415" class="pinlabel">D4</text>
+  <circle cx="480" cy="460" r="8" class="pin"/><text x="496" y="465" class="pinlabel">D5</text>
+  <circle cx="480" cy="510" r="8" class="pin"/><text x="496" y="515" class="pinlabel">D6</text>
+
+  <!-- Right pins -->
+  <circle cx="720" cy="210" r="8" class="pin"/><text x="704" y="215" text-anchor="end" class="pinlabel">5V</text>
+  <circle cx="720" cy="260" r="8" class="pin"/><text x="704" y="265" text-anchor="end" class="pinlabel">GND</text>
+  <circle cx="720" cy="310" r="8" class="pin"/><text x="704" y="315" text-anchor="end" class="pinlabel">3V3</text>
+  <circle cx="720" cy="360" r="8" class="pin"/><text x="704" y="365" text-anchor="end" class="pinlabel">D10</text>
+  <circle cx="720" cy="410" r="8" class="pin"/><text x="704" y="415" text-anchor="end" class="pinlabel">D9</text>
+  <circle cx="720" cy="460" r="8" class="pin"/><text x="704" y="465" text-anchor="end" class="pinlabel">D8</text>
+  <circle cx="720" cy="510" r="8" class="pin"/><text x="704" y="515" text-anchor="end" class="pinlabel">D7</text>
+
+  <!-- Unused pins -->
+  <text x="740" y="215" class="small">not used</text>
+  <text x="740" y="315" class="small">not used</text>
+  <text x="740" y="515" class="small">free</text>
+  <text x="470" y="515" text-anchor="end" class="small">free</text>
+
+  <!-- GND pin to the right rail -->
+  <path class="gnd" d="M728 260 H 1050"/>
+  <circle cx="1050" cy="260" r="5" fill="#1b7f3b"/>
+
+  <!-- Left buttons: pin, wire, button, wire to GND rail -->
+  <g id="button-up">
+    <path class="wire" d="M472 210 H 330"/>
+    <path class="wire" d="M270 210 H 150"/>
+    <circle cx="330" cy="210" r="5" class="contact"/><circle cx="270" cy="210" r="5" class="contact"/>
+    <path class="wire" d="M268 194 H 332 M300 194 V 184"/>
+    <text x="210" y="201" text-anchor="middle" class="button-name">Up</text>
+    <circle cx="150" cy="210" r="5" fill="#1b7f3b"/>
+  </g>
+  <g>
+    <path class="wire" d="M472 260 H 330"/>
+    <path class="wire" d="M270 260 H 150"/>
+    <circle cx="330" cy="260" r="5" class="contact"/><circle cx="270" cy="260" r="5" class="contact"/>
+    <path class="wire" d="M268 244 H 332 M300 244 V 234"/>
+    <text x="210" y="251" text-anchor="middle" class="button-name">Down</text>
+    <circle cx="150" cy="260" r="5" fill="#1b7f3b"/>
+  </g>
+  <g>
+    <path class="wire" d="M472 360 H 330"/>
+    <path class="wire" d="M270 360 H 150"/>
+    <circle cx="330" cy="360" r="5" class="contact"/><circle cx="270" cy="360" r="5" class="contact"/>
+    <path class="wire" d="M268 344 H 332 M300 344 V 334"/>
+    <text x="210" y="351" text-anchor="middle" class="button-name">Left</text>
+    <circle cx="150" cy="360" r="5" fill="#1b7f3b"/>
+  </g>
+  <g>
+    <path class="wire" d="M472 410 H 330"/>
+    <path class="wire" d="M270 410 H 150"/>
+    <circle cx="330" cy="410" r="5" class="contact"/><circle cx="270" cy="410" r="5" class="contact"/>
+    <path class="wire" d="M268 394 H 332 M300 394 V 384"/>
+    <text x="210" y="401" text-anchor="middle" class="button-name">Right</text>
+    <circle cx="150" cy="410" r="5" fill="#1b7f3b"/>
+  </g>
+  <g>
+    <path class="wire" d="M472 460 H 330"/>
+    <path class="wire" d="M270 460 H 150"/>
+    <circle cx="330" cy="460" r="5" class="contact"/><circle cx="270" cy="460" r="5" class="contact"/>
+    <path class="wire" d="M268 444 H 332 M300 444 V 434"/>
+    <text x="210" y="451" text-anchor="middle" class="button-name">OK</text>
+    <circle cx="150" cy="460" r="5" fill="#1b7f3b"/>
+  </g>
+
+  <!-- D2: battery sense, by net label -->
+  <path class="wire" d="M472 310 H 420"/>
+  <rect x="346" y="298" width="74" height="24" rx="4" class="net"/>
+  <text x="383" y="315" text-anchor="middle" font-size="13" font-weight="bold" fill="#7a5c00">SENSE</text>
+
+  <!-- Right buttons -->
+  <g>
+    <path class="wire" d="M728 360 H 870"/>
+    <path class="wire" d="M930 360 H 1050"/>
+    <circle cx="870" cy="360" r="5" class="contact"/><circle cx="930" cy="360" r="5" class="contact"/>
+    <path class="wire" d="M868 344 H 932 M900 344 V 334"/>
+    <text x="990" y="351" text-anchor="middle" class="button-name">Vol −</text>
+    <circle cx="1050" cy="360" r="5" fill="#1b7f3b"/>
+  </g>
+  <g>
+    <path class="wire" d="M728 410 H 870"/>
+    <path class="wire" d="M930 410 H 1050"/>
+    <circle cx="870" cy="410" r="5" class="contact"/><circle cx="930" cy="410" r="5" class="contact"/>
+    <path class="wire" d="M868 394 H 932 M900 394 V 384"/>
+    <text x="990" y="401" text-anchor="middle" class="button-name">Vol +</text>
+    <circle cx="1050" cy="410" r="5" fill="#1b7f3b"/>
+  </g>
+  <g>
+    <path class="wire" d="M728 460 H 870"/>
+    <path class="wire" d="M930 460 H 1050"/>
+    <circle cx="870" cy="460" r="5" class="contact"/><circle cx="930" cy="460" r="5" class="contact"/>
+    <path class="wire" d="M868 444 H 932 M900 444 V 434"/>
+    <text x="990" y="451" text-anchor="middle" class="button-name">Back</text>
+    <circle cx="1050" cy="460" r="5" fill="#1b7f3b"/>
+  </g>
+
+  <!-- Underside inset -->
+  <rect x="830" y="100" width="330" height="128" rx="10" fill="#f5f6f8" stroke="#888" stroke-dasharray="6 4"/>
+  <text x="846" y="124" class="label" font-weight="bold">Underside of the XIAO</text>
+  <rect x="852" y="146" width="54" height="30" rx="4" fill="#e0b040" stroke="#8a6a10"/>
+  <text x="879" y="166" text-anchor="middle" font-size="13" font-weight="bold">BAT+</text>
+  <rect x="920" y="146" width="54" height="30" rx="4" fill="#e0b040" stroke="#8a6a10"/>
+  <text x="947" y="166" text-anchor="middle" font-size="13" font-weight="bold">BAT−</text>
+  <text x="852" y="200" class="small">battery red to BAT+,</text>
+  <text x="852" y="216" class="small">black to BAT−</text>
+  <circle cx="1060" cy="161" r="13" fill="#d9b55b" stroke="#8a6a10" stroke-width="2"/>
+  <circle cx="1060" cy="161" r="4" fill="#8a6a10"/>
+  <text x="1082" y="157" class="small">antenna:</text>
+  <text x="1082" y="173" class="small">clip it on</text>
+
+  <!-- Battery and battery-level section -->
+  <line x1="40" y1="680" x2="1160" y2="680" stroke="#ccc" stroke-width="1.5"/>
+  <text x="40" y="712" font-size="20" font-weight="bold" fill="#111">Battery and battery level</text>
+
+  <!-- Battery -->
+  <rect x="50" y="745" width="220" height="110" rx="10" fill="#eef3fb" stroke="#5b7db1" stroke-width="2"/>
+  <text x="160" y="782" text-anchor="middle" font-size="17" font-weight="bold" fill="#1f3b6e">LiPo 3.7 V</text>
+  <text x="160" y="806" text-anchor="middle" class="label">800 mAh</text>
+  <text x="160" y="830" text-anchor="middle" class="small">(has its own protection board)</text>
+  <text x="282" y="756" class="label" fill="#d32f2f" font-weight="bold">+</text>
+  <text x="282" y="836" class="label" font-weight="bold">−</text>
+
+  <!-- Red: battery + to BAT+ pad and to R1 -->
+  <path class="red" d="M270 765 H 400"/>
+  <circle cx="400" cy="765" r="6" fill="#d32f2f"/>
+  <path class="red" d="M400 765 V 735"/>
+  <rect x="352" y="711" width="96" height="24" rx="4" class="net"/>
+  <text x="400" y="728" text-anchor="middle" font-size="13" font-weight="bold" fill="#7a5c00">to BAT+ pad</text>
+
+  <!-- R1 -->
+  <path class="wire" d="M400 765 H 470"/>
+  <rect x="470" y="752" width="90" height="26" rx="3" fill="#fff" stroke="#333" stroke-width="2.5"/>
+  <text x="515" y="744" text-anchor="middle" class="label">R1 470 kΩ</text>
+  <path class="wire" d="M560 765 H 640"/>
+
+  <!-- Middle point: to D2 (SENSE) and to C1 -->
+  <circle cx="640" cy="765" r="6" fill="#333"/>
+  <path class="wire" d="M640 765 V 735"/>
+  <rect x="592" y="711" width="96" height="24" rx="4" class="net"/>
+  <text x="640" y="728" text-anchor="middle" font-size="13" font-weight="bold" fill="#7a5c00">SENSE = D2</text>
+
+  <!-- R2 -->
+  <path class="wire" d="M640 765 H 720"/>
+  <rect x="720" y="752" width="90" height="26" rx="3" fill="#fff" stroke="#333" stroke-width="2.5"/>
+  <text x="765" y="744" text-anchor="middle" class="label">R2 470 kΩ</text>
+  <path class="wire" d="M810 765 H 900 V 845"/>
+
+  <!-- C1 from the middle point to GND -->
+  <path class="wire" d="M640 765 V 800"/>
+  <path class="wire" d="M618 800 H 662 M618 810 H 662" stroke-width="3"/>
+  <path class="wire" d="M640 810 V 845"/>
+  <text x="672" y="812" class="label">C1 100 nF</text>
+
+  <!-- Black: battery − to BAT− pad and the GND of R2 and C1 -->
+  <path class="black" d="M270 845 H 900"/>
+  <circle cx="640" cy="845" r="6" fill="#111"/>
+  <circle cx="900" cy="845" r="6" fill="#111"/>
+  <path class="black" d="M400 845 V 875"/>
+  <circle cx="400" cy="845" r="6" fill="#111"/>
+  <rect x="330" y="875" width="140" height="24" rx="4" class="net"/>
+  <text x="400" y="892" text-anchor="middle" font-size="13" font-weight="bold" fill="#7a5c00">to BAT− pad (GND)</text>
+
+  <!-- Notes -->
+  <text x="940" y="760" class="small">The divider halves the battery</text>
+  <text x="940" y="777" class="small">voltage for D2 and draws about</text>
+  <text x="940" y="794" class="small">4 µA. Leave out R1, R2 and C1</text>
+  <text x="940" y="811" class="small">and the remote simply reports</text>
+  <text x="940" y="828" class="small">no battery level.</text>
+</svg>

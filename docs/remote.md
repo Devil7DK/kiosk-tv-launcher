@@ -25,6 +25,9 @@ The same remote also builds for the ESP32-S3-Zero (`s3zero`, `s3zero-bench`)
 and the 30-pin ESP32 DevKit (`devkit`, `devkit-bench`). If a board does not
 show up for flashing, hold its **B** (BOOT) button while plugging it in.
 
+After a change to `firmware/shared`, build with `-t clean` first: PlatformIO does
+not always notice a changed header there and can flash the old code.
+
 With both boards on USB, the controller finds the dongle by itself (it answers
 `?` with a greeting). To pin it, set `"remote": { "port": "/dev/ttyUSB0" }` in
 `config/tv.json`; `"enabled": false` turns the remote off.
@@ -38,9 +41,12 @@ Flash the remote with a `-bench` build, then open its serial monitor:
 ```
 
 Typing `u d l r o b + -` sends up, down, left, right, OK, Back, Volume + and
-Volume − as if pressed. The bench builds never sleep.
+Volume − as if pressed; `!` reports a nearly empty battery, to check the TV's
+notice. The bench builds never sleep.
 
 ## Wiring the remote (XIAO ESP32-S3)
+
+![Remote wiring: XIAO ESP32-S3, eight buttons, battery and battery level](remote-wiring.svg)
 
 Each button connects its pin to **GND**; no resistors or diodes. Every button
 pin can wake the XIAO from deep sleep, and it knows which one did, so even a
@@ -122,7 +128,8 @@ low-drain regulator (MCP1700-3302) to get months from a charge.
 ## After a press
 
 The remote stays awake for six seconds, so moving around feels instant, then
-sleeps until the next press.
+measures its battery, reports the level, and sleeps until the next press. The TV
+shows "Charge the remote" at 15 % or below, and the admin page shows the level.
 
 ## Still to measure
 
