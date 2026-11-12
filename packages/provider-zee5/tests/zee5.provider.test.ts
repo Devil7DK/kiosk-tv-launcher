@@ -104,4 +104,21 @@ describe('ZEE5 provider', () => {
     expect(shelves.items[0]?.items.items[0]).toMatchObject({ kind: 'movie' });
     expect(shelves.next).toBeUndefined();
   });
+
+  it('finds the show from a show or an episode link', async () => {
+    const { page } = fakeSite([{ match: /TVSDQ/, body: fixture('show') }]);
+    const provider = createZee5Provider(contextFor(page), now);
+    const fromEpisode = await provider.resolve!(
+      new URL(
+        'https://www.zee5.com/tv-shows/details/thirumangalyam/0-6-4z5846408/thirumangalyam-november-10-2026/0-1-6z51107774',
+      ),
+    );
+    expect(fromEpisode).toMatchObject({
+      kind: 'series',
+      name: 'Thirumangalyam',
+    });
+    expect(
+      await provider.resolve!(new URL('https://www.youtube.com/@x')),
+    ).toBeUndefined();
+  });
 });

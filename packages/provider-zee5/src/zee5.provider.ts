@@ -209,6 +209,13 @@ export function createZee5Provider(
       return showToTitle(await show(ref.id));
     },
 
+    async resolve(url) {
+      if (!/(^|\.)zee5\.com$/.test(url.hostname)) return undefined;
+      // Show and episode links both carry the show's id.
+      const id = /\b0-6-[\w-]+/.exec(url.pathname)?.[0];
+      return id ? showToTitle(await show(id)) : undefined;
+    },
+
     async episodes(ref, options = {}) {
       const found = await show(ref.id);
       const seasons = found.seasons ?? [];
