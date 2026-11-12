@@ -2,6 +2,7 @@
   "$schema": "https://turborepo.dev/schema.json",
   "ui": "stream",
   "globalDependencies": [
+    "eslint.config.js",
     "tsconfig.base.json"
   ],
   "tasks": {
