@@ -156,4 +156,11 @@ export const adminApi = {
       z.array(CatalogItemSchema),
     ),
   refresh: (): Promise<void> => post('/refresh', {}),
+  followLink: (url: string): Promise<{ title: Title; library: Library }> =>
+    sendFor(
+      'POST',
+      '/library/follows/from-link',
+      z.object({ title: TitleSchema, library: LibrarySchema }),
+      { url },
+    ),
 };

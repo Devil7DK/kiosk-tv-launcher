@@ -4,6 +4,7 @@ import type { Library, ProviderInfo, RemoteStatus } from '@kiosk-tv/shared';
 import { useEffect, useState } from 'preact/hooks';
 
 import { adminApi, api } from '../api/api.client';
+import { AddFromLink } from './AddFromLink';
 import { BrowseSection } from './BrowseSection';
 import { PlaylistsSection } from './PlaylistsSection';
 
@@ -102,6 +103,7 @@ export function AdminApp() {
           Added here. Shows on each service’s own watchlist or favourites appear
           on the TV too.
         </p>
+        <AddFromLink onAdded={setLibrary} />
         {library.follows.length === 0 && (
           <p class='muted'>None added here yet.</p>
         )}
