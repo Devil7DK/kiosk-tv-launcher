@@ -28,6 +28,14 @@ export const TvConfigSchema = z.object({
       kiosk: z.boolean().default(true),
     })
     .prefault({}),
+  /** The remote's USB dongle. */
+  remote: z
+    .object({
+      enabled: z.boolean().default(true),
+      /** A fixed serial port; without it, each USB serial port is tried. */
+      port: z.string().min(1).optional(),
+    })
+    .prefault({}),
   /** Library, watch history and caches. */
   dataDir: path.prefault('~/.local/share/kiosk-tv/data'),
   /** What the launcher tab opens. Defaults to the controller's own address. */

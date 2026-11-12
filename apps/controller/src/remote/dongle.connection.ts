@@ -1,0 +1,190 @@
+import { ReadlineParser, SerialPort } from 'serialport';
+import { z } from 'zod';
+
+import type { Logger } from '../logging/logger.js';
+
+export const RemoteButtonSchema = z.enum([
+  'up',
+  'down',
+  'left',
+  'right',
+  'ok',
+  'back',
+  'volumeUp',
+  'volumeDown',
+]);
+export type RemoteButton = z.infer<typeof RemoteButtonSchema>;
+
+export interface RemotePress {
+  button: RemoteButton;
+  repeat: boolean;
+  /** Absent when the remote has no battery divider fitted. */
+  batteryMillivolts?: number;
+}
+
+const HelloSchema = z.object({
+  hello: z.literal('kiosk-tv-dongle'),
+  version: z.literal(1),
+});
+const PressSchema = z.object({
+  key: RemoteButtonSchema,
+  repeat: z.boolean(),
+  battery: z.number().int().nonnegative(),
+});
+
+/** One open serial port, as lines of text. */
+export interface SerialLink {
+  onLine(listener: (line: string) => void): void;
+  onClose(listener: () => void): void;
+  write(text: string): void;
+  close(): Promise<void>;
+}
+
+export interface SerialPorts {
+  /** USB serial ports that might be the dongle. */
+  candidates(): Promise<string[]>;
+  open(path: string): Promise<SerialLink>;
+}
+
+export const usbSerialPorts: SerialPorts = {
+  async candidates() {
+    return (await SerialPort.list())
+      .filter(
+        (port) => port.vendorId !== undefined || /tty(USB|ACM)/.test(port.path),
+      )
+      .map((port) => port.path);
+  },
+  open(path) {
+    return new Promise((resolve, reject) => {
+      const port = new SerialPort({ path, baudRate: 115200 }, (error) => {
+        if (error) return reject(error);
+        const lines = port.pipe(new ReadlineParser({ delimiter: '\n' }));
+        resolve({
+          onLine: (listener) =>
+            lines.on('data', (line: string) => listener(line.trim())),
+          onClose: (listener) => port.on('close', listener),
+          write: (text) => port.write(text),
+          close: () =>
+            new Promise((done) =>
+              port.isOpen ? port.close(() => done()) : done(),
+            ),
+        });
+      });
+    });
+  },
+};
+
+function parseLine(line: string): unknown {
+  try {
+    return JSON.parse(line);
+  } catch {
+    return undefined;
+  }
+}
+
+/**
+ * Finds the remote's USB dongle by the greeting it prints, reads its presses,
+ * and looks for it again whenever it goes away.
+ */
+export class DongleConnection {
+  private link: SerialLink | undefined;
+  private timer: NodeJS.Timeout | undefined;
+  private stopped = false;
+
+  constructor(
+    private readonly options: {
+      onPress: (press: RemotePress) => void;
+      log: Logger;
+      /** A fixed port, instead of trying each USB serial port. */
+      port?: string | undefined;
+      ports?: SerialPorts;
+      helloTimeoutMs?: number;
+      retryMs?: number;
+    },
+  ) {}
+
+  start(): void {
+    void this.connect();
+  }
+
+  get connected(): boolean {
+    return this.link !== undefined;
+  }
+
+  async stop(): Promise<void> {
+    this.stopped = true;
+    clearTimeout(this.timer);
+    await this.link?.close();
+  }
+
+  private retry(): void {
+    if (this.stopped) return;
+    this.timer = setTimeout(
+      () => void this.connect(),
+      this.options.retryMs ?? 5000,
+    );
+  }
+
+  /** Opens the port and waits for the greeting; the board restarts when opened, which also prints it. */
+  private async probe(path: string): Promise<SerialLink | undefined> {
+    const ports = this.options.ports ?? usbSerialPorts;
+    let link: SerialLink;
+    try {
+      link = await ports.open(path);
+    } catch {
+      return undefined;
+    }
+    const greeted = await new Promise<boolean>((resolve) => {
+      const timeout = setTimeout(
+        () => resolve(false),
+        this.options.helloTimeoutMs ?? 4000,
+      );
+      link.onLine((line) => {
+        if (HelloSchema.safeParse(parseLine(line)).success) {
+          clearTimeout(timeout);
+          resolve(true);
+        }
+      });
+      link.write('?\n');
+    });
+    if (greeted) return link;
+    await link.close();
+    return undefined;
+  }
+
+  private async connect(): Promise<void> {
+    if (this.stopped || this.link) return;
+    const ports = this.options.ports ?? usbSerialPorts;
+    const paths = this.options.port
+      ? [this.options.port]
+      : await ports.candidates().catch(() => []);
+    for (const path of paths) {
+      const link = await this.probe(path);
+      if (!link) continue;
+      if (this.stopped) {
+        await link.close();
+        return;
+      }
+      this.link = link;
+      this.options.log.info('remote dongle connected', { port: path });
+      link.onLine((line) => {
+        const press = PressSchema.safeParse(parseLine(line));
+        if (!press.success) return;
+        this.options.onPress({
+          button: press.data.key,
+          repeat: press.data.repeat,
+          ...(press.data.battery > 0
+            ? { batteryMillivolts: press.data.battery }
+            : {}),
+        });
+      });
+      link.onClose(() => {
+        this.link = undefined;
+        this.options.log.warn('remote dongle disconnected', { port: path });
+        this.retry();
+      });
+      return;
+    }
+    this.retry();
+  }
+}
