@@ -1,0 +1,43 @@
+{
+  "data": {
+    "episodes": {
+      "contents": [
+        {
+          "id": "0-1-6z51107772",
+          "title": "Lakshmi Bags The Project",
+          "episodeNumber": 273,
+          "releaseDate": "2026-11-11T00:00:00",
+          "duration": 1305,
+          "playedDuration": null,
+          "webUrl": "tv-shows/details/thirumangalyam/0-6-4z5846408/lakshmi-bags-the-project/0-1-6z51107772",
+          "image": {
+            "list": "000000119a245109e62714d66badd5a5d971f181e"
+          },
+          "tvShow": {
+            "id": "0-6-4z5846408",
+            "title": "Thirumangalyam"
+          }
+        },
+        {
+          "id": "0-1-6z51107774",
+          "title": "Thirumangalyam - November 10, 2026",
+          "episodeNumber": 272,
+          "releaseDate": "2026-11-10T00:00:00",
+          "duration": 1271,
+          "playedDuration": null,
+          "webUrl": "tv-shows/details/thirumangalyam/0-6-4z5846408/thirumangalyam-november-10-2026/0-1-6z51107774",
+          "image": {
+            "list": "000000117bd3bcd5454a94e928433db73b900736c"
+          },
+          "tvShow": {
+            "id": "0-6-4z5846408",
+            "title": "Thirumangalyam"
+          }
+        }
+      ],
+      "page": 1,
+      "size": 25,
+      "totalResults": 273
+    }
+  }
+}

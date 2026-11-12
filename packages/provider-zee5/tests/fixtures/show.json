@@ -1,0 +1,22 @@
+{
+  "data": {
+    "tvShowRelatedContent": {
+      "id": "0-6-4z5846408",
+      "title": "Thirumangalyam",
+      "description": " Lakshmi, an orphan mistreated by her stepmother, finds hope when she meets Thiru, a suitor, only for fate to crush her dreams once again.",
+      "languages": ["ta"],
+      "image": {
+        "list": "1920x1080list844941ac6e0b4b46857bd533ad5289df2230e4c0f3bc4fceb7aa43c45cf9c690",
+        "cover": "1920x770300cf0cd5ba7411eb64846343e8031b64372fba821294aa79eb65c2d5a4150bf",
+        "titleLogo": "4320x2750311bad98704d4ce79e106ce9954f9af6fc3f678c043947daade430aa6e3a35a9"
+      },
+      "seasons": [
+        {
+          "id": "0-2-5z5846623",
+          "title": "Season 1"
+        }
+      ],
+      "webUrl": "tvshows/details/thirumangalyam/0-6-4z5846408"
+    }
+  }
+}

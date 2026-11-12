@@ -1,0 +1,107 @@
+{
+  "props": {
+    "pageProps": {
+      "railsData": [
+        {
+          "title": "Tamil Romance TV Shows",
+          "items": [
+            {
+              "id": "0-6-675",
+              "title": "Sembaruthi",
+              "description": "Akhilandeshwari wishes to marry her sons to girls from families of her stature. How will she react when she learns that Adithya, her eldest son, has secretly married Parvathy, the maid of their house?",
+              "asset_subtype": "tvshow",
+              "languages": ["ta"],
+              "slug": "tv-shows/details/sembaruthi/0-6-675",
+              "web_url": "tvshows/details/sembaruthi/0-6-675",
+              "release_date": "2017-10-16T00:00:00",
+              "image": {
+                "listclean": "rsz1170x65826b3f5fb96234c228446216ec94654bd",
+                "square": "374x374ed7fe5776c17453588ea3f8f4748ad87",
+                "app_cover": "rsz1440x810fea7f3668b3b4c99a13fde20ad56224f",
+                "tv_cover": "1920x522c2000c83e45f46638a5e786a2baa8b63",
+                "cover": "1920x7700f8334bb0a60480f852ccf41eeec95da",
+                "list": "1920x1080list3719fee93f604ffa92077bd4b7a0066d35f03015a3f745d28214f41c90172c37",
+                "portraitclean": "rsz630x945bb340bec0cf742039104b4af47388f9e",
+                "portrait": "720x1080withlogoe1f1821fe3b846e28b74fb93544e90b5ce5c87181e80473393179833e803e1cf"
+              }
+            },
+            {
+              "id": "0-6-3033",
+              "title": "Chinna Poove Mella Pesu",
+              "description": "Sisters Preeta and Srishti meet Rishabh and his brother Karan, a popular cricketer. While Srishti and Karans encounters graduate into a great chemistry, Rishabh too fosters feelings for Preeta!",
+              "asset_subtype": "tvshow",
+              "languages": ["ta"],
+              "slug": "tv-shows/details/chinna-poove-mella-pesu/0-6-3033",
+              "web_url": "tvshows/details/chinna-poove-mella-pesu/0-6-3033",
+              "release_date": "2020-10-12T00:00:00",
+              "image": {
+                "listclean": "rsz1170x658793156756",
+                "square": "374x374722921398",
+                "app_cover": "rsz1440x810819237389",
+                "tv_cover": "1920x5221170609280",
+                "cover": "1920x7701941137208",
+                "list": "rsz1170x658withlog2027860498",
+                "portraitclean": "rsz630x9451423268439",
+                "portrait": "rsz630x945withlogo48709461"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Tamil Reality TV Shows",
+          "items": [
+            {
+              "id": "0-6-3527",
+              "title": "Survivor",
+              "description": "Popular celebrities participate in this reality show that takes them to an island where their instincts of human survival are tested through demanding mental and physical challenges.",
+              "asset_subtype": "tvshow",
+              "languages": ["ta"],
+              "slug": "tv-shows/details/survivor/0-6-3527",
+              "web_url": "tvshows/details/survivor/0-6-3527",
+              "release_date": "2021-09-12T00:00:00",
+              "image": {
+                "listclean": "rsz1170x65857b6429fc49043aaadbc8ab7443cc6c7",
+                "square": "374x3743b5d8194a35a4ee0b9bcada4338506e5",
+                "app_cover": "rsz1440x810301ecbde1ff84e7a8273f8adcb10dfc3",
+                "tv_cover": "1920x522fac84029edf643528686dcb30b606ab2",
+                "cover": "1920x770in55896730755896730c3718dc993da4f818f3f0f79e40fe930",
+                "list": "rsz1170x658withlog1512329799663202631425d9b3e52a245f4bc540b5f7608a6e8",
+                "portraitclean": "rsz630x9453d9132c0cca543229227d2f0f5c67972",
+                "portrait": "rsz630x945withlogoc90f4550b5b545918ceb342bf69b9d9b"
+              }
+            },
+            {
+              "id": "0-6-1109",
+              "title": "Tamizha Tamizha",
+              "description": "Karu Pazhaniappan, the host of the show, encourages debates on current affairs and topics which can bring a positive change in society.",
+              "asset_subtype": "tvshow",
+              "languages": ["ta"],
+              "slug": "tv-shows/details/tamizha-tamizha/0-6-1109",
+              "web_url": "tvshows/details/tamizha-tamizha/0-6-1109",
+              "release_date": "2018-11-11T00:00:00",
+              "image": {
+                "listclean": "rsz1170x6583d022c1f1bd749b4ba9ac4c192ffc5a1",
+                "square": "374x3742ca14a9886344fdab1b54c874abdfdac",
+                "app_cover": "rsz1440x810f374756b690248d59635ec343c6df83a",
+                "tv_cover": "1920x5226559bf28b9bc4e3dbfa7a03d8ff8bdd4",
+                "cover": "1920x770755b0ea5bc264b288a675e8a804d97ef",
+                "list": "rsz1170x658withlogoed7c2326efbc4cd1b207e0cedba9befd",
+                "portraitclean": "rsz630x945af30c4a66bb44d6b9c45d92301a315d2",
+                "portrait": "rsz630x945withlogo0b3b7e6fae824cb6ac29f3e867e19264"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Tamil Chat TV Shows",
+          "items": [
+            {
+              "id": "0-6-x",
+              "unexpected": true
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

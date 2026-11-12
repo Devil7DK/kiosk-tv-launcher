@@ -1,6 +1,8 @@
 import { defineProvider } from '@kiosk-tv/provider-kit';
 import { z } from 'zod';
 
+import { createZee5Provider } from './zee5.provider.js';
+
 export const zee5ConfigSchema = z.object({
   /** The viewer profile to watch as, by the name the site shows for it. */
   profile: z.string().min(1),
@@ -14,7 +16,5 @@ export default defineProvider({
     origins: ['https://www.zee5.com'],
   },
   configSchema: zee5ConfigSchema,
-  create() {
-    throw new Error('The ZEE5 provider is not implemented yet');
-  },
+  create: (context) => createZee5Provider(context),
 });

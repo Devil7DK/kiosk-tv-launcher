@@ -1,0 +1,26 @@
+{
+  "data": {
+    "watchList": [
+      {
+        "id": "movie",
+        "contents": []
+      },
+      {
+        "id": "tvshow",
+        "contents": [
+          {
+            "id": "0-6-4z5846408",
+            "title": "Thirumangalyam",
+            "description": "Lakshmi, an orphan…",
+            "languages": ["ta"],
+            "webUrl": "tvshows/details/thirumangalyam/0-6-4z5846408",
+            "image": {
+              "list": "1920x1080list844941ac6e0b4b46857bd533ad5289df2230e4c0f3bc4fceb7aa43c45cf9c690",
+              "cover": null
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

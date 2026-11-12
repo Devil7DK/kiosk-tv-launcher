@@ -1,0 +1,70 @@
+{
+  "props": {
+    "pageProps": {
+      "initialRails": [
+        {
+          "title": "Latest Tamil Movies",
+          "contents": [
+            {
+              "id": "0-0-1z51102235",
+              "title": "Nooru Kodi Vaanavil",
+              "asset_subtype": "movie",
+              "languages": ["ta", "te", "hi"],
+              "slug": "movies/details/nooru-kodi-vaanavil/0-0-1z51102235",
+              "duration": 7091,
+              "release_date": "2026-11-06",
+              "image": {
+                "cover": "1920x770b035e449c5c649358344fdf4ed648c6c2518b0b90fda4ef7889de3f1914c86fe",
+                "list": "1920x1080list0d5c4b4a58954d1ebc9993767afdebe2becb73c20d9e4d15a7a07a82b87d8d91"
+              }
+            },
+            {
+              "id": "0-0-1z51095456",
+              "title": "Thelivilla Thelivurai",
+              "asset_subtype": "movie",
+              "languages": ["ta"],
+              "slug": "movies/details/thelivilla-thelivurai/0-0-1z51095456",
+              "duration": 1759,
+              "release_date": "2026-10-14",
+              "image": {
+                "cover": "1920x770fd4bd7ab2375483cb9546fdfd04ef0c333ac8cf6d41f458da2034b77e508a3ac",
+                "list": "1920x1080list4a400cf29c574e8a8742773658117fba6bc2af490c2d416b86914319b03ef126"
+              }
+            }
+          ]
+        },
+        {
+          "title": "Popular Tamil Movies",
+          "contents": [
+            {
+              "id": "0-0-1z51095458",
+              "title": "The Last Show",
+              "asset_subtype": "movie",
+              "languages": ["ta"],
+              "slug": "movies/details/the-last-show/0-0-1z51095458",
+              "duration": 810,
+              "release_date": "2026-10-14",
+              "image": {
+                "cover": "1920x7703ba6607c74214893b5a7008f1ff463d56ed964aa043442488885590b5e5e78fd",
+                "list": "1920x1080list2f5a825330bb44d3865b53a90a64f95994a935176d0f4001b7bc207dc596a297"
+              }
+            },
+            {
+              "id": "0-0-1z51095465",
+              "title": "Oru Poster Kadhai",
+              "asset_subtype": "movie",
+              "languages": ["ta"],
+              "slug": "movies/details/oru-poster-kadhai/0-0-1z51095465",
+              "duration": 609,
+              "release_date": "2026-10-14",
+              "image": {
+                "cover": "1920x770279bc9ed6e7a4f159b69cb5507eacf6704a02291e6484715899ff81b6b1c069b",
+                "list": "1920x1080list3dd4bd4588354980825e471acdb52edee07618ecc36647bd800d9b71b83356d5"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
