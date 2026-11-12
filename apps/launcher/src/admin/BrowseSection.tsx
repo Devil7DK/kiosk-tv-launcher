@@ -1,9 +1,10 @@
-import type {
-  CatalogItem,
-  Library,
-  ProviderInfo,
-  Shelf,
-  Title,
+import {
+  type CatalogItem,
+  type Library,
+  type ProviderInfo,
+  refKey,
+  type Shelf,
+  type Title,
 } from '@kiosk-tv/shared';
 import { useEffect, useState } from 'preact/hooks';
 
@@ -58,8 +59,13 @@ export function BrowseSection({
     );
 
   const follow = (item: CatalogItem) => {
-    if ('name' in item) onChange(adminApi.follow(item));
+    if ('name' in item) return onChange(adminApi.follow(item));
+    // An episode or video: follow the show or channel it belongs to.
+    const parent = item.parent;
+    if (parent)
+      onChange(api.title(parent.ref).then((title) => adminApi.follow(title)));
   };
+  const followed = new Set(library.follows.map((f) => refKey(f.title.ref)));
   const addTo = (id: string, item: CatalogItem) =>
     onChange(adminApi.addToPlaylist(id, item));
   const line = (item: CatalogItem) => (
@@ -67,6 +73,7 @@ export function BrowseSection({
       key={`${item.ref.provider}:${item.ref.id}`}
       item={item}
       playlists={library.playlists}
+      followed={followed}
       onFollow={follow}
       onAddTo={addTo}
     />
