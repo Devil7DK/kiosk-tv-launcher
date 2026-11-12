@@ -1,0 +1,122 @@
+{
+  "contents": {
+    "richGridRenderer": {
+      "contents": [
+        {
+          "richItemRenderer": {
+            "content": {
+              "lockupViewModel": {
+                "contentImage": {
+                  "thumbnailViewModel": {
+                    "image": {
+                      "sources": [
+                        {
+                          "url": "https://i.ytimg.com/vi/PLexample0001/hqdefault.jpg",
+                          "width": 168,
+                          "height": 94
+                        }
+                      ]
+                    },
+                    "overlays": [
+                      {
+                        "thumbnailBottomOverlayViewModel": {
+                          "badges": []
+                        }
+                      }
+                    ]
+                  }
+                },
+                "metadata": {
+                  "lockupMetadataViewModel": {
+                    "title": {
+                      "content": "Pickle recipes"
+                    },
+                    "metadata": {
+                      "contentMetadataViewModel": {
+                        "metadataRows": [
+                          {
+                            "metadataParts": [
+                              {
+                                "text": {
+                                  "content": "Example Kitchen"
+                                }
+                              },
+                              {
+                                "text": {
+                                  "content": "12K views"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  }
+                },
+                "contentId": "PLexample0001",
+                "contentType": "LOCKUP_CONTENT_TYPE_PLAYLIST"
+              }
+            }
+          }
+        },
+        {
+          "richItemRenderer": {
+            "content": {
+              "lockupViewModel": {
+                "contentImage": {
+                  "thumbnailViewModel": {
+                    "image": {
+                      "sources": [
+                        {
+                          "url": "https://i.ytimg.com/vi/WL/hqdefault.jpg",
+                          "width": 168,
+                          "height": 94
+                        }
+                      ]
+                    },
+                    "overlays": [
+                      {
+                        "thumbnailBottomOverlayViewModel": {
+                          "badges": []
+                        }
+                      }
+                    ]
+                  }
+                },
+                "metadata": {
+                  "lockupMetadataViewModel": {
+                    "title": {
+                      "content": "Watch later"
+                    },
+                    "metadata": {
+                      "contentMetadataViewModel": {
+                        "metadataRows": [
+                          {
+                            "metadataParts": [
+                              {
+                                "text": {
+                                  "content": ""
+                                }
+                              },
+                              {
+                                "text": {
+                                  "content": "12K views"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  }
+                },
+                "contentId": "WL",
+                "contentType": "LOCKUP_CONTENT_TYPE_PLAYLIST"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "contents": {
+    "sectionListRenderer": {
+      "contents": [
+        {
+          "itemSectionRenderer": {
+            "contents": [
+              {
+                "shelfRenderer": {
+                  "content": {
+                    "expandedShelfContentsRenderer": {
+                      "items": [
+                        {
+                          "channelRenderer": {
+                            "channelId": "UCexamplekitchen0000001",
+                            "title": {
+                              "simpleText": "Example Kitchen"
+                            },
+                            "thumbnail": {
+                              "thumbnails": [
+                                {
+                                  "url": "//yt3.ggpht.com/example=s88-c-k",
+                                  "width": 88
+                                },
+                                {
+                                  "url": "//yt3.ggpht.com/example=s176-c-k",
+                                  "width": 176
+                                }
+                              ]
+                            }
+                          }
+                        },
+                        {
+                          "channelRenderer": {
+                            "channelId": "UCexamplesongs000000002",
+                            "title": {
+                              "simpleText": "Example Songs"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,6 +1,8 @@
 import { defineProvider } from '@kiosk-tv/provider-kit';
 import { z } from 'zod';
 
+import { createYouTubeProvider } from './youtube.provider.js';
+
 /** The signed-in Google account is the only choice; there is nothing to configure. */
 export const youtubeConfigSchema = z.object({});
 
@@ -12,7 +14,5 @@ export default defineProvider({
     origins: ['https://www.youtube.com'],
   },
   configSchema: youtubeConfigSchema,
-  create() {
-    throw new Error('The YouTube provider is not implemented yet');
-  },
+  create: (context) => createYouTubeProvider({ ...context, config: {} }),
 });
