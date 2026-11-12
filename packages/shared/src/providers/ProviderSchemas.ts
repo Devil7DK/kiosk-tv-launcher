@@ -18,7 +18,12 @@ export const ProviderManifestSchema = z.object({
 export type ProviderManifest = z.infer<typeof ProviderManifestSchema>;
 
 /** Optional features; the launcher hides what a provider does not offer. */
-export const ProviderCapabilitySchema = z.enum(['continueWatching', 'search']);
+export const ProviderCapabilitySchema = z.enum([
+  'continueWatching',
+  'progress',
+  'next',
+  'search',
+]);
 export type ProviderCapability = z.infer<typeof ProviderCapabilitySchema>;
 
 export const ProviderStatusSchema = z.discriminatedUnion('state', [
