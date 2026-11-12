@@ -54,6 +54,7 @@ same Wi-Fi. From there:
   appear without that),
 - make **playlists**, from any service, or show a YouTube playlist as one,
 - choose the **languages** of the service tabs,
+- set the **size** of everything on the TV, from 60% to 160%,
 - choose whether **Continue watching** shows only what was started on the TV,
   or also what the services report from other devices.
 
@@ -65,6 +66,9 @@ Arrow keys, OK (Enter) and Back (Escape, Backspace or the browser Back key). A
 Bluetooth remote that acts as a keyboard needs no setup. While a video plays,
 OK pauses and resumes, left and right skip ten seconds, and Back stops and
 returns to the launcher.
+
+The last tab, **Size**, makes everything on the TV smaller or bigger, one
+step per press of OK, and keeps the choice.
 
 ## Known limits
 
