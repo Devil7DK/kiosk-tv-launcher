@@ -1,5 +1,5 @@
 import type { CatalogItem, Playable, Title } from '@kiosk-tv/shared';
-import { isPlayable } from '@kiosk-tv/shared';
+import { isPlayable, refKey } from '@kiosk-tv/shared';
 
 import type { Tab } from '../components/TopBar';
 
@@ -9,6 +9,18 @@ export type Route =
   | { kind: 'title'; title: Title }
   | { kind: 'upNext'; finished: Playable; next: Playable }
   | { kind: 'notice'; title: string; detail?: string };
+
+/** A screen keeps what it loaded while its key stays, so the key names what it shows. */
+export function screenKey(route: Route, index: number): string {
+  switch (route.kind) {
+    case 'provider':
+      return `${index}:provider:${route.id}`;
+    case 'title':
+      return `${index}:title:${refKey(route.title.ref)}`;
+    default:
+      return `${index}:${route.kind}`;
+  }
+}
 
 export interface Navigation {
   tabs: Tab[];

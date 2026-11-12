@@ -1,7 +1,11 @@
 import type { Playable } from '@kiosk-tv/shared';
 import { describe, expect, it } from 'vitest';
 
-import { itemName, itemSubtitle } from '../../src/navigation/navigation';
+import {
+  itemName,
+  itemSubtitle,
+  screenKey,
+} from '../../src/navigation/navigation';
 
 const channel = {
   ref: { provider: 'youtube', id: 'UCkitchen' },
@@ -46,5 +50,17 @@ describe('tile names', () => {
     expect(itemSubtitle({ ...feed, description: "Gomathi's Kitchen" })).toBe(
       "Gomathi's Kitchen",
     );
+  });
+});
+
+describe('screenKey', () => {
+  it('gives a service tab that replaces another a fresh screen, not the old one’s rows', () => {
+    expect(screenKey({ kind: 'provider', id: 'hotstar' }, 0)).not.toBe(
+      screenKey({ kind: 'provider', id: 'sunnxt' }, 0),
+    );
+  });
+
+  it('keeps the same screen while it shows the same thing', () => {
+    expect(screenKey({ kind: 'home' }, 0)).toBe(screenKey({ kind: 'home' }, 0));
   });
 });

@@ -23,6 +23,7 @@ import {
   itemName,
   type Navigation,
   type Route,
+  screenKey,
 } from '../navigation/navigation';
 import { useRemote } from '../remote/useRemote';
 import { HomeScreen } from '../screens/HomeScreen';
@@ -164,7 +165,7 @@ export function App() {
         const top = index === stack.length - 1;
         const active = top && !starting && !settingsOpen;
         return (
-          <div key={index} class='screen' hidden={!top}>
+          <div key={screenKey(route, index)} class='screen' hidden={!top}>
             {route.kind === 'home' && (
               <HomeScreen
                 navigation={navigation}
