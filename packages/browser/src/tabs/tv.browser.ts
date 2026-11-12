@@ -1,3 +1,6 @@
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { dirname, join } from 'node:path';
+
 import {
   type Browser,
   type BrowserContext,
@@ -11,10 +14,7 @@ import {
   ensureBrave,
 } from '../brave/brave.launcher.js';
 
-/**
- * The one Brave window on the TV. Tabs are found again by role after a
- * controller restart, because Brave keeps running.
- */
+/** The one Brave window on the TV, with a tab for each role. */
 export interface TvBrowser {
   /** The tab with the launcher UI. */
   launcher(url: string): Promise<Page>;
@@ -37,28 +37,45 @@ export interface TvBrowser {
   disconnect(): Promise<void>;
 }
 
-const ROLE_KEY = '__kioskTvRole';
+/**
+ * Which tab plays which role, by DevTools target id, kept in a file because
+ * Brave outlives the controller. A page's own state cannot hold it: Brave
+ * clears `window.name` when a tab moves to another site.
+ */
+class TabRoles {
+  constructor(private readonly file: string) {}
 
-async function roleOf(page: Page): Promise<string | undefined> {
-  try {
-    return await page.evaluate(
-      (key) =>
-        window.name.startsWith(key) ? window.name.slice(key.length) : undefined,
-      ROLE_KEY,
-    );
-  } catch {
-    return undefined;
+  async read(): Promise<Record<string, string>> {
+    try {
+      return JSON.parse(await readFile(this.file, 'utf8')) as Record<
+        string,
+        string
+      >;
+    } catch {
+      return {};
+    }
+  }
+
+  async set(role: string, targetId: string): Promise<void> {
+    const roles = { ...(await this.read()), [role]: targetId };
+    await mkdir(dirname(this.file), { recursive: true });
+    await writeFile(this.file, JSON.stringify(roles, null, 2) + '\n');
   }
 }
 
-async function markRole(page: Page, role: string): Promise<void> {
-  // window.name survives navigation within the tab, unlike anything on the page.
-  await page.evaluate(
-    ([key, value]) => {
-      window.name = key + value;
-    },
-    [ROLE_KEY, role] as const,
-  );
+async function targetIdOf(
+  context: BrowserContext,
+  page: Page,
+): Promise<string> {
+  const session = await context.newCDPSession(page);
+  try {
+    const { targetInfo } = (await session.send('Target.getTargetInfo')) as {
+      targetInfo: { targetId: string };
+    };
+    return targetInfo.targetId;
+  } finally {
+    await session.detach().catch(() => {});
+  }
 }
 
 const KEY_BINDING = '__kioskTvKey';
@@ -91,7 +108,10 @@ function installKeyCapture({
 }
 
 export async function connectTvBrowser(
-  options: BraveOptions,
+  options: BraveOptions & {
+    /** Where the tab roles are kept; defaults to a file beside the profile. */
+    rolesFile?: string;
+  },
 ): Promise<TvBrowser> {
   await ensureBrave(options);
   const browser: Browser = await chromium.connectOverCDP(cdpUrl(options.port));
@@ -99,10 +119,20 @@ export async function connectTvBrowser(
   if (!context) throw new Error('Brave has no browser context to attach to');
 
   const tabs = new Map<string, Promise<Page>>();
+  const roles = new TabRoles(
+    options.rolesFile ?? join(dirname(options.profileDir), 'tab-roles.json'),
+  );
 
   async function find(role: string): Promise<Page | undefined> {
+    const targetId = (await roles.read())[role];
+    if (!targetId) return undefined;
     for (const page of context!.pages()) {
-      if (!page.isClosed() && (await roleOf(page)) === role) return page;
+      if (page.isClosed()) continue;
+      if (
+        (await targetIdOf(context!, page).catch(() => undefined)) === targetId
+      ) {
+        return page;
+      }
     }
     return undefined;
   }
@@ -117,8 +147,8 @@ export async function connectTvBrowser(
       const existing = (await reuse) ?? (await find(role));
       if (existing) return existing;
       const page = await context!.newPage();
+      await roles.set(role, await targetIdOf(context!, page));
       await open(page);
-      await markRole(page, role);
       return page;
     })();
     tabs.set(role, next);
