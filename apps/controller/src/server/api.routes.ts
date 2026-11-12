@@ -170,6 +170,10 @@ export function createApi(deps: ApiDeps): Hono {
         stream.writeSSE({ data: JSON.stringify(data) });
       await send({ type: 'playback', playback: deps.playback.state });
       await send({ type: 'providers', providers: deps.registry.list() });
+      await send({
+        type: 'settings',
+        settings: (await deps.library.read()).settings,
+      });
       const unsubscribe = deps.events.subscribe(
         (event) => void send(event).catch(() => {}),
       );

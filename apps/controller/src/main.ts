@@ -71,6 +71,9 @@ events.subscribe((event) => {
 library.onChange(() => {
   homeCache.clear();
   events.publish({ type: 'home' });
+  void library
+    .read()
+    .then((l) => events.publish({ type: 'settings', settings: l.settings }));
 });
 
 const screen = {

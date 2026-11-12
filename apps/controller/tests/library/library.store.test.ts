@@ -81,6 +81,7 @@ describe('LibraryStore', () => {
     expect((await library.read()).settings).toEqual({
       continueWatching: 'all',
       languages: ['ta'],
+      scale: 1,
     });
   });
 });
