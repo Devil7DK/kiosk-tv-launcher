@@ -5,9 +5,10 @@ import {
   type Provider,
   type ProviderPages,
 } from '@kiosk-tv/provider-kit';
-import type { Playable, Title } from '@kiosk-tv/shared';
+import type { BluetoothDevice, Playable, Title } from '@kiosk-tv/shared';
 import { z } from 'zod';
 
+import type { Bluetooth } from '../../src/bluetooth/system-bluetooth.js';
 import type { Logger } from '../../src/logging/logger.js';
 
 export const silentLog: Logger = {
@@ -154,4 +155,33 @@ export function fakeModule(id: string, provider: Provider) {
     configSchema: z.object({ profile: z.string().min(1) }),
     create: () => provider,
   });
+}
+
+/** A Bluetooth adapter in memory: devices appear when searched for. */
+export function fakeBluetooth(nearby: { address: string; name: string }[]) {
+  const devices = new Map<string, BluetoothDevice>();
+  let scanning = false;
+  const bluetooth: Bluetooth = {
+    status: async () => ({
+      available: true,
+      scanning,
+      devices: [...devices.values()],
+    }),
+    scan: async () => {
+      scanning = true;
+      for (const d of nearby)
+        devices.set(d.address, { ...d, paired: false, connected: false });
+    },
+    connect: async (address) => {
+      const device = devices.get(address);
+      if (!device) throw new Error(`Device ${address} not available`);
+      devices.set(address, { ...device, paired: true, connected: true });
+    },
+    disconnect: async (address) => {
+      const device = devices.get(address);
+      if (device) devices.set(address, { ...device, connected: false });
+    },
+    forget: async (address) => void devices.delete(address),
+  };
+  return bluetooth;
 }

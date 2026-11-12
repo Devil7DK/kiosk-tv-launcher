@@ -1,4 +1,5 @@
 import {
+  BluetoothDeviceSchema,
   CatalogItemSchema,
   FollowLinkRequestSchema,
   FollowRequestSchema,
@@ -20,6 +21,7 @@ import { HTTPException } from 'hono/http-exception';
 import { streamSSE } from 'hono/streaming';
 import { z } from 'zod';
 
+import type { Bluetooth } from '../bluetooth/system-bluetooth.js';
 import {
   type CatalogService,
   ProviderUnavailableError,
@@ -48,6 +50,7 @@ export interface ApiDeps {
   remote: () => RemoteStatus;
   /** The computer's own battery; undefined without one. */
   battery: () => TvBattery | undefined;
+  bluetooth: Bluetooth;
   /** Absent where the launcher may not shut the computer down. */
   power?: (action: PowerAction) => Promise<void>;
   log: Logger;
@@ -248,6 +251,56 @@ export function createApi(deps: ApiDeps): Hono {
     deps.homeService.refreshAccounts();
     return c.json(library);
   });
+  const bluetoothAddress = (c: Context): string => {
+    const parsed = BluetoothDeviceSchema.shape.address.safeParse(
+      c.req.param('address'),
+    );
+    if (!parsed.success) {
+      throw new HTTPException(400, { message: 'Not a Bluetooth address' });
+    }
+    return parsed.data;
+  };
+  const bluetoothStep = async (step: () => Promise<void>, failed: string) => {
+    try {
+      await step();
+    } catch (error) {
+      deps.log.warn(failed, { error: String(error) });
+      throw new HTTPException(502, { message: failed });
+    }
+  };
+  api.get('/bluetooth', async (c) => c.json(await deps.bluetooth.status()));
+  api.post('/bluetooth/scan', async (c) => {
+    await bluetoothStep(
+      () => deps.bluetooth.scan(),
+      'Could not search for Bluetooth devices',
+    );
+    return c.body(null, 202);
+  });
+  api.post('/bluetooth/devices/:address/connect', async (c) => {
+    const address = bluetoothAddress(c);
+    await bluetoothStep(
+      () => deps.bluetooth.connect(address),
+      'Could not connect. Turn the device on, put it in pairing mode, and try again.',
+    );
+    return c.body(null, 204);
+  });
+  api.post('/bluetooth/devices/:address/disconnect', async (c) => {
+    const address = bluetoothAddress(c);
+    await bluetoothStep(
+      () => deps.bluetooth.disconnect(address),
+      'Could not disconnect',
+    );
+    return c.body(null, 204);
+  });
+  api.delete('/bluetooth/devices/:address', async (c) => {
+    const address = bluetoothAddress(c);
+    await bluetoothStep(
+      () => deps.bluetooth.forget(address),
+      'Could not forget the device',
+    );
+    return c.body(null, 204);
+  });
+
   api.get('/power', (c) => c.json({ available: deps.power !== undefined }));
   api.post('/power', async (c) => {
     const { action } = await body(c, PowerRequestSchema);

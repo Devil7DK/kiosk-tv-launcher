@@ -15,6 +15,7 @@ import { createApi } from '../../src/server/api.routes.js';
 import { WatchStore } from '../../src/watch/watch.store.js';
 import {
   episode,
+  fakeBluetooth,
   fakeModule,
   fakeProvider,
   noPages,
@@ -23,6 +24,7 @@ import {
 } from '../support/fakes.js';
 
 const serial = show('alpha', 's1', 'Moondru Mudichu');
+const SPEAKER = '00:11:22:33:44:55';
 
 async function api() {
   return (await setup()).app;
@@ -71,6 +73,7 @@ async function setup(power?: (action: PowerAction) => Promise<void>) {
     home: () => homeService.build(),
     remote: () => ({ batteryLow: false }),
     battery: () => undefined,
+    bluetooth: fakeBluetooth([{ address: SPEAKER, name: 'Speaker' }]),
     ...(power ? { power } : {}),
     log: silentLog,
   });
@@ -192,5 +195,40 @@ describe('API', () => {
     expect(asked).toEqual([]);
     await new Promise((resolve) => setTimeout(resolve, 300));
     expect(asked).toEqual(['restart']);
+  });
+
+  it('finds a speaker, pairs with it and forgets it again', async () => {
+    const app = await api();
+    expect((await app.request('/bluetooth/scan', json({}))).status).toBe(202);
+    const found = (await (await app.request('/bluetooth')).json()) as {
+      devices: { address: string; paired: boolean }[];
+    };
+    expect(found.devices).toEqual([
+      { address: SPEAKER, name: 'Speaker', paired: false, connected: false },
+    ]);
+    const connect = await app.request(
+      `/bluetooth/devices/${SPEAKER}/connect`,
+      json({}),
+    );
+    expect(connect.status).toBe(204);
+    const forget = await app.request(`/bluetooth/devices/${SPEAKER}`, {
+      method: 'DELETE',
+    });
+    expect(forget.status).toBe(204);
+  });
+
+  it('says plainly when a device cannot be reached', async () => {
+    const res = await (
+      await api()
+    ).request('/bluetooth/devices/66:77:88:99:AA:BB/connect', json({}));
+    expect(res.status).toBe(502);
+    expect(await res.text()).toMatch(/pairing mode/);
+  });
+
+  it('refuses an address that is not one', async () => {
+    const res = await (
+      await api()
+    ).request('/bluetooth/devices/not-an-address/connect', json({}));
+    expect(res.status).toBe(400);
   });
 });

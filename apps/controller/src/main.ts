@@ -8,6 +8,7 @@ import { connectTvBrowser, showVolume } from '@kiosk-tv/browser';
 import { REMOTE_KEYBOARD_KEYS, remoteKeyFor } from '@kiosk-tv/shared';
 import { type Context, Hono } from 'hono';
 
+import { createSystemBluetooth } from './bluetooth/system-bluetooth.js';
 import { CatalogService } from './catalog/catalog.service.js';
 import { TtlCache } from './catalog/ttl.cache.js';
 import { loadTvConfig } from './config/tv-config.js';
@@ -163,6 +164,7 @@ app.route(
     events,
     remote: () => remoteStatus.current,
     battery: () => battery,
+    bluetooth: createSystemBluetooth(log.child('bluetooth')),
     ...(config.power.enabled ? { power: powerTv } : {}),
     log,
   }),
