@@ -101,4 +101,23 @@ describe('Sun NXT provider', () => {
     );
     expect(shelves.items[0]?.items.items).toHaveLength(3);
   });
+
+  it('finds the show from a detail link, whatever its slug', async () => {
+    const { page } = fakeSite([
+      {
+        match: /contentDetail\/198692\//,
+        body: fixture('content-detail-show'),
+      },
+    ]);
+    const provider = createSunNxtProvider(contextFor(page));
+    const title = await provider.resolve!(
+      new URL(
+        'https://www.sunnxt.com/suntv-tamil-serial-moondru-mudichu/detail/198692/282534',
+      ),
+    );
+    expect(title).toMatchObject({ kind: 'series', name: 'Moondru Mudichu' });
+    expect(
+      await provider.resolve!(new URL('https://www.hotstar.com/in/shows/x/1')),
+    ).toBeUndefined();
+  });
 });

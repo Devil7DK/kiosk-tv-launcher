@@ -198,6 +198,17 @@ export function createSunNxtProvider(
       return title;
     },
 
+    async resolve(url) {
+      if (!/(^|\.)sunnxt\.com$/.test(url.hostname)) return undefined;
+      // A show page names the show first: /<anything>/detail/<show>/<episode>.
+      const showId = /\/detail\/(\d+)/.exec(url.pathname)?.[1];
+      if (showId) return toTitle(await detail(showId));
+      const episodeId = /\/player\/(\d+)/.exec(url.pathname)?.[1];
+      if (!episodeId) return undefined;
+      const parentId = showIdOf(await detail(episodeId));
+      return parentId ? toTitle(await detail(parentId)) : undefined;
+    },
+
     async episodes(ref, options = {}): Promise<EpisodeListing> {
       const show = await detail(ref.id);
       const tabs = show.generalInfo.showDisplayTabs;
