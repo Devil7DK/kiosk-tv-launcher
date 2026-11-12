@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <WiFi.h>
+#include <driver/gpio.h>
 #include <driver/rtc_io.h>
 #include <esp_now.h>
 #include <esp_sleep.h>
@@ -49,9 +50,28 @@ constexpr Button kButtons[] = {
     {GPIO_NUM_4, remote::kVolumeDown, true},
 };
 constexpr int kBatteryPin = 34;
+#elif defined(REMOTE_BOARD_XIAO_C3)
+// Buttons connect the pin to ground. The C3 wakes from deep sleep only on
+// GPIO 0-5, too few for eight buttons, so this board uses light sleep, which
+// any pin can end. GPIO 9 decides how it boots; GPIO 21 carries its boot log.
+#define REMOTE_LIGHT_SLEEP
+constexpr bool kPressedLevel = LOW;
+constexpr Button kButtons[] = {
+    {GPIO_NUM_2, remote::kUp, true},          // D0
+    {GPIO_NUM_4, remote::kDown, true},        // D2
+    {GPIO_NUM_5, remote::kLeft, true},        // D3
+    {GPIO_NUM_6, remote::kRight, true},       // D4
+    {GPIO_NUM_7, remote::kOk, false},         // D5
+    {GPIO_NUM_10, remote::kBack, false},      // D10
+    {GPIO_NUM_20, remote::kVolumeUp, true},   // D7
+    {GPIO_NUM_8, remote::kVolumeDown, true},  // D8
+};
+constexpr int kBatteryPin = 3;  // D1, on ADC1
 #else
-#error "Build for a board: REMOTE_BOARD_S3_ZERO or REMOTE_BOARD_DEVKIT"
+#error "Build for a board: REMOTE_BOARD_XIAO_C3, REMOTE_BOARD_S3_ZERO or REMOTE_BOARD_DEVKIT"
 #endif
+
+constexpr size_t kButtonCount = sizeof(kButtons) / sizeof(kButtons[0]);
 
 // Battery through two equal resistors; reads near 0 when none are fitted.
 constexpr float kBatteryDivider = 2.0f;
@@ -72,7 +92,7 @@ struct State {
   uint32_t since = 0;
   uint32_t lastSent = 0;
 };
-State states[sizeof(kButtons) / sizeof(kButtons[0])];
+State states[kButtonCount];
 uint32_t lastActivity = 0;
 
 uint16_t batteryMillivolts() {
@@ -94,8 +114,15 @@ void send(remote::Key key, bool repeat) {
 #endif
 }
 
+bool wifiStarted = false;
+
 void startRadio() {
-  WiFi.mode(WIFI_STA);
+  if (!wifiStarted) {
+    WiFi.mode(WIFI_STA);
+    wifiStarted = true;
+  } else {
+    esp_wifi_start();
+  }
   esp_wifi_set_channel(remote::kChannel, WIFI_SECOND_CHAN_NONE);
   if (esp_now_init() != ESP_OK) {
     Serial.println("ESP-NOW did not start");
@@ -109,9 +136,20 @@ void startRadio() {
   esp_now_add_peer(&peer);
 }
 
+/** Sends the presses that ended a sleep, as if readButtons had seen them. */
+void sendWakingPresses(const bool (&pressed)[kButtonCount]) {
+  for (size_t i = 0; i < kButtonCount; i++) {
+    if (!pressed[i]) continue;
+    send(kButtons[i].key, false);
+    states[i].down = digitalRead(kButtons[i].pin) == kPressedLevel;
+    states[i].since = millis();
+    states[i].lastSent = millis();
+  }
+}
+
 void readButtons() {
   const uint32_t now = millis();
-  for (size_t i = 0; i < sizeof(kButtons) / sizeof(kButtons[0]); i++) {
+  for (size_t i = 0; i < kButtonCount; i++) {
     const Button &button = kButtons[i];
     State &state = states[i];
     const bool down = digitalRead(button.pin) == kPressedLevel;
@@ -159,6 +197,31 @@ bool anyButtonDown() {
   return false;
 }
 
+#ifdef REMOTE_LIGHT_SLEEP
+/** Sleeps until any button is pressed, then carries on where it left off. */
+void sleepUntilPressed() {
+  while (anyButtonDown()) delay(10);
+  esp_now_deinit();
+  esp_wifi_stop();
+  for (const Button &button : kButtons) {
+    gpio_sleep_set_direction(button.pin, GPIO_MODE_INPUT);
+    gpio_sleep_set_pull_mode(button.pin, GPIO_PULLUP_ONLY);
+    gpio_wakeup_enable(button.pin, GPIO_INTR_LOW_LEVEL);
+  }
+  esp_sleep_enable_gpio_wakeup();
+  esp_light_sleep_start();
+
+  // Read at once: a quick tap may be over before the radio is back.
+  bool pressed[kButtonCount];
+  for (size_t i = 0; i < kButtonCount; i++) {
+    pressed[i] = digitalRead(kButtons[i].pin) == kPressedLevel;
+    gpio_wakeup_disable(kButtons[i].pin);
+  }
+  startRadio();
+  sendWakingPresses(pressed);
+  lastActivity = millis();
+}
+#else
 void sleepUntilPressed() {
   // A button still held would wake the chip again at once.
   while (anyButtonDown()) delay(10);
@@ -180,6 +243,7 @@ void sleepUntilPressed() {
   esp_deep_sleep_start();
 }
 #endif
+#endif
 
 }  // namespace
 
@@ -190,18 +254,17 @@ void setup() {
   }
   startRadio();
 
+#ifndef REMOTE_LIGHT_SLEEP
   // The button that woke the chip may be released by now; the wake cause still names it.
   if (esp_sleep_get_wakeup_cause() == ESP_SLEEP_WAKEUP_EXT1) {
     const uint64_t woke = esp_sleep_get_ext1_wakeup_status();
-    for (size_t i = 0; i < sizeof(kButtons) / sizeof(kButtons[0]); i++) {
-      if (woke & (1ULL << kButtons[i].pin)) {
-        send(kButtons[i].key, false);
-        states[i].down = digitalRead(kButtons[i].pin) == kPressedLevel;
-        states[i].since = millis();
-        states[i].lastSent = millis();
-      }
+    bool pressed[kButtonCount];
+    for (size_t i = 0; i < kButtonCount; i++) {
+      pressed[i] = woke & (1ULL << kButtons[i].pin);
     }
+    sendWakingPresses(pressed);
   }
+#endif
   lastActivity = millis();
 #ifdef REMOTE_BENCH
   Serial.println("remote on the bench: type u d l r o b + - to send keys");

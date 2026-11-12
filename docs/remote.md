@@ -1,6 +1,6 @@
 # The remote
 
-A handheld ESP32-S3-Zero sends each button press by ESP-NOW to a NodeMCU (ESP8266)
+A handheld Seeed XIAO ESP32-C3 sends each button press by ESP-NOW to a NodeMCU (ESP8266)
 plugged into the TV laptop's USB. The NodeMCU prints each press as a line of
 JSON, and the controller sends it on:
 
@@ -17,13 +17,13 @@ radio packet in `firmware/shared/remote_protocol.h`.
 ```bash
 pio=~/.platformio/penv/bin/pio
 $pio run -d firmware/dongle -t upload                   # NodeMCU
-$pio run -d firmware/remote -e s3zero-bench -t upload   # remote, on the desk
-$pio run -d firmware/remote -e s3zero -t upload         # remote, in the case
+$pio run -d firmware/remote -e xiao-bench -t upload     # remote, on the desk
+$pio run -d firmware/remote -e xiao -t upload           # remote, in the case
 ```
 
-The remote's builds for the 30-pin ESP32 DevKit are `devkit` and
-`devkit-bench`. If the S3-Zero does not show up for flashing, hold its **B**
-button while plugging it in.
+The same remote also builds for the ESP32-S3-Zero (`s3zero`, `s3zero-bench`)
+and the 30-pin ESP32 DevKit (`devkit`, `devkit-bench`). If a board does not
+show up for flashing, hold its **B** (BOOT) button while plugging it in.
 
 With both boards on USB, the controller finds the dongle by itself (it answers
 `?` with a greeting). To pin it, set `"remote": { "port": "/dev/ttyUSB0" }` in
@@ -39,6 +39,38 @@ Flash the remote with a `-bench` build, then open its serial monitor:
 
 Typing `u d l r o b + -` sends up, down, left, right, OK, Back, Volume + and
 Volume − as if pressed. The bench builds never sleep.
+
+## Wiring the remote (XIAO ESP32-C3)
+
+Each button connects its pin to **GND**; no resistors or diodes. The XIAO
+sleeps lightly between presses, so any button wakes it at once.
+
+| Button | Pin | GPIO |
+| ------ | --- | ---- |
+| Up     | D0  | 2    |
+| Down   | D2  | 4    |
+| Left   | D3  | 5    |
+| Right  | D4  | 6    |
+| OK     | D5  | 7    |
+| Back   | D10 | 10   |
+| Vol +  | D7  | 20   |
+| Vol −  | D8  | 8    |
+
+D9 (GPIO 9, the BOOT button) and D6 (GPIO 21, where it prints its start-up log)
+are left free.
+
+**Power:** the 800 mAh LiPo (it has its own protection board) straight to the
+**BAT+ / BAT−** pads under the XIAO. The XIAO charges it from its own USB-C port,
+which is also the port for flashing; it is safe to plug in with the battery
+fitted. Screw on the small antenna that came with the board: without it the
+range is a few centimetres.
+
+**Battery level (optional):** two 470 kΩ resistors in series from BAT+ to GND,
+with the middle point on **D1** (GPIO 3) and a 100 nF capacitor from there to
+GND.
+
+If light sleep drains the battery too fast, the XIAO can sleep deeper with a
+diode per button onto one wake pin; that wiring is not built yet.
 
 ## Wiring the remote (ESP32-S3-Zero)
 
@@ -95,5 +127,6 @@ sleeps until the next press.
 
 The sleep current, which decides how often the remote needs charging. Measure it
 with a multimeter in series with the battery, in its mA or µA range, a few
-seconds after the last press. The S3-Zero's colour LED and regulator are the
-parts to suspect if it is above about 0.2 mA.
+seconds after the last press. On the XIAO in light sleep, expect a fraction of a
+milliamp; 0.2 mA would last about five months on 800 mAh. On the S3-Zero, its
+colour LED and regulator are the parts to suspect if it is above about 0.2 mA.
