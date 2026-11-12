@@ -60,6 +60,82 @@ same Wi-Fi. From there:
 
 The page answers only addresses on the home network.
 
+## Debian package
+
+A TV running Debian without a desktop gets the controller and launcher as one
+package, built on a development machine:
+
+```bash
+yarn package:deb    # tools/package-deb/dist/kiosk-tv_<version>_amd64.deb
+```
+
+The controller and providers are bundled; only `serialport` (native code) and
+`playwright-core` are shipped as installed. The package also turns off Brave's
+telemetry and prompts through a policy in `/etc/brave/policies/managed`.
+
+### Preparing the TV
+
+Install Debian from the netinst image with no desktop, only "SSH server" and
+"standard system utilities". Then, as root:
+
+```bash
+# Node 24 or later from NodeSource, Brave from its own apt repository, then:
+apt install nodejs brave-browser cage xwayland pipewire pipewire-pulse \
+  wireplumber firmware-amd-graphics mesa-va-drivers fonts-noto-core
+apt install ./kiosk-tv_<version>_amd64.deb
+useradd --create-home tv
+usermod -aG video,render,audio,input,dialout tv
+```
+
+`dialout` lets the controller open the remote's dongle. The `tv` user needs no
+other rights.
+
+The `tv` user logs in on the first console by itself, once the network is up,
+through a drop-in at `/etc/systemd/system/getty@tty1.service.d/`:
+
+```ini
+[Unit]
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+ExecStart=
+ExecStart=-/sbin/agetty --autologin tv --noclear %I $TERM
+```
+
+and its `~/.profile` ends with:
+
+```sh
+if [ "$(tty)" = /dev/tty1 ]; then exec cage -- kiosk-tv-session; fi
+```
+
+`kiosk-tv-session` starts the `kiosk-tv` user service with cage's display, and
+cage shows Brave full screen. A Wi-Fi interface in `/etc/network/interfaces`
+must be `auto`, not `allow-hotplug`: with the latter, boot goes on before the
+connection is up, and the controller finds every service unreachable.
+
+### Signing in
+
+Set `"kiosk": false` in `/etc/kiosk-tv/tv.json` and restart the service. The
+services can then be signed in to from another computer, through Brave's
+DevTools port, which listens only on the TV itself:
+
+```bash
+ssh -N -L 9333:127.0.0.1:9222 <the TV>
+```
+
+In Chrome or Brave on that computer, `chrome://inspect/#devices`, **Configure**,
+add `localhost:9333`; each of the TV's tabs then has an **inspect** link that
+shows the page and takes clicks and typing. Sign in in each service's own tab,
+set the viewer profiles in `/etc/kiosk-tv/tv.json`, set `"kiosk": true`, and
+restart:
+
+```bash
+sudo -u tv XDG_RUNTIME_DIR=/run/user/$(id -u tv) systemctl --user restart kiosk-tv
+```
+
+The configuration in `/etc/kiosk-tv` survives upgrades.
+
 ## The remote
 
 Arrow keys, OK (Enter) and Back (Escape, Backspace or the browser Back key). A
