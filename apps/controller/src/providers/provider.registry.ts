@@ -91,7 +91,10 @@ export class ProviderRegistry {
           log,
         });
       } catch (error) {
-        entry.status = { state: 'failed', reason: String(error) };
+        entry.status = {
+          state: 'failed',
+          reason: error instanceof Error ? error.message : String(error),
+        };
         log.error('provider did not start', { error: String(error) });
       }
     }
@@ -107,7 +110,10 @@ export class ProviderRegistry {
         try {
           entry.status = await entry.provider.status();
         } catch (error) {
-          entry.status = { state: 'failed', reason: String(error) };
+          entry.status = {
+            state: 'failed',
+            reason: error instanceof Error ? error.message : String(error),
+          };
         }
         this.log.info('provider status', {
           provider: entry.manifest.id,
