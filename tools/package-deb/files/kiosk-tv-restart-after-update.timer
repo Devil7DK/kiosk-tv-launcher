@@ -1,0 +1,9 @@
+# While nobody watches. A TV that was off then picks the update up as it boots.
+[Unit]
+Description=Restart the TV at night if Brave or the controller was updated
+
+[Timer]
+OnCalendar=*-*-* 03:30
+
+[Install]
+WantedBy=timers.target

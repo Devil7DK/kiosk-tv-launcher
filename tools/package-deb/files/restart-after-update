@@ -1,0 +1,17 @@
+#!/bin/sh
+# Restarts the TV's controller, and Brave with it, when Brave, Node or this
+# package was installed since it started: a browser left running on replaced
+# files can fail to open new tabs.
+set -eu
+started=$(systemctl --user -M tv@ show kiosk-tv --timestamp=unix \
+  -p ActiveEnterTimestamp --value | tr -d @)
+[ -n "$started" ] || exit 0
+for package in brave-browser nodejs kiosk-tv; do
+  list=/var/lib/dpkg/info/$package.list
+  [ -e "$list" ] || continue
+  if [ "$(stat -c %Y "$list")" -gt "$started" ]; then
+    echo "restarting the TV: $package was updated"
+    systemctl --user -M tv@ daemon-reload
+    exec systemctl --user -M tv@ restart kiosk-tv
+  fi
+done

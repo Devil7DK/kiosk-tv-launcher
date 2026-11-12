@@ -12,7 +12,7 @@ import {
   stat,
   writeFile,
 } from 'node:fs/promises';
-import { join, relative } from 'node:path';
+import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { build } from 'rolldown';
@@ -26,6 +26,44 @@ const out = join(tool, 'dist');
 const root = join(out, 'root');
 const control = join(out, 'control');
 const lib = join(root, 'usr/lib/kiosk-tv');
+
+const FILES: { from: string; to: string; executable?: boolean }[] = [
+  { from: 'config/tv.example.json', to: 'etc/kiosk-tv/tv.json' },
+  {
+    from: 'tools/package-deb/files/brave-policy.json',
+    to: 'etc/brave/policies/managed/kiosk-tv.json',
+  },
+  {
+    from: 'tools/package-deb/files/apt-unattended-upgrades.conf',
+    to: 'etc/apt/apt.conf.d/52kiosk-tv-unattended-upgrades',
+  },
+  {
+    from: 'tools/package-deb/files/kiosk-tv.rules',
+    to: 'usr/share/polkit-1/rules.d/50-kiosk-tv.rules',
+  },
+  {
+    from: 'tools/package-deb/files/kiosk-tv.service',
+    to: 'usr/lib/systemd/user/kiosk-tv.service',
+  },
+  {
+    from: 'tools/package-deb/files/kiosk-tv-restart-after-update.service',
+    to: 'usr/lib/systemd/system/kiosk-tv-restart-after-update.service',
+  },
+  {
+    from: 'tools/package-deb/files/kiosk-tv-restart-after-update.timer',
+    to: 'usr/lib/systemd/system/kiosk-tv-restart-after-update.timer',
+  },
+  {
+    from: 'tools/package-deb/files/restart-after-update',
+    to: 'usr/lib/kiosk-tv/restart-after-update',
+    executable: true,
+  },
+  {
+    from: 'tools/package-deb/files/kiosk-tv-session',
+    to: 'usr/bin/kiosk-tv-session',
+    executable: true,
+  },
+];
 
 // Native code, or files read at runtime next to the code: copied, not bundled.
 const COPIED = ['serialport', 'playwright-core'];
@@ -125,8 +163,14 @@ async function writeControl(version: string): Promise<void> {
   // Kept as edited when the package is upgraded.
   await writeFile(
     join(control, 'conffiles'),
-    '/etc/kiosk-tv/tv.json\n/etc/brave/policies/managed/kiosk-tv.json\n',
+    FILES.filter((f) => f.to.startsWith('etc/'))
+      .map((f) => `/${f.to}\n`)
+      .join(''),
   );
+  for (const script of ['postinst', 'prerm']) {
+    await copyFile(join(tool, 'files', script), join(control, script));
+    await chmod(join(control, script), 0o755);
+  }
 }
 
 async function archive(version: string): Promise<string> {
@@ -167,32 +211,12 @@ await copyRuntimePackages();
 await cp(join(repo, 'apps/launcher/dist'), join(lib, 'apps/launcher/dist'), {
   recursive: true,
 });
-await mkdir(join(root, 'etc/kiosk-tv'), { recursive: true });
-await copyFile(
-  join(repo, 'config/tv.example.json'),
-  join(root, 'etc/kiosk-tv/tv.json'),
-);
-await mkdir(join(root, 'etc/brave/policies/managed'), { recursive: true });
-await copyFile(
-  join(tool, 'files/brave-policy.json'),
-  join(root, 'etc/brave/policies/managed/kiosk-tv.json'),
-);
-await mkdir(join(root, 'usr/share/polkit-1/rules.d'), { recursive: true });
-await copyFile(
-  join(tool, 'files/kiosk-tv.rules'),
-  join(root, 'usr/share/polkit-1/rules.d/50-kiosk-tv.rules'),
-);
-await mkdir(join(root, 'usr/lib/systemd/user'), { recursive: true });
-await copyFile(
-  join(tool, 'files/kiosk-tv.service'),
-  join(root, 'usr/lib/systemd/user/kiosk-tv.service'),
-);
-await mkdir(join(root, 'usr/bin'), { recursive: true });
-await copyFile(
-  join(tool, 'files/kiosk-tv-session'),
-  join(root, 'usr/bin/kiosk-tv-session'),
-);
-await chmod(join(root, 'usr/bin/kiosk-tv-session'), 0o755);
+for (const file of FILES) {
+  const target = join(root, file.to);
+  await mkdir(dirname(target), { recursive: true });
+  await copyFile(join(repo, file.from), target);
+  if (file.executable) await chmod(target, 0o755);
+}
 
 const dirty = git('status', '--porcelain') !== '';
 const version = debianVersion(

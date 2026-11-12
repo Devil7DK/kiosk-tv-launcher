@@ -1,0 +1,6 @@
+[Unit]
+Description=Restart the TV if Brave or the controller was updated
+
+[Service]
+Type=oneshot
+ExecStart=/usr/lib/kiosk-tv/restart-after-update
