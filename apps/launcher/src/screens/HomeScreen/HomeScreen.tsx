@@ -114,7 +114,11 @@ export function HomeScreen({
                   key={`${show.title.ref.provider}:${show.title.ref.id}`}
                   title={show.title.name}
                   subtitle={show.latest?.title}
-                  artwork={show.title.artwork}
+                  artwork={
+                    show.title.kind === 'channel' && show.latest
+                      ? show.latest.artwork
+                      : show.title.artwork
+                  }
                   badge={show.hasNew ? 'NEW' : undefined}
                   focused={at(2, i)}
                 />

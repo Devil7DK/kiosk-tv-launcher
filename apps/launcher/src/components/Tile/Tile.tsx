@@ -1,7 +1,7 @@
 import './Tile.css';
 
 import type { Artwork, Progress } from '@kiosk-tv/shared';
-import { useEffect, useRef } from 'preact/hooks';
+import { useEffect, useRef, useState } from 'preact/hooks';
 
 export interface TileProps {
   title: string;
@@ -27,11 +27,18 @@ export function Tile({
   }, [focused]);
 
   const image = artwork.landscape ?? artwork.backdrop;
+  const [failed, setFailed] = useState(false);
   return (
     <div ref={element} class={focused ? 'tile focused' : 'tile'}>
       <div class='tile-image'>
-        {image ? (
-          <img src={image.url} alt='' loading='lazy' decoding='async' />
+        {image && !failed ? (
+          <img
+            src={image.url}
+            alt=''
+            loading='lazy'
+            decoding='async'
+            onError={() => setFailed(true)}
+          />
         ) : (
           <div class='tile-fallback'>{title}</div>
         )}

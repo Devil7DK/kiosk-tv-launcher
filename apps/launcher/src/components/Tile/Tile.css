@@ -73,6 +73,10 @@
 .tile-subtitle {
   font-size: 0.75rem;
   color: var(--muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .tile.focused .tile-title {
