@@ -1,21 +1,24 @@
 import { z } from 'zod';
 
-import { LanguageSchema, RefSchema } from '../catalog/RefSchemas.js';
+import { CatalogItemSchema, TitleSchema } from '../catalog/ItemSchemas.js';
+import { LanguageSchema } from '../catalog/RefSchemas.js';
 
-/** A show the viewer follows, shown under "My shows". */
+/**
+ * A show added to "My shows" by hand. Shows on an account's own list (a
+ * watchlist) join them on every refresh and are not stored.
+ */
 export const FollowSchema = z.object({
-  ref: RefSchema,
-  /** `provider` follows mirror an account list (a watchlist) and leave with it. */
-  source: z.enum(['manual', 'provider']),
+  /** As it was when added, so Home can draw it before the provider answers. */
+  title: TitleSchema,
   addedAt: z.iso.datetime({ offset: true }),
 });
 export type Follow = z.infer<typeof FollowSchema>;
 
 export const PlaylistSourceSchema = z.discriminatedUnion('type', [
   /** Our own list; may mix providers. */
-  z.object({ type: z.literal('manual'), items: z.array(RefSchema) }),
+  z.object({ type: z.literal('manual'), items: z.array(CatalogItemSchema) }),
   /** A provider's playlist, such as a YouTube channel's, re-read on refresh. */
-  z.object({ type: z.literal('provider'), ref: RefSchema }),
+  z.object({ type: z.literal('provider'), title: TitleSchema }),
 ]);
 export type PlaylistSource = z.infer<typeof PlaylistSourceSchema>;
 

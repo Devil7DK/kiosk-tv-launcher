@@ -20,8 +20,20 @@ describe('LibrarySchema', () => {
           source: {
             type: 'manual',
             items: [
-              { provider: 'youtube', id: 'tMl4FpmGWWM' },
-              { provider: 'sunnxt', id: '282534' },
+              {
+                ref: { provider: 'youtube', id: 'tMl4FpmGWWM' },
+                kind: 'video',
+                title: 'Tiruchendur temple',
+                artwork: {},
+                url: 'https://www.youtube.com/watch?v=tMl4FpmGWWM',
+              },
+              {
+                ref: { provider: 'sunnxt', id: '198692' },
+                kind: 'series',
+                name: 'Moondru Mudichu',
+                artwork: {},
+                url: 'https://www.sunnxt.com/show/detail/198692/0',
+              },
             ],
           },
         },
