@@ -1,0 +1,42 @@
+.up-next {
+  display: flex;
+  gap: 3vw;
+  align-items: center;
+  padding: 12vh var(--gutter) 0;
+}
+
+.up-next-image {
+  flex: 0 0 42vw;
+  aspect-ratio: 16 / 9;
+  background: var(--surface);
+  border-radius: 0.4rem;
+  overflow: hidden;
+}
+
+.up-next-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.up-next-label {
+  color: var(--muted);
+  font-size: 1rem;
+}
+
+.up-next-title {
+  margin: 0.2em 0 0.1em;
+  font-size: 1.6rem;
+}
+
+.up-next-show {
+  font-size: 1.1rem;
+}
+
+.up-next-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.8rem;
+  margin-top: 1.2em;
+}

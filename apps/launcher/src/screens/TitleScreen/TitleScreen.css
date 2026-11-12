@@ -1,0 +1,39 @@
+.title-header {
+  position: relative;
+  min-height: 34vh;
+  padding: 6vh var(--gutter) 2vh;
+  background-size: cover;
+  background-position: center top;
+}
+
+.title-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, var(--bg) 25%, rgb(16 17 20 / 40%));
+}
+
+.title-header > * {
+  position: relative;
+}
+
+.title-name {
+  margin: 0 0 0.3em;
+  font-size: 1.8rem;
+}
+
+.title-description {
+  max-width: 55vw;
+  color: var(--muted);
+  font-size: 0.9rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.title-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1em;
+}
