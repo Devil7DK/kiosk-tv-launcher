@@ -24,6 +24,17 @@ export type ProviderCapability = z.infer<typeof ProviderCapabilitySchema>;
 export const ProviderStatusSchema = z.discriminatedUnion('state', [
   z.object({ state: z.literal('ready') }),
   z.object({ state: z.literal('loggedOut') }),
+  /** Switching back to the configured viewer profile failed. */
+  z.object({
+    state: z.literal('wrongProfile'),
+    expected: z.string(),
+    actual: z.string(),
+  }),
+  /** Still logged in, but the login runs out at `at` unless renewed. */
+  z.object({
+    state: z.literal('expiring'),
+    at: z.iso.datetime({ offset: true }),
+  }),
   z.object({ state: z.literal('failed'), reason: z.string() }),
 ]);
 export type ProviderStatus = z.infer<typeof ProviderStatusSchema>;
