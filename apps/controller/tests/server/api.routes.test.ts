@@ -2,6 +2,7 @@ import { mkdtemp } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
+import { progressAt } from '@kiosk-tv/shared';
 import { describe, expect, it } from 'vitest';
 
 import { CatalogService } from '../../src/catalog/catalog.service.js';
@@ -24,6 +25,10 @@ import {
 const serial = show('alpha', 's1', 'Moondru Mudichu');
 
 async function api() {
+  return (await setup()).app;
+}
+
+async function setup() {
   const fake = fakeProvider([
     { title: serial, episodes: [episode(serial, 1)] },
   ]);
@@ -55,16 +60,18 @@ async function api() {
     log: silentLog,
     screen: { showPlayer: async () => {}, showLauncher: async () => {} },
   });
-  return createApi({
+  const app = createApi({
     registry,
     catalog,
     library,
     playback,
+    watch,
     events,
     homeService,
     home: () => homeService.build(),
     log: silentLog,
   });
+  return { app, watch };
 }
 
 const json = (body: unknown) => ({
@@ -80,6 +87,19 @@ describe('API', () => {
     expect(
       ((await res.json()) as { page: { items: unknown[] } }).page.items,
     ).toHaveLength(1);
+  });
+
+  it('adds the progress recorded here to the episodes it lists', async () => {
+    const { app, watch } = await setup();
+    await watch.record(
+      episode(serial, 1),
+      progressAt(300, 1200, 'launcher', '2026-11-12T10:00:00Z'),
+    );
+    const res = await app.request('/titles/alpha:s1/episodes');
+    const listing = (await res.json()) as {
+      page: { items: { progress?: { positionSeconds: number } }[] };
+    };
+    expect(listing.page.items[0]?.progress?.positionSeconds).toBe(300);
   });
 
   it('answers 400 with the reason when a body does not match', async () => {

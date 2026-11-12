@@ -28,6 +28,7 @@ import {
   type PlaybackService,
 } from '../playback/playback.service.js';
 import type { ProviderRegistry } from '../providers/provider.registry.js';
+import type { WatchStore } from '../watch/watch.store.js';
 
 export interface ApiDeps {
   registry: ProviderRegistry;
@@ -36,6 +37,7 @@ export interface ApiDeps {
   homeService: HomeService;
   library: LibraryStore;
   playback: PlaybackService;
+  watch: WatchStore;
   events: EventHub;
   log: Logger;
 }
@@ -127,12 +129,17 @@ export function createApi(deps: ApiDeps): Hono {
   api.get('/titles/:refKey/episodes', async (c) => {
     const group = c.req.query('group');
     const at = cursor(c);
-    return c.json(
-      await deps.catalog.episodes(refParam(c), {
-        ...(group ? { group } : {}),
-        ...(at ? { cursor: at } : {}),
-      }),
-    );
+    const listing = await deps.catalog.episodes(refParam(c), {
+      ...(group ? { group } : {}),
+      ...(at ? { cursor: at } : {}),
+    });
+    return c.json({
+      ...listing,
+      page: {
+        ...listing.page,
+        items: await deps.watch.withProgress(listing.page.items),
+      },
+    });
   });
 
   api.get('/playback', (c) => c.json(deps.playback.state));

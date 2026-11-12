@@ -59,6 +59,16 @@ export class WatchStore {
     );
   }
 
+  /** The playables with the newer of their own and the recorded progress. */
+  async withProgress(playables: readonly Playable[]): Promise<Playable[]> {
+    const log = await this.file.read();
+    return playables.map((playable) => {
+      const recorded = log[refKey(playable.ref)]?.progress;
+      const progress = newerProgress(recorded, playable.progress);
+      return progress ? { ...playable, progress } : playable;
+    });
+  }
+
   /** The latest record of any episode of the show. */
   async lastOfShow(show: Ref): Promise<Watched | undefined> {
     const key = refKey(show);

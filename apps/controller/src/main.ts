@@ -113,6 +113,7 @@ app.route(
     homeService,
     library,
     playback,
+    watch,
     events,
     log,
   }),
