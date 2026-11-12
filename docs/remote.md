@@ -1,6 +1,6 @@
 # The remote
 
-A handheld ESP32 sends each button press by ESP-NOW to a NodeMCU (ESP8266)
+A handheld ESP32-S3-Zero sends each button press by ESP-NOW to a NodeMCU (ESP8266)
 plugged into the TV laptop's USB. The NodeMCU prints each press as a line of
 JSON, and the controller sends it on:
 
@@ -15,10 +15,15 @@ radio packet in `firmware/shared/remote_protocol.h`.
 ## Flashing
 
 ```bash
-~/.platformio/penv/bin/pio run -d firmware/dongle -t upload            # NodeMCU
-~/.platformio/penv/bin/pio run -d firmware/remote -e bench -t upload   # ESP32, on the desk
-~/.platformio/penv/bin/pio run -d firmware/remote -e release -t upload # ESP32, in the case
+pio=~/.platformio/penv/bin/pio
+$pio run -d firmware/dongle -t upload                   # NodeMCU
+$pio run -d firmware/remote -e s3zero-bench -t upload   # remote, on the desk
+$pio run -d firmware/remote -e s3zero -t upload         # remote, in the case
 ```
+
+The remote's builds for the 30-pin ESP32 DevKit are `devkit` and
+`devkit-bench`. If the S3-Zero does not show up for flashing, hold its **B**
+button while plugging it in.
 
 With both boards on USB, the controller finds the dongle by itself (it answers
 `?` with a greeting). To pin it, set `"remote": { "port": "/dev/ttyUSB0" }` in
@@ -26,49 +31,69 @@ With both boards on USB, the controller finds the dongle by itself (it answers
 
 ## Trying it without buttons
 
-Flash the remote with `-e bench`, then open its serial monitor:
+Flash the remote with a `-bench` build, then open its serial monitor:
 
 ```bash
-~/.platformio/penv/bin/pio device monitor -d firmware/remote -p /dev/ttyUSB1
+~/.platformio/penv/bin/pio device monitor -d firmware/remote -p /dev/ttyACM0
 ```
 
 Typing `u d l r o b + -` sends up, down, left, right, OK, Back, Volume + and
-Volume − as if pressed. The bench build never sleeps.
+Volume − as if pressed. The bench builds never sleep.
 
-## Wiring the remote (ESP32 DevKit, 30 pins)
+## Wiring the remote (ESP32-S3-Zero)
 
-Each button connects its pin to **3.3 V**. No resistors are needed: the chip's
-own pull-down resistors hold the pins low, also while it sleeps.
+Each button connects its pin to **GND**. No resistors are needed: the chip's own
+pull-up resistors hold the pins high, also while it sleeps.
 
 | Button | GPIO |
 | ------ | ---- |
-| Up     | 32   |
-| Down   | 33   |
-| Left   | 25   |
-| Right  | 26   |
-| OK     | 27   |
-| Back   | 14   |
-| Vol +  | 13   |
-| Vol −  | 4    |
+| Up     | 4    |
+| Down   | 5    |
+| Left   | 6    |
+| Right  | 7    |
+| OK     | 8    |
+| Back   | 9    |
+| Vol +  | 11   |
+| Vol −  | 12   |
 
-GPIO 0, 2, 12 and 15 decide how the chip starts; a button on them can stop it
-booting.
+GPIO 0, 3, 45 and 46 decide how the chip starts and are left free.
 
-**Battery level (optional):** two equal resistors (about 200 kΩ each) from the
-battery's + to ground, with the middle point on GPIO 34. Without them the remote
-reports no level.
+**Power:** the 800 mAh LiPo (it has its own protection board) → the USB-C
+charging module's **B+ / B−** → its **OUT+ / OUT−** → the S3-Zero's **5V** and
+**GND** pins. The board's own regulator makes 3.3 V from it. The module charges
+the cell from its USB-C port.
 
-**Power:** battery → charging module with protection (B+/B−) → its OUT+/OUT− →
-a low-drain 3.3 V regulator (MCP1700-3302 or HT7333) → the DevKit's **3V3** pin.
-Feeding 3V3 directly bypasses the DevKit's own regulator, which wastes milliamps
-while the chip sleeps. Remove the DevKit's power LED for the same reason. Never
-connect USB and the battery at the same time when powering through 3V3.
+- Charging current: these modules usually charge at 1 A, set by a resistor
+  marked `122` next to the 4056 chip. For an 800 mAh cell, replace it with a
+  `242` (2.4 kΩ, about 500 mA).
+- Do not plug USB into the S3-Zero while the battery is connected: its USB 5 V
+  would feed straight into the module's output. Disconnect the battery to flash,
+  or put a Schottky diode (1N5819) from OUT+ to the 5V pin.
 
-After a press the remote stays awake for six seconds, so moving around feels
-instant, then sleeps until the next press.
+**Battery level (optional):** two 470 kΩ resistors in series from OUT+ to GND,
+with the middle point on **GPIO 1** and a 100 nF capacitor from there to GND.
+Without them the remote reports no level.
+
+## Wiring the remote (ESP32 DevKit, 30 pins)
+
+The same firmware also runs on the DevKit, with buttons to **3.3 V** instead:
+
+| Button | Up  | Down | Left | Right | OK  | Back | Vol + | Vol − |
+| ------ | --- | ---- | ---- | ----- | --- | ---- | ----- | ----- |
+| GPIO   | 32  | 33   | 25   | 26    | 27  | 14   | 13    | 4     |
+
+Battery level goes to GPIO 34. The DevKit's power LED, regulator and USB chip
+draw milliamps while it sleeps; remove the LED and feed its 3V3 pin from a
+low-drain regulator (MCP1700-3302) to get months from a charge.
+
+## After a press
+
+The remote stays awake for six seconds, so moving around feels instant, then
+sleeps until the next press.
 
 ## Still to measure
 
-The sleep current with the changes above, which decides how often the remote
-needs charging. Measure it with a multimeter in series with the battery, in its
-mA or µA range, a few seconds after the last press.
+The sleep current, which decides how often the remote needs charging. Measure it
+with a multimeter in series with the battery, in its mA or µA range, a few
+seconds after the last press. The S3-Zero's colour LED and regulator are the
+parts to suspect if it is above about 0.2 mA.

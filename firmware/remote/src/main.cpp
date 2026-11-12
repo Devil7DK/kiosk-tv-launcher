@@ -15,8 +15,29 @@ struct Button {
   bool repeats;
 };
 
-// Buttons connect the pin to 3.3 V. These pins can wake the chip from deep
-// sleep and do not affect how it boots (unlike 0, 2, 12 and 15).
+#if defined(REMOTE_BOARD_S3_ZERO)
+// Buttons connect the pin to ground. GPIO 1-21 can wake the S3; 0, 3, 45 and
+// 46 decide how it boots and are left alone.
+constexpr bool kPressedLevel = LOW;
+constexpr esp_sleep_ext1_wakeup_mode_t kWakeMode = ESP_EXT1_WAKEUP_ANY_LOW;
+constexpr Button kButtons[] = {
+    {GPIO_NUM_4, remote::kUp, true},
+    {GPIO_NUM_5, remote::kDown, true},
+    {GPIO_NUM_6, remote::kLeft, true},
+    {GPIO_NUM_7, remote::kRight, true},
+    {GPIO_NUM_8, remote::kOk, false},
+    {GPIO_NUM_9, remote::kBack, false},
+    {GPIO_NUM_11, remote::kVolumeUp, true},
+    {GPIO_NUM_12, remote::kVolumeDown, true},
+};
+// ADC1, the converter that still works while the radio is on.
+constexpr int kBatteryPin = 1;
+#elif defined(REMOTE_BOARD_DEVKIT)
+// Buttons connect the pin to 3.3 V: the classic ESP32 cannot wake on a pin
+// pulled low among several. These pins can wake it and do not affect how it
+// boots (unlike 0, 2, 12 and 15).
+constexpr bool kPressedLevel = HIGH;
+constexpr esp_sleep_ext1_wakeup_mode_t kWakeMode = ESP_EXT1_WAKEUP_ANY_HIGH;
 constexpr Button kButtons[] = {
     {GPIO_NUM_32, remote::kUp, true},
     {GPIO_NUM_33, remote::kDown, true},
@@ -27,9 +48,12 @@ constexpr Button kButtons[] = {
     {GPIO_NUM_13, remote::kVolumeUp, true},
     {GPIO_NUM_4, remote::kVolumeDown, true},
 };
+constexpr int kBatteryPin = 34;
+#else
+#error "Build for a board: REMOTE_BOARD_S3_ZERO or REMOTE_BOARD_DEVKIT"
+#endif
 
 // Battery through two equal resistors; reads near 0 when none are fitted.
-constexpr int kBatteryPin = 34;
 constexpr float kBatteryDivider = 2.0f;
 
 constexpr uint32_t kDebounceMs = 25;
@@ -90,7 +114,7 @@ void readButtons() {
   for (size_t i = 0; i < sizeof(kButtons) / sizeof(kButtons[0]); i++) {
     const Button &button = kButtons[i];
     State &state = states[i];
-    const bool down = digitalRead(button.pin) == HIGH;
+    const bool down = digitalRead(button.pin) == kPressedLevel;
     if (down && !state.down) {
       if (now - state.since < kDebounceMs) continue;
       state.down = true;
@@ -130,7 +154,7 @@ void readSerialKeys() {
 #ifndef REMOTE_BENCH
 bool anyButtonDown() {
   for (const Button &button : kButtons) {
-    if (digitalRead(button.pin) == HIGH) return true;
+    if (digitalRead(button.pin) == kPressedLevel) return true;
   }
   return false;
 }
@@ -141,12 +165,18 @@ void sleepUntilPressed() {
   uint64_t mask = 0;
   for (const Button &button : kButtons) {
     mask |= 1ULL << button.pin;
-    rtc_gpio_pulldown_en(button.pin);
-    rtc_gpio_pullup_dis(button.pin);
+    // The chip's own resistors hold idle buttons at the released level.
+    if (kPressedLevel == HIGH) {
+      rtc_gpio_pulldown_en(button.pin);
+      rtc_gpio_pullup_dis(button.pin);
+    } else {
+      rtc_gpio_pullup_en(button.pin);
+      rtc_gpio_pulldown_dis(button.pin);
+    }
   }
-  // The pulldowns above need the RTC peripherals powered while asleep.
+  // The resistors above need the RTC peripherals powered while asleep.
   esp_sleep_pd_config(ESP_PD_DOMAIN_RTC_PERIPH, ESP_PD_OPTION_ON);
-  esp_sleep_enable_ext1_wakeup(mask, ESP_EXT1_WAKEUP_ANY_HIGH);
+  esp_sleep_enable_ext1_wakeup(mask, kWakeMode);
   esp_deep_sleep_start();
 }
 #endif
@@ -155,7 +185,9 @@ void sleepUntilPressed() {
 
 void setup() {
   Serial.begin(115200);
-  for (const Button &button : kButtons) pinMode(button.pin, INPUT_PULLDOWN);
+  for (const Button &button : kButtons) {
+    pinMode(button.pin, kPressedLevel == HIGH ? INPUT_PULLDOWN : INPUT_PULLUP);
+  }
   startRadio();
 
   // The button that woke the chip may be released by now; the wake cause still names it.
@@ -164,7 +196,7 @@ void setup() {
     for (size_t i = 0; i < sizeof(kButtons) / sizeof(kButtons[0]); i++) {
       if (woke & (1ULL << kButtons[i].pin)) {
         send(kButtons[i].key, false);
-        states[i].down = digitalRead(kButtons[i].pin) == HIGH;
+        states[i].down = digitalRead(kButtons[i].pin) == kPressedLevel;
         states[i].since = millis();
         states[i].lastSent = millis();
       }
