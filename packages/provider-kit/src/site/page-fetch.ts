@@ -27,17 +27,12 @@ export interface PageFetchInit {
   body?: string;
 }
 
-/**
- * Fetches from inside a page of the site, so the site's own cookies and origin
- * apply, and parses the JSON with `schema`. The response body never leaves this
- * function unparsed, so it cannot end up in a log.
- */
-export async function fetchJson<Schema extends z.ZodType>(
+/** Fetches from inside a page of the site and returns the body as text. */
+export async function fetchText(
   page: Page,
   url: string,
-  schema: Schema,
   init: PageFetchInit = {},
-): Promise<z.infer<Schema>> {
+): Promise<string> {
   const response = await page.evaluate(
     async ({ url, init }) => {
       const res = await fetch(url, { credentials: 'include', ...init });
@@ -49,9 +44,24 @@ export async function fetchJson<Schema extends z.ZodType>(
   if (response.status < 200 || response.status >= 300) {
     throw new SiteRequestError(url, response.status);
   }
+  return response.text;
+}
+
+/**
+ * Fetches from inside a page of the site, so the site's own cookies and origin
+ * apply, and parses the JSON with `schema`. The response body never leaves this
+ * function unparsed, so it cannot end up in a log.
+ */
+export async function fetchJson<Schema extends z.ZodType>(
+  page: Page,
+  url: string,
+  schema: Schema,
+  init: PageFetchInit = {},
+): Promise<z.infer<Schema>> {
+  const text = await fetchText(page, url, init);
   let json: unknown;
   try {
-    json = JSON.parse(response.text);
+    json = JSON.parse(text);
   } catch {
     throw new SiteResponseError(url, 'not JSON');
   }

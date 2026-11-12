@@ -4,6 +4,7 @@ import { z } from 'zod';
 
 import {
   fetchJson,
+  fetchText,
   SiteRequestError,
   SiteResponseError,
 } from '../../src/index.js';
@@ -35,5 +36,14 @@ describe('fetchJson', () => {
     const error = await fetchJson(page, url, schema).catch((e: unknown) => e);
     expect(error).toBeInstanceOf(SiteResponseError);
     expect(String(error)).toContain('results.0._id');
+  });
+});
+
+describe('fetchText', () => {
+  it('returns a body that is not JSON as it is', async () => {
+    const page = pageAnswering(200, 'Profile switched successfully!');
+    await expect(fetchText(page, url)).resolves.toBe(
+      'Profile switched successfully!',
+    );
   });
 });
