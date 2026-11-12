@@ -549,6 +549,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@hono/node-server@npm:^2.1.6":
+  version: 2.1.6
+  resolution: "@hono/node-server@npm:2.1.6"
+  peerDependencies:
+    hono: ^4 || ^5.0.0-0
+  checksum: 10c0/bb57a4e00f193b37f1e7c8a4b8206914ab3f6073d8e7da7ca4b005f0205d89ef9cd0bdb783a4b59869a4c9211f1567f3e0717f31e92704ed7b1801a33d3252d3
+  languageName: node
+  linkType: hard
+
 "@humanfs/core@npm:^0.19.2":
   version: 0.19.2
   resolution: "@humanfs/core@npm:0.19.2"
@@ -669,7 +678,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kiosk-tv/browser@workspace:packages/browser":
+"@kiosk-tv/browser@workspace:*, @kiosk-tv/browser@workspace:packages/browser":
   version: 0.0.0-use.local
   resolution: "@kiosk-tv/browser@workspace:packages/browser"
   dependencies:
@@ -680,6 +689,25 @@ __metadata:
     typescript: "npm:~6.0.0"
     vite: "npm:^8.3.5"
     vitest: "npm:^5.1.0"
+  languageName: unknown
+  linkType: soft
+
+"@kiosk-tv/controller@workspace:apps/controller":
+  version: 0.0.0-use.local
+  resolution: "@kiosk-tv/controller@workspace:apps/controller"
+  dependencies:
+    "@hono/node-server": "npm:^2.1.6"
+    "@kiosk-tv/browser": "workspace:*"
+    "@kiosk-tv/provider-kit": "workspace:*"
+    "@kiosk-tv/shared": "workspace:*"
+    "@types/node": "npm:^24"
+    eslint: "npm:^10.14.0"
+    hono: "npm:^4.13.17"
+    prettier: "npm:^3.9.10"
+    typescript: "npm:~6.0.0"
+    vite: "npm:^8.3.5"
+    vitest: "npm:^5.1.0"
+    zod: "npm:^4.6.7"
   languageName: unknown
   linkType: soft
 
@@ -2257,6 +2285,13 @@ __metadata:
   bin:
     he: bin/he
   checksum: 10c0/a27d478befe3c8192f006cdd0639a66798979dfa6e2125c6ac582a19a5ebfec62ad83e8382e6036170d873f46e4536a7e795bf8b95bf7c247f4cc0825ccc8c17
+  languageName: node
+  linkType: hard
+
+"hono@npm:^4.13.17":
+  version: 4.13.17
+  resolution: "hono@npm:4.13.17"
+  checksum: 10c0/63a2d834f0cf1b3858d5872883589ea48522567251bc4eb62c5f17e47cc6f793b2201150bca4822374165e92dbdcc8d3573443c7cdb8a340a933dce39e6df34d
   languageName: node
   linkType: hard
 
