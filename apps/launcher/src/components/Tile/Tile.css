@@ -1,0 +1,80 @@
+.tile {
+  flex: 0 0 22vw;
+  scroll-margin: 0 var(--gutter);
+}
+
+.tile-image {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: var(--surface);
+  border-radius: 0.3rem;
+  overflow: hidden;
+  outline: 0.3rem solid transparent;
+  outline-offset: 0.2rem;
+}
+
+.tile.focused .tile-image {
+  outline-color: var(--focus);
+}
+
+.tile-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.tile-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 0.5em;
+  box-sizing: border-box;
+  text-align: center;
+  font-size: 1.1rem;
+}
+
+.tile-badge {
+  position: absolute;
+  top: 0.4rem;
+  left: 0.4rem;
+  padding: 0.05em 0.4em;
+  border-radius: 0.2rem;
+  background: var(--new);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+
+.tile-progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 0.35rem;
+  background: rgb(0 0 0 / 60%);
+}
+
+.tile-progress > div {
+  height: 100%;
+  background: var(--focus);
+}
+
+.tile-title {
+  margin-top: 0.4em;
+  font-size: 0.9rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.tile-subtitle {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.tile.focused .tile-title {
+  color: var(--focus);
+}

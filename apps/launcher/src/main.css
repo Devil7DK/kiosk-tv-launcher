@@ -1,9 +1,15 @@
 :root {
   color-scheme: dark;
   --bg: #101114;
+  --surface: #1c1e23;
   --fg: #f4f1ea;
+  --muted: #b9b4aa;
+  --focus: #ffd400;
+  --new: #e8572a;
+  --gutter: 3vw;
   font-family: system-ui, sans-serif;
-  font-size: clamp(24px, 2.2vw, 40px);
+  font-size: clamp(24px, 2.2vw, 44px);
+  line-height: 1.25;
 }
 
 html,
@@ -13,4 +19,26 @@ body {
   background: var(--bg);
   color: var(--fg);
   cursor: none;
+  overflow: hidden;
+}
+
+#app {
+  height: 100%;
+}
+
+.screen {
+  height: 100%;
+  overflow-y: auto;
+  scrollbar-width: none;
+  padding-bottom: 20vh;
+  box-sizing: border-box;
+}
+
+.screen[hidden] {
+  display: none;
+}
+
+.screen-heading {
+  margin: 0.6em var(--gutter) 0.3em;
+  font-size: 1.5rem;
 }

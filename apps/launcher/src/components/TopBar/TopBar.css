@@ -1,0 +1,23 @@
+.top-bar {
+  display: flex;
+  gap: 1rem;
+  padding: 0.8em var(--gutter) 0.2em;
+}
+
+.top-bar-tab {
+  padding: 0.25em 0.8em;
+  border-radius: 999px;
+  font-size: 1rem;
+  color: var(--muted);
+  border: 0.15rem solid transparent;
+}
+
+.top-bar-tab.selected {
+  color: var(--fg);
+  background: var(--surface);
+}
+
+.top-bar-tab.focused {
+  border-color: var(--focus);
+  color: var(--focus);
+}

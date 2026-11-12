@@ -1,0 +1,14 @@
+.button {
+  display: inline-block;
+  padding: 0.4em 1.1em;
+  border-radius: 0.4rem;
+  background: var(--surface);
+  font-size: 1.1rem;
+  font-weight: 600;
+  border: 0.2rem solid transparent;
+}
+
+.button.focused {
+  background: var(--focus);
+  color: #111;
+}
