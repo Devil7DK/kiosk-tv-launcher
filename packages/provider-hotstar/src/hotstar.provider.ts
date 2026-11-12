@@ -105,7 +105,11 @@ export function createHotstarProvider(
   /** Name and month tabs of shows already opened, for paging without the show page. */
   const shows = new Map<string, { name: string; groups: EpisodeGroup[] }>();
 
-  async function ensureProfile(): Promise<ProviderStatus> {
+  /**
+   * `force` picks the profile even when the cookie already names it: the site
+   * asks "Who's watching?" again after a while, and only a pick answers that.
+   */
+  async function ensureProfile(force = false): Promise<ProviderStatus> {
     const page = await api.start('/in/mypage');
     const container = firstOf(
       pageWidgets(page, 'ProfilesContainerWidget'),
@@ -120,7 +124,9 @@ export function createHotstarProvider(
         reason: `JioHotstar has no viewer profile named "${config.profile}"`,
       };
     }
-    if ((await api.currentProfileId()) === wanted.id) return { state: 'ready' };
+    if (!force && (await api.currentProfileId()) === wanted.id) {
+      return { state: 'ready' };
+    }
 
     const actions = wanted.actions?.select_profile ?? wanted.select_profile;
     const url = actions?.on_click?.find((a) => a.fetch_widget)?.fetch_widget
@@ -141,7 +147,7 @@ export function createHotstarProvider(
   async function page(deeplink: string): Promise<StartPage> {
     const first = await api.start(deeplink);
     if (first.template !== 'OnboardingPage') return first;
-    await ensureProfile();
+    await ensureProfile(true);
     return api.start(deeplink);
   }
 

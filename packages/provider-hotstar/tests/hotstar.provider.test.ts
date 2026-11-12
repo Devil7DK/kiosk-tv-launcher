@@ -43,6 +43,26 @@ describe('JioHotstar provider', () => {
     );
   });
 
+  it('picks the profile again when the site asks who is watching, even if the cookie names it', async () => {
+    const onboarding = {
+      match: /deeplink_url":"\/in\/browse\/watchlist/,
+      body: fixture('my-page'),
+    };
+    const { page, site } = fakeSite([
+      onboarding,
+      myPage,
+      {
+        match: /switchProfile&position=4/,
+        body: {},
+        profileId: 'test00000000000000000000000000003',
+      },
+    ]);
+    await createHotstarProvider(contextFor(page)).library();
+    expect(site.requests.some((r) => r.url.includes('switchProfile'))).toBe(
+      true,
+    );
+  });
+
   it('refuses a profile name the account does not have', async () => {
     const { page } = fakeSite([myPage]);
     await expect(
