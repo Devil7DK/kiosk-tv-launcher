@@ -102,6 +102,29 @@ export class CatalogService {
     });
   }
 
+  /** The show, channel or playlist a link points at, from whichever service owns it. */
+  async resolve(link: string): Promise<Title | undefined> {
+    let url: URL;
+    try {
+      url = new URL(link);
+    } catch {
+      return undefined;
+    }
+    for (const { manifest, provider } of this.registry.usable()) {
+      if (!provider.resolve) continue;
+      try {
+        const title = await provider.resolve(url);
+        if (title) return title;
+      } catch (error) {
+        this.log.warn('provider could not read a link', {
+          provider: manifest.id,
+          error: String(error),
+        });
+      }
+    }
+    return undefined;
+  }
+
   /** The episode after `playable`: the provider's answer, or the newer neighbour in its list. */
   async nextOf(playable: Playable): Promise<Playable | undefined> {
     const provider = this.registry.get(playable.ref.provider);

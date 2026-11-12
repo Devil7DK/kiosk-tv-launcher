@@ -1,5 +1,6 @@
 import {
   CatalogItemSchema,
+  FollowLinkRequestSchema,
   FollowRequestSchema,
   parseRefKey,
   PlaybackCommandSchema,
@@ -195,6 +196,17 @@ export function createApi(deps: ApiDeps): Hono {
   api.put('/library/follows', async (c) => {
     const { title } = await body(c, FollowRequestSchema);
     return c.json(await deps.library.follow(title));
+  });
+  api.post('/library/follows/from-link', async (c) => {
+    const { url } = await body(c, FollowLinkRequestSchema);
+    const title = await deps.catalog.resolve(url);
+    if (!title) {
+      throw new HTTPException(400, {
+        message:
+          'That link is not a show, channel or playlist on a service the TV uses',
+      });
+    }
+    return c.json({ title, library: await deps.library.follow(title) });
   });
   api.delete('/library/follows/:refKey', async (c) => {
     const ref = refParam(c);

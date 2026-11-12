@@ -141,4 +141,30 @@ describe('API', () => {
     ).request('/library/follows/alpha:s9', { method: 'DELETE' });
     expect(res.status).toBe(404);
   });
+
+  it('follows what a pasted link points at', async () => {
+    const res = await (
+      await api()
+    ).request(
+      '/library/follows/from-link',
+      json({ url: 'https://alpha.example/show/s1' }),
+    );
+    expect(res.status).toBe(200);
+    const answer = (await res.json()) as {
+      title: { name: string };
+      library: { follows: unknown[] };
+    };
+    expect(answer.title.name).toBe('Moondru Mudichu');
+    expect(answer.library.follows).toHaveLength(1);
+  });
+
+  it('says plainly when a link is not one the TV knows', async () => {
+    const res = await (
+      await api()
+    ).request(
+      '/library/follows/from-link',
+      json({ url: 'https://example.org/somewhere' }),
+    );
+    expect(res.status).toBe(400);
+  });
 });

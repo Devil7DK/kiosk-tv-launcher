@@ -125,6 +125,8 @@ export function fakeProvider(
         items: catalog.find((c) => c.title.ref.id === ref.id)?.episodes ?? [],
       },
     }),
+    resolve: async (url) =>
+      catalog.find((c) => c.title.url === url.href)?.title,
     play: async (playable, options) => {
       plays.push({
         playable,
