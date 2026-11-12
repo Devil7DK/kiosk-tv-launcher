@@ -84,6 +84,23 @@ describe('DongleConnection', () => {
     await connection.stop();
   });
 
+  it('finds the greeting behind the noise the dongle prints as it starts', async () => {
+    const dongle = new FakeLink(
+      '\u0004cp~\u00fbo\u00fe{"hello":"kiosk-tv-dongle","version":1}',
+    );
+    const connection = new DongleConnection({
+      onPress: () => {},
+      log: silentLog,
+      ports: ports({ '/dev/ttyUSB0': dongle }),
+      helloTimeoutMs: 10,
+      retryMs: 10,
+    });
+    connection.start();
+    await tick(60);
+    expect(connection.connected).toBe(true);
+    await connection.stop();
+  });
+
   it('looks for the dongle again after it is unplugged', async () => {
     const dongle = new FakeLink('{"hello":"kiosk-tv-dongle","version":1}');
     const fake = ports({ '/dev/ttyUSB0': dongle });

@@ -61,6 +61,7 @@ export const usbSerialPorts: SerialPorts = {
     return new Promise((resolve, reject) => {
       const port = new SerialPort({ path, baudRate: 115200 }, (error) => {
         if (error) return reject(error);
+        restartIntoFirmware(port);
         const lines = port.pipe(new ReadlineParser({ delimiter: '\n' }));
         resolve({
           onLine: (listener) =>
@@ -77,9 +78,24 @@ export const usbSerialPorts: SerialPorts = {
   },
 };
 
+/**
+ * The NodeMCU's auto-reset circuit ties DTR to the boot-mode pin and RTS to
+ * reset, so the way the port was last opened or closed can leave the ESP8266
+ * in its silent flashing mode. A reset with DTR released always runs the
+ * firmware, which greets once it has started.
+ */
+function restartIntoFirmware(port: SerialPort): void {
+  port.set({ dtr: false, rts: true }, () => {
+    setTimeout(() => port.set({ dtr: false, rts: false }), 100);
+  });
+}
+
+/** The JSON object on a line, also behind the noise the ESP8266 prints as it starts. */
 function parseLine(line: string): unknown {
+  const start = line.indexOf('{"');
+  if (start < 0) return undefined;
   try {
-    return JSON.parse(line);
+    return JSON.parse(line.slice(start));
   } catch {
     return undefined;
   }
