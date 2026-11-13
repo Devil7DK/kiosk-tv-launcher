@@ -23,6 +23,8 @@ import {
   refKey,
   type RemoteStatus,
   RemoteStatusSchema,
+  type SearchResult,
+  SearchResultSchema,
   type SettingsUpdate,
   type Shelf,
   ShelfSchema,
@@ -157,6 +159,8 @@ export const adminApi = {
         playlists: z.array(TitleSchema),
       }),
     ),
+  searchAll: (q: string): Promise<SearchResult[]> =>
+    get(`/search${query({ q })}`, z.array(SearchResultSchema)),
   search: (provider: string, q: string): Promise<CatalogItem[]> =>
     get(
       `/providers/${provider}/search${query({ q })}`,

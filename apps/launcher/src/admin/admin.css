@@ -110,3 +110,8 @@
   border-radius: 4px;
   background: var(--admin-line);
 }
+
+/* Title beside the picture at full width; the buttons get a row of their own. */
+.admin li.item-line .grow {
+  flex: 1 1 calc(100% - 104px);
+}

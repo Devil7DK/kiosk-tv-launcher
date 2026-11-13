@@ -1,6 +1,7 @@
 import {
   type CatalogItem,
   isPlayable,
+  type Playable,
   type Playlist,
   type Ref,
   refKey,
@@ -34,6 +35,7 @@ export function ItemLine({
   followed,
   onFollow,
   onAddTo,
+  onPlay,
 }: {
   item: CatalogItem;
   playlists: Playlist[];
@@ -41,12 +43,14 @@ export function ItemLine({
   followed: ReadonlySet<string>;
   onFollow: (item: CatalogItem) => void;
   onAddTo: (playlistId: string, item: CatalogItem) => void;
+  /** Offered for what can be played: an episode, a video or a film. */
+  onPlay?: (playable: Playable) => void;
 }) {
   const manual = playlists.filter((p) => p.source.type === 'manual');
   const target = followTarget(item);
   const image = item.artwork.landscape;
   return (
-    <li>
+    <li class='item-line'>
       {image ? (
         <img class='thumb' src={image.url} alt='' loading='lazy' />
       ) : (
@@ -56,6 +60,11 @@ export function ItemLine({
         <div>{itemName(item)}</div>
         {itemSubtitle(item) && <div class='muted'>{itemSubtitle(item)}</div>}
       </div>
+      {onPlay && isPlayable(item) && (
+        <button class='primary' onClick={() => onPlay(item)}>
+          Play on TV
+        </button>
+      )}
       {target &&
         (followed.has(refKey(target.ref)) ? (
           <span class='muted'>In My shows</span>

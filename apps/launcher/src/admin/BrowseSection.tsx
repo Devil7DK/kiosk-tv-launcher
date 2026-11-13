@@ -9,6 +9,7 @@ import {
 import { useEffect, useState } from 'preact/hooks';
 
 import { adminApi, api } from '../api/api.client';
+import { followItem } from './follow';
 import { ItemLine } from './ItemLine';
 
 type View =
@@ -59,11 +60,8 @@ export function BrowseSection({
     );
 
   const follow = (item: CatalogItem) => {
-    if ('name' in item) return onChange(adminApi.follow(item));
-    // An episode or video: follow the show or channel it belongs to.
-    const parent = item.parent;
-    if (parent)
-      onChange(api.title(parent.ref).then((title) => adminApi.follow(title)));
+    const change = followItem(item);
+    if (change) onChange(change);
   };
   const followed = new Set(library.follows.map((f) => refKey(f.title.ref)));
   const addTo = (id: string, item: CatalogItem) =>
