@@ -202,3 +202,15 @@ export const TrayDataSchema = z.object({
   next_tray_url: str,
   more_grid_items_url: str,
 });
+
+/** A card in search results: the "MORE RESULTS" grid's, or the top match's hero. */
+export const SearchCardSchema = z.object({
+  title: z.string().min(1),
+  /** "2026  •  Tamil  •  Star Vijay"; the hero has `content_info` instead. */
+  sub_title: str,
+  content_info: z.array(z.string()).nullish(),
+  image: ImageSchema,
+  actions: ActionsSchema,
+  primary_cta: z.object({ actions: ActionsSchema }).nullish(),
+});
+export type SearchCard = z.infer<typeof SearchCardSchema>;

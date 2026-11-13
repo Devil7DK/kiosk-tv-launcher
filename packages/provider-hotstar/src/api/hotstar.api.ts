@@ -143,6 +143,17 @@ export class HotstarApi {
     return this.parse('/v2/start', answer.body, StartSchema).success.page;
   }
 
+  /** The site's search results page, as its explore page asks for it. */
+  async search(query: string): Promise<StartPage> {
+    const path = `/v2/pages/search?${new URLSearchParams([
+      ['search_query', query],
+      ['slug', 'in'],
+      ['slug', 'explore'],
+    ])}`;
+    const answer = await this.raw(path, 'GET');
+    return this.parse(path, answer.body, StartSchema).success.page;
+  }
+
   async space(path: string) {
     const answer = await this.raw(path, 'GET');
     return this.parse(path, answer.body, SpaceSchema).success.space;

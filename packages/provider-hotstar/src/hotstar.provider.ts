@@ -25,6 +25,7 @@ import {
   HeroSchema,
   PlayableContentSchema,
   ProfilesSchema,
+  SearchCardSchema,
   type StartPage,
   TrayDataSchema,
   type WidgetWrapper,
@@ -36,6 +37,7 @@ import {
   parsePosters,
   parseTiles,
   PROVIDER,
+  searchCardToItem,
 } from './catalog/hotstar.mapping.js';
 
 export interface HotstarConfig {
@@ -309,6 +311,39 @@ export function createHotstarProvider(
     },
 
     title,
+
+    /**
+     * The top match, then the shows and movies among the other results.
+     * Results also hold other languages' versions of a show, and promos.
+     */
+    async search(query, options) {
+      const found = await api.search(query);
+      const cards = [
+        ...pageWidgets(found, 'SearchHeroWidget'),
+        ...pageWidgets(found, 'GridWidget').flatMap((grid) =>
+          ((grid as { items?: unknown[] } | undefined)?.items ?? []).map(
+            (item) =>
+              (item as Record<string, { data?: unknown } | undefined>)
+                .search_horizontal_content_card?.data,
+          ),
+        ),
+      ];
+      const items = new Map<string, CatalogItem>();
+      for (const card of cards) {
+        const parsed = SearchCardSchema.safeParse(card);
+        if (!parsed.success) continue;
+        const item = searchCardToItem(parsed.data);
+        if (
+          item &&
+          !items.has(item.ref.id) &&
+          (!item.languages ||
+            item.languages.some((l) => options.languages.includes(l)))
+        ) {
+          items.set(item.ref.id, item);
+        }
+      }
+      return [...items.values()];
+    },
 
     async resolve(url) {
       if (!/(^|\.)hotstar\.com$/.test(url.hostname)) return undefined;

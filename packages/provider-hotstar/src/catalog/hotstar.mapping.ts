@@ -14,6 +14,7 @@ import {
   PlayableContentSchema,
   type Poster,
   PosterSchema,
+  type SearchCard,
   WatchInfoSchema,
 } from '../api/hotstar.schemas.js';
 
@@ -283,4 +284,61 @@ export function continueCardOf(
     ...(progress ? { progress } : {}),
     url: SITE + slug,
   };
+}
+
+const LANGUAGE_CODES: Record<string, string> = {
+  tamil: 'ta',
+  telugu: 'te',
+  hindi: 'hi',
+  kannada: 'kn',
+  malayalam: 'ml',
+  marathi: 'mr',
+  bengali: 'bn',
+  english: 'en',
+};
+
+/** A search card's languages, from the words of its details; none for "5 Languages". */
+function searchCardLanguages(card: SearchCard): string[] | undefined {
+  const words = [
+    ...(card.content_info ?? []),
+    ...(card.sub_title ?? '').split('•'),
+  ].map((w) => w.trim().toLowerCase());
+  const codes = words
+    .map((w) => LANGUAGE_CODES[w])
+    .filter((c): c is string => c !== undefined);
+  return codes.length > 0 ? codes : undefined;
+}
+
+/** A show or movie found by search; clips and promos are left out. */
+export function searchCardToItem(card: SearchCard): CatalogItem | undefined {
+  const slug = (
+    slugOf(card.actions) ?? slugOf(card.primary_cta?.actions)
+  )?.replace(/\?.*/, '');
+  const id = slug ? /\/(\d+)(?:\/watch)?$/.exec(slug)?.[1] : undefined;
+  if (!slug || !id) return undefined;
+  const landscape = image(card.image?.src, 640);
+  const artwork: Artwork = landscape
+    ? { landscape, backdrop: image(card.image?.src, 1920)! }
+    : {};
+  const languages = searchCardLanguages(card);
+  const common = { ...(languages ? { languages } : {}), artwork };
+  if (slug.startsWith('/in/shows/')) {
+    return {
+      ref: { provider: PROVIDER, id },
+      kind: 'series',
+      name: card.title,
+      ...common,
+      url: SITE + slug,
+    };
+  }
+  if (slug.startsWith('/in/movies/')) {
+    return {
+      ref: { provider: PROVIDER, id },
+      kind: 'movie',
+      title: card.title,
+      ...common,
+      url: SITE + (slug.endsWith('/watch') ? slug : `${slug}/watch`),
+    };
+  }
+  return undefined;
 }

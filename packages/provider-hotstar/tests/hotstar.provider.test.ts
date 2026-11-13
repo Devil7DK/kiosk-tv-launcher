@@ -182,4 +182,30 @@ describe('JioHotstar provider', () => {
       ),
     ).toBeUndefined();
   });
+
+  it('finds the top match and other shows in the chosen languages, never promos', async () => {
+    const searchPage = {
+      match: /pages\/search\?search_query=pandian\+stores/,
+      body: fixture('search-page'),
+    };
+    const { page } = fakeSite([searchPage]);
+    const provider = createHotstarProvider(contextFor(page));
+    const tamil = await provider.search!('pandian stores', {
+      languages: ['ta'],
+    });
+    expect(tamil).toEqual([
+      expect.objectContaining({
+        kind: 'series',
+        name: 'Pandian Stores 2',
+        languages: ['ta'],
+        url: 'https://www.hotstar.com/in/shows/pandian-stores-2/1260000603',
+      }),
+    ]);
+    const hindi = await provider.search!('pandian stores', {
+      languages: ['hi'],
+    });
+    expect(
+      hindi.map((item) => ('name' in item ? item.name : item.title)),
+    ).toEqual(['Pandya Store']);
+  });
 });
