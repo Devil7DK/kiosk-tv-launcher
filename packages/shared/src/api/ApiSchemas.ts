@@ -133,6 +133,14 @@ export type FollowRequest = z.infer<typeof FollowRequestSchema>;
 export const FollowLinkRequestSchema = z.object({ url: z.url() });
 export type FollowLinkRequest = z.infer<typeof FollowLinkRequestSchema>;
 
+/** What one service found; `failed` when it did not answer in time or at all. */
+export const SearchResultSchema = z.object({
+  provider: z.string(),
+  items: z.array(CatalogItemSchema),
+  failed: z.boolean(),
+});
+export type SearchResult = z.infer<typeof SearchResultSchema>;
+
 export const PowerActionSchema = z.enum(['shutdown', 'restart']);
 export type PowerAction = z.infer<typeof PowerActionSchema>;
 
