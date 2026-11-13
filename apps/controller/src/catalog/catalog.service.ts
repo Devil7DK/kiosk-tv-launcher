@@ -6,6 +6,7 @@ import {
   type Playable,
   type Ref,
   refKey,
+  type SearchResult,
   type Shelf,
   type Title,
 } from '@kiosk-tv/shared';
@@ -13,6 +14,9 @@ import {
 import type { Logger } from '../logging/logger.js';
 import type { ProviderRegistry } from '../providers/provider.registry.js';
 import { TtlCache } from './ttl.cache.js';
+
+/** Long enough for a slow site; short enough that the phone does not seem stuck. */
+const SEARCH_TIMEOUT_MS = 10_000;
 
 export class ProviderUnavailableError extends Error {
   override readonly name = 'ProviderUnavailableError';
@@ -100,6 +104,46 @@ export class CatalogService {
       if (!p.search) throw new Error('search is not offered');
       return p.search(query, options);
     });
+  }
+
+  /**
+   * Every service that can search, at once. A service that fails, or takes
+   * longer than `timeoutMs`, is reported as failed instead of holding up the rest.
+   */
+  async searchAll(
+    query: string,
+    options: CatalogOptions,
+    timeoutMs = SEARCH_TIMEOUT_MS,
+  ): Promise<SearchResult[]> {
+    const searching = this.registry
+      .usable()
+      .filter(({ provider }) => provider.search !== undefined);
+    return Promise.all(
+      searching.map(async ({ manifest, provider }) => {
+        let timer: NodeJS.Timeout | undefined;
+        const late = new Promise<never>((_, reject) => {
+          timer = setTimeout(
+            () => reject(new Error(`no answer in ${timeoutMs} ms`)),
+            timeoutMs,
+          );
+        });
+        try {
+          const items = await Promise.race([
+            provider.search!(query, options),
+            late,
+          ]);
+          return { provider: manifest.id, items, failed: false };
+        } catch (error) {
+          this.log.warn('provider search failed', {
+            provider: manifest.id,
+            error: String(error),
+          });
+          return { provider: manifest.id, items: [], failed: true };
+        } finally {
+          clearTimeout(timer);
+        }
+      }),
+    );
   }
 
   /** The show, channel or playlist a link points at, from whichever service owns it. */

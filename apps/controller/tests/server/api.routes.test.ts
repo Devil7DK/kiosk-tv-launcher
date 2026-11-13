@@ -231,4 +231,12 @@ describe('API', () => {
     ).request('/bluetooth/devices/not-an-address/connect', json({}));
     expect(res.status).toBe(400);
   });
+
+  it('searches every service at once, and wants something to search for', async () => {
+    const app = await api();
+    expect((await app.request('/search?q=%20')).status).toBe(400);
+    const res = await app.request('/search?q=moondru');
+    expect(res.status).toBe(200);
+    expect(await res.json()).toEqual([]);
+  });
 });

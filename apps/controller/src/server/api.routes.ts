@@ -119,6 +119,13 @@ export function createApi(deps: ApiDeps): Hono {
       }),
     );
   });
+  api.get('/search', async (c) => {
+    const query = c.req.query('q')?.trim();
+    if (!query) throw new HTTPException(400, { message: 'Missing q' });
+    return c.json(
+      await deps.catalog.searchAll(query, { languages: await languages() }),
+    );
+  });
   api.get('/providers/:id/search', async (c) => {
     const query = c.req.query('q')?.trim();
     if (!query) throw new HTTPException(400, { message: 'Missing q' });
