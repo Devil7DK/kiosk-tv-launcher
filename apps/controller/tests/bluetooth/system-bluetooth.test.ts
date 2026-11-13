@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+  devicesToReconnect,
   failureOf,
   parseDevices,
 } from '../../src/bluetooth/system-bluetooth.js';
@@ -30,5 +31,31 @@ describe('failureOf', () => {
       'Device 00:11:22:33:44:55 not available',
     );
     expect(failureOf('Connection successful\n')).toBeUndefined();
+  });
+});
+
+describe('devicesToReconnect', () => {
+  const speaker = {
+    address: '00:11:22:33:44:55',
+    name: 'Speaker',
+    paired: true,
+    connected: false,
+  };
+
+  it('calls back a paired speaker that went away', () => {
+    expect(devicesToReconnect([speaker], new Set())).toEqual([speaker.address]);
+  });
+
+  it('leaves alone a device disconnected on purpose, one never paired, and one still connected', () => {
+    expect(
+      devicesToReconnect(
+        [
+          speaker,
+          { ...speaker, address: '66:77:88:99:AA:BB', paired: false },
+          { ...speaker, address: 'AA:BB:CC:DD:EE:FF', connected: true },
+        ],
+        new Set([speaker.address]),
+      ),
+    ).toEqual([]);
   });
 });

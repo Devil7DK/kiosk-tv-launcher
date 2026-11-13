@@ -19,6 +19,22 @@ export interface Bluetooth {
   connect(address: string): Promise<void>;
   disconnect(address: string): Promise<void>;
   forget(address: string): Promise<void>;
+  /** Tries once to bring back paired devices that went away, such as a speaker switched off and on. */
+  reconnect(): Promise<void>;
+}
+
+/**
+ * Paired devices worth calling: not connected, and not disconnected on
+ * purpose from the admin page.
+ */
+export function devicesToReconnect(
+  devices: readonly BluetoothDevice[],
+  disconnectedOnPurpose: ReadonlySet<string>,
+): string[] {
+  return devices
+    .filter((d) => d.paired && !d.connected)
+    .map((d) => d.address)
+    .filter((address) => !disconnectedOnPurpose.has(address));
 }
 
 const LINE = /^Device ((?:[0-9A-F]{2}:){5}[0-9A-F]{2}) (.+)$/;
@@ -59,6 +75,8 @@ async function bluetoothctl(...args: string[]): Promise<string> {
 /** The computer's own Bluetooth adapter, driven through BlueZ's bluetoothctl. */
 export function createSystemBluetooth(log: Logger): Bluetooth {
   let searching = false;
+  let reconnecting = false;
+  const disconnectedOnPurpose = new Set<string>();
 
   async function available(): Promise<boolean> {
     const shown = await bluetoothctl('show').catch(() => '');
@@ -71,7 +89,7 @@ export function createSystemBluetooth(log: Logger): Bluetooth {
     );
   }
 
-  return {
+  const bluetooth: Bluetooth = {
     async status() {
       if (!(await available())) {
         return { available: false, scanning: false, devices: [] };
@@ -110,6 +128,7 @@ export function createSystemBluetooth(log: Logger): Bluetooth {
     },
 
     async connect(address) {
+      disconnectedOnPurpose.delete(address);
       const known = await devices('Paired');
       if (!known.some((d) => d.address === address)) {
         // Speakers have no screen or keys, so the pairing asks for nothing.
@@ -121,11 +140,36 @@ export function createSystemBluetooth(log: Logger): Bluetooth {
     },
 
     async disconnect(address) {
+      disconnectedOnPurpose.add(address);
       await bluetoothctl('disconnect', address);
     },
 
     async forget(address) {
+      disconnectedOnPurpose.delete(address);
       await bluetoothctl('remove', address);
     },
+
+    async reconnect() {
+      if (reconnecting || searching) return;
+      reconnecting = true;
+      try {
+        const { available, devices: known } = await bluetooth.status();
+        if (!available) return;
+        for (const address of devicesToReconnect(
+          known,
+          disconnectedOnPurpose,
+        )) {
+          // Fails while the device is off; the next round tries again.
+          const back = await bluetoothctl('connect', address).then(
+            () => true,
+            () => false,
+          );
+          if (back) log.info('bluetooth device reconnected', { address });
+        }
+      } finally {
+        reconnecting = false;
+      }
+    },
   };
+  return bluetooth;
 }

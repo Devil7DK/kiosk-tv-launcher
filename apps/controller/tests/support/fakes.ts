@@ -182,6 +182,7 @@ export function fakeBluetooth(nearby: { address: string; name: string }[]) {
       if (device) devices.set(address, { ...device, connected: false });
     },
     forget: async (address) => void devices.delete(address),
+    reconnect: async () => {},
   };
   return bluetooth;
 }

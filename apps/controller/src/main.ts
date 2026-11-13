@@ -29,6 +29,10 @@ import { WatchStore } from './watch/watch.store.js';
 
 const STATUS_EVERY_MS = 15 * 60_000;
 const BATTERY_EVERY_MS = 60_000;
+// A speaker that was switched off cannot call back, so the TV calls it. Each
+// call at a device that is off keeps the shared Wi-Fi and Bluetooth radio busy
+// for about five seconds, so not more often.
+const BLUETOOTH_RECONNECT_EVERY_MS = 30_000;
 
 const configPath =
   process.argv[2] ??
@@ -100,6 +104,7 @@ const playback = new PlaybackService({
 });
 
 let battery = await readTvBattery();
+const bluetooth = createSystemBluetooth(log.child('bluetooth'));
 const remoteStatus = new RemoteStatusTracker();
 const remoteInput = createRemoteInput({
   playback,
@@ -164,7 +169,7 @@ app.route(
     events,
     remote: () => remoteStatus.current,
     battery: () => battery,
-    bluetooth: createSystemBluetooth(log.child('bluetooth')),
+    bluetooth,
     ...(config.power.enabled ? { power: powerTv } : {}),
     log,
   }),
@@ -212,10 +217,16 @@ const batteryTimer = setInterval(() => {
   });
 }, BATTERY_EVERY_MS);
 
+const bluetoothTimer = setInterval(
+  () => void bluetooth.reconnect().catch(() => {}),
+  BLUETOOTH_RECONNECT_EVERY_MS,
+);
+
 async function shutdown(signal: string) {
   log.info('stopping', { signal });
   clearInterval(statusTimer);
   clearInterval(batteryTimer);
+  clearInterval(bluetoothTimer);
   await dongle?.stop().catch(() => {});
   server.close();
   await registry.dispose();
