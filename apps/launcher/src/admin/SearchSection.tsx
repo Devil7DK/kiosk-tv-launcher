@@ -26,6 +26,8 @@ export function SearchSection({
   onChange: (change: Promise<Library>) => void;
 }) {
   const [query, setQuery] = useState('');
+  /** A service's id, or empty for every service at once. */
+  const [service, setService] = useState('');
   const [results, setResults] = useState<SearchResult[] | undefined>();
   const [busy, setBusy] = useState(false);
   /** Services whose whole list is shown, not only the first few results. */
@@ -34,6 +36,12 @@ export function SearchSection({
     { text: string; error: boolean } | undefined
   >();
 
+  const searchable = providers.filter(
+    (p) =>
+      p.capabilities.includes('search') &&
+      p.status.state !== 'failed' &&
+      p.status.state !== 'loggedOut',
+  );
   const nameOf = (id: string) =>
     providers.find((p) => p.manifest.id === id)?.manifest.name ?? id;
   const followed = new Set(library.follows.map((f) => refKey(f.title.ref)));
@@ -44,8 +52,13 @@ export function SearchSection({
     if (!text || busy) return;
     setBusy(true);
     setMessage(undefined);
-    adminApi
-      .searchAll(text)
+    const found: Promise<SearchResult[]> = service
+      ? adminApi.search(service, text).then(
+          (items) => [{ provider: service, items, failed: false }],
+          () => [{ provider: service, items: [], failed: true }],
+        )
+      : adminApi.searchAll(text);
+    found
       .then(
         (found) => {
           setResults(found);
@@ -72,7 +85,7 @@ export function SearchSection({
         Type the name in English letters: ZEE5 and Sun NXT do not find Tamil
         letters. Voice typing works too, with the keyboard set to English.
       </p>
-      <form class='row-form' onSubmit={search}>
+      <form class='row-form search-form' onSubmit={search}>
         <input
           class='grow'
           type='search'
@@ -81,6 +94,18 @@ export function SearchSection({
           placeholder='Show, film or video name'
           onInput={(e) => setQuery(e.currentTarget.value)}
         />
+        <select
+          aria-label='Service to search'
+          value={service}
+          onChange={(e) => setService(e.currentTarget.value)}
+        >
+          <option value=''>All services</option>
+          {searchable.map((p) => (
+            <option key={p.manifest.id} value={p.manifest.id}>
+              {p.manifest.name}
+            </option>
+          ))}
+        </select>
         <button class='primary' type='submit' disabled={busy}>
           {busy ? 'Searching…' : 'Search'}
         </button>

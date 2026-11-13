@@ -115,3 +115,12 @@
 .admin li.item-line .grow {
   flex: 1 1 calc(100% - 104px);
 }
+
+/* The words get a line of their own on a phone; the service and the button share the next. */
+.admin .search-form input {
+  flex: 1 1 100%;
+}
+
+.admin .search-form select {
+  flex: 1;
+}
