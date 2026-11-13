@@ -1,0 +1,70 @@
+{
+  "code": 200,
+  "status": "SUCCESS",
+  "results": [
+    {
+      "_id": "253787",
+      "globalServiceId": null,
+      "generalInfo": {
+        "type": "movie",
+        "title": "Moondram Kan",
+        "briefDescription": "After a factory manager's murder, four suspects find themsel"
+      },
+      "content": {
+        "language": ["tamil"],
+        "duration": "1:55:00",
+        "releaseDate": "2026-06-12T00:00:00.000Z"
+      },
+      "images": {
+        "values": [
+          {
+            "type": "preview",
+            "profile": "xxhdpi",
+            "resolution": "1600x1200",
+            "link": "https://sund-images.sunnxt.com/253787/1600x1200_MoondramKan_253787_f99d04eb-d02e-4ddd-8693-c5868d9ca876.jpg",
+            "operator": "myplex"
+          },
+          {
+            "type": "preview",
+            "profile": "xhdpi",
+            "resolution": "832x623",
+            "link": "https://sund-images.sunnxt.com/253787/832x623_MoondramKan_253787_f99d04eb-d02e-4ddd-8693-c5868d9ca876.jpg",
+            "operator": "myplex"
+          }
+        ]
+      }
+    },
+    {
+      "_id": "13533",
+      "globalServiceId": null,
+      "generalInfo": {
+        "type": "movie",
+        "title": "Bharya Onnu Makkal Moonu",
+        "briefDescription": "Chandramohan has never been able to live up to the expectati"
+      },
+      "content": {
+        "language": ["malayalam"],
+        "duration": "2:2:00",
+        "releaseDate": "2009-02-18T00:00:00.000Z"
+      },
+      "images": {
+        "values": [
+          {
+            "type": "thumbnail",
+            "profile": "xhdpi",
+            "resolution": "1000x1500",
+            "link": "https://sund-images.sunnxt.com/13533/1000x1500_20a87309-6b82-422d-a399-6d7c437a1776.jpg",
+            "operator": "myplex"
+          },
+          {
+            "type": "thumbnail",
+            "profile": "hdpi",
+            "resolution": "500x750",
+            "link": "https://sund-images.sunnxt.com/13533/500x750_20a87309-6b82-422d-a399-6d7c437a1776.jpg",
+            "operator": "myplex"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -119,6 +119,18 @@ export class SunNxtApi {
     );
   }
 
+  /**
+   * One kind of result, as the search page asks for each: `type` is
+   * "tvSeries,vodChannel,vod" for shows and their episodes, "movie" for films.
+   * Without `type`, `searchFields` and `publishingHouseId` the answer is unrelated.
+   */
+  search(query: string, type: string) {
+    return this.get(
+      `${API}/content/v3/search/?${FIELDS}&level=dynamic&query=${encodeURIComponent(query)}&startIndex=1&count=10&type=${type}&searchFields=title&publishingHouseId=45&languageFilters=`,
+      ContentListSchema,
+    );
+  }
+
   favourites() {
     return this.get(
       `${API}/user/v2/contentList/favorites/?level=devicemin&count=100`,

@@ -1,0 +1,142 @@
+{
+  "code": 200,
+  "status": "SUCCESS",
+  "results": [
+    {
+      "_id": "245454",
+      "globalServiceId": "GID_245454",
+      "generalInfo": {
+        "type": "vodchannel",
+        "title": "Moondru Mudichu - Highlights",
+        "displayTitle": "Feb 28, 2026",
+        "briefDescription": "Highlights of The Week"
+      },
+      "content": {
+        "language": ["tamil"],
+        "serialNo": "",
+        "duration": "0:20:00",
+        "releaseDate": "2026-02-28T18:12:00.000Z"
+      },
+      "images": {
+        "values": [
+          {
+            "type": "preview",
+            "profile": "xxhdpi",
+            "resolution": "1600x1200",
+            "link": "https://sund-images.sunnxt.com/245454/1600x1200_MoondruMudichuHighlights_245454_6875b6e7-e444-4e90-8f90-d231483baec2.jpg",
+            "operator": "myplex"
+          },
+          {
+            "type": "preview",
+            "profile": "xhdpi",
+            "resolution": "832x623",
+            "link": "https://sund-images.sunnxt.com/245454/832x623_MoondruMudichuHighlights_245454_6875b6e7-e444-4e90-8f90-d231483baec2.jpg",
+            "operator": "myplex"
+          }
+        ]
+      }
+    },
+    {
+      "_id": "240302",
+      "globalServiceId": "GID_240302",
+      "generalInfo": {
+        "type": "vodchannel",
+        "title": "Moondru Mudichu - Weekly Recap",
+        "displayTitle": "Dec 22, 2025",
+        "briefDescription": "Moondru Mudichu - Weekly Recap"
+      },
+      "content": {
+        "language": ["tamil"],
+        "serialNo": "",
+        "duration": "0:44:00",
+        "releaseDate": "2025-12-22T11:05:00.000Z"
+      },
+      "images": {
+        "values": [
+          {
+            "type": "preview",
+            "profile": "xxhdpi",
+            "resolution": "1600x1200",
+            "link": "https://sund-images.sunnxt.com/240302/1600x1200_MoondruMudichuWeeklyRecap_240302_3ca78753-74ea-43b6-8e98-9cbb3ff150d3.jpg",
+            "operator": "myplex"
+          },
+          {
+            "type": "preview",
+            "profile": "xhdpi",
+            "resolution": "832x623",
+            "link": "https://sund-images.sunnxt.com/240302/832x623_MoondruMudichuWeeklyRecap_240302_3ca78753-74ea-43b6-8e98-9cbb3ff150d3.jpg",
+            "operator": "myplex"
+          }
+        ]
+      }
+    },
+    {
+      "_id": "253122",
+      "globalServiceId": "GID_198692",
+      "generalInfo": {
+        "type": "vod",
+        "title": "Moondru Mudichu - Jun 08, 2026",
+        "displayTitle": "E555 - Jun 08, 2026",
+        "briefDescription": "Nandini is a self-assured girl who puts her family’s happine"
+      },
+      "content": {
+        "language": ["tamil"],
+        "serialNo": "555",
+        "duration": "0:44:00",
+        "releaseDate": "2026-06-08T20:30:00.000Z"
+      },
+      "images": {
+        "values": [
+          {
+            "type": "preview",
+            "profile": "xxhdpi",
+            "resolution": "1600x1200",
+            "link": "https://sund-images.sunnxt.com/253122/1600x1200_MoondruMudichuJun082026_253122_d3e32376-5cb6-4d1a-81a3-e584579c435c.jpg",
+            "operator": "myplex"
+          },
+          {
+            "type": "preview",
+            "profile": "xhdpi",
+            "resolution": "832x623",
+            "link": "https://sund-images.sunnxt.com/253122/832x623_MoondruMudichuJun082026_253122_d3e32376-5cb6-4d1a-81a3-e584579c435c.jpg",
+            "operator": "myplex"
+          }
+        ]
+      }
+    },
+    {
+      "_id": "252733",
+      "globalServiceId": "GID_198692",
+      "generalInfo": {
+        "type": "vod",
+        "title": "Moondru Mudichu - Jun 05, 2026",
+        "displayTitle": "E553 - Jun 05, 2026",
+        "briefDescription": "Nandini is a self-assured girl who puts her family’s happine"
+      },
+      "content": {
+        "language": ["tamil"],
+        "serialNo": "553",
+        "duration": "0:44:00",
+        "releaseDate": "2026-06-05T20:30:00.000Z"
+      },
+      "images": {
+        "values": [
+          {
+            "type": "preview",
+            "profile": "xxhdpi",
+            "resolution": "1600x1200",
+            "link": "https://sund-images.sunnxt.com/252733/1600x1200_MoondruMudichuJun052026_252733_05a267db-9aae-420d-8e2b-017bedf5490a.jpg",
+            "operator": "myplex"
+          },
+          {
+            "type": "preview",
+            "profile": "xhdpi",
+            "resolution": "832x623",
+            "link": "https://sund-images.sunnxt.com/252733/832x623_MoondruMudichuJun052026_252733_05a267db-9aae-420d-8e2b-017bedf5490a.jpg",
+            "operator": "myplex"
+          }
+        ]
+      }
+    }
+  ]
+}

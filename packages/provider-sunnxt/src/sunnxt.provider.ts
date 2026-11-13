@@ -35,6 +35,11 @@ import {
   toTitle,
 } from './catalog/sunnxt.mapping.js';
 
+/** What the search page asks for that the TV can show: shows with their episodes, and films. */
+const SEARCH_TYPES = ['tvSeries,vodChannel,vod', 'movie'];
+/** Each costs a request, so only the shows of the first few episodes found. */
+const SEARCH_SHOWS_LOOKED_UP = 3;
+
 export interface SunNxtConfig {
   profile: string;
 }
@@ -196,6 +201,66 @@ export function createSunNxtProvider(
       const title = toTitle(await detail(ref.id));
       if (!title) throw new Error(`Sun NXT content ${ref.id} is not a show`);
       return title;
+    },
+
+    /**
+     * Shows first, then episodes and films. Search lists a serial's episodes
+     * but not the serial itself, so the shows those episodes belong to are
+     * looked up, and named on each episode.
+     */
+    async search(query, options) {
+      const answers = await Promise.all(
+        SEARCH_TYPES.map((type) => api.search(query, type)),
+      );
+      const contents = answers.flatMap((answer, index) =>
+        parseContents(answer.results, log, `search ${SEARCH_TYPES[index]}`),
+      );
+      const shows = new Map<string, Title>();
+      for (const content of contents) {
+        const show = toTitle(content);
+        if (show) shows.set(show.ref.id, show);
+      }
+      const unnamed = [
+        ...new Set(
+          contents
+            .filter((c) => c.generalInfo.type === 'vod')
+            .map(showIdOf)
+            .filter((id): id is string => id !== undefined && !shows.has(id)),
+        ),
+      ].slice(0, SEARCH_SHOWS_LOOKED_UP);
+      for (const show of await Promise.all(
+        unnamed.map((id) => detail(id).then(toTitle, () => undefined)),
+      )) {
+        if (show) shows.set(show.ref.id, show);
+      }
+
+      const found = new Map<string, CatalogItem>();
+      const add = (item: CatalogItem) => {
+        if (!found.has(item.ref.id) && inLanguages(item, options.languages))
+          found.set(item.ref.id, item);
+      };
+      // A serial with episodes among the results before its highlights and recaps.
+      const withEpisodes = new Set(
+        contents.filter((c) => c.generalInfo.type === 'vod').map(showIdOf),
+      );
+      const ordered = [...shows.values()].sort(
+        (a, b) =>
+          Number(withEpisodes.has(b.ref.id)) -
+          Number(withEpisodes.has(a.ref.id)),
+      );
+      for (const show of ordered) add(show);
+      for (const content of contents) {
+        const playable = toPlayable(content);
+        if (!playable) continue;
+        const showId = showIdOf(content);
+        const show = showId ? shows.get(showId) : undefined;
+        add(
+          playable.parent || !show
+            ? playable
+            : { ...playable, parent: { ref: show.ref, name: show.name } },
+        );
+      }
+      return [...found.values()];
     },
 
     async resolve(url) {

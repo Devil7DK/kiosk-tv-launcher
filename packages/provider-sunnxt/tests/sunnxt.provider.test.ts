@@ -120,4 +120,33 @@ describe('Sun NXT provider', () => {
       await provider.resolve!(new URL('https://www.hotstar.com/in/shows/x/1')),
     ).toBeUndefined();
   });
+
+  it('finds a serial through its episodes, named on each, and leaves out other languages', async () => {
+    const { page } = fakeSite([
+      { match: /search\/.*type=tvSeries/, body: fixture('search-shows') },
+      { match: /search\/.*type=movie/, body: fixture('search-movies') },
+      {
+        match: /contentDetail\/198692\//,
+        body: fixture('content-detail-show'),
+      },
+    ]);
+    const found = await createSunNxtProvider(contextFor(page)).search!(
+      'moondru mudichu',
+      { languages: ['ta'] },
+    );
+    expect(
+      found.map((item) => ('name' in item ? item.name : item.title)),
+    ).toEqual([
+      'Moondru Mudichu',
+      'Moondru Mudichu - Highlights',
+      'Moondru Mudichu - Weekly Recap',
+      'E555 - Jun 08, 2026',
+      'E553 - Jun 05, 2026',
+      'Moondram Kan',
+    ]);
+    expect(found[3]).toMatchObject({
+      kind: 'episode',
+      parent: { ref: { id: '198692' }, name: 'Moondru Mudichu' },
+    });
+  });
 });
