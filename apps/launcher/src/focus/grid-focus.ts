@@ -57,6 +57,24 @@ export function moveFocus(
   }
 }
 
+/**
+ * Keeps each row's focus on the same item when new data reorders the row, as
+ * when the show just watched moves to the front of Continue watching. A row
+ * whose item is gone keeps its position.
+ */
+export function followItems(
+  focus: GridFocus,
+  before: readonly (readonly string[])[],
+  after: readonly (readonly string[])[],
+): GridFocus {
+  const columns = focus.columns.map((column, row) => {
+    const key = before[row]?.[column];
+    const moved = key === undefined ? -1 : (after[row]?.indexOf(key) ?? -1);
+    return moved >= 0 ? moved : column;
+  });
+  return { ...focus, columns };
+}
+
 /** Keeps focus inside rows that shrank or vanished after new data arrived. */
 export function clampFocus(
   focus: GridFocus,

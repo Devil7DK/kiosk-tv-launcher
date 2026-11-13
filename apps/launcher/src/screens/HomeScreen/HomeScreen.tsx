@@ -1,5 +1,5 @@
-import type { Home } from '@kiosk-tv/shared';
-import { useEffect, useState } from 'preact/hooks';
+import { type Home, refKey } from '@kiosk-tv/shared';
+import { useEffect, useRef, useState } from 'preact/hooks';
 
 import { api } from '../../api/api.client';
 import { useLoad } from '../../api/useLoad';
@@ -15,6 +15,7 @@ import {
 import {
   clampFocus,
   columnOf,
+  followItems,
   moveFocus,
   startFocus,
   toTabs,
@@ -27,6 +28,16 @@ import {
   type Navigation,
 } from '../../navigation/navigation';
 import { useRemote } from '../../remote/useRemote';
+
+/** The items of each row by key, the tabs' row left empty. */
+function keysOf(home: Home): string[][] {
+  return [
+    [],
+    home.continueWatching.map((p) => refKey(p.ref)),
+    home.myShows.map((s) => refKey(s.title.ref)),
+    ...home.playlists.map((p) => p.items.map((item) => refKey(item.ref))),
+  ];
+}
 
 function rowsOf(home: Home | undefined, tabs: number): number[] {
   if (!home) return [tabs];
@@ -52,9 +63,14 @@ export function HomeScreen({
   const lengths = rowsOf(home, topBarLength(navigation.tabs, navigation.power));
   // Start on the first row with something to watch, not on the tabs.
   const [focus, setFocus] = useState(() => startFocus(1));
+  const shownKeys = useRef<string[][]>([]);
   useEffect(() => {
-    if (home) setFocus((f) => clampFocus(f, lengths));
-  }, [lengths.join()]);
+    if (!home) return;
+    const keys = keysOf(home);
+    const before = shownKeys.current;
+    shownKeys.current = keys;
+    setFocus((f) => clampFocus(followItems(f, before, keys), lengths));
+  }, [home]);
 
   useRemote((key) => {
     if (key === 'back') return setFocus((f) => toTabs(f, 0));

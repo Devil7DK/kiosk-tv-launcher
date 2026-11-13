@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   clampFocus,
   columnOf,
+  followItems,
   moveFocus,
   startFocus,
   toTabs,
@@ -44,5 +45,24 @@ describe('toTabs', () => {
   it('takes Back from a row up to the screen’s own tab, keeping each row’s place', () => {
     const inRow = { row: 2, columns: [3, 1, 4] };
     expect(toTabs(inRow, 1)).toEqual({ row: 0, columns: [1, 1, 4] });
+  });
+});
+
+describe('followItems', () => {
+  it('keeps focus on the show just watched when it moves to the front', () => {
+    const before = [[], ['moondru', 'sembaruthi', 'trek']];
+    const after = [[], ['sembaruthi', 'moondru', 'trek']];
+    const focus = { row: 1, columns: [0, 1] };
+    expect(followItems(focus, before, after)).toEqual({
+      row: 1,
+      columns: [0, 0],
+    });
+  });
+
+  it('keeps the position in a row whose item is gone', () => {
+    const focus = { row: 1, columns: [0, 2] };
+    expect(followItems(focus, [[], ['a', 'b', 'c']], [[], ['a', 'b']])).toEqual(
+      focus,
+    );
   });
 });
