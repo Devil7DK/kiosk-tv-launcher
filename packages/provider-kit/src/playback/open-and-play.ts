@@ -97,13 +97,31 @@ async function dismissOverlays(page: Page, selectors: string[]): Promise<void> {
   }
 }
 
+/**
+ * The video fills the screen. Something being full screen is not enough:
+ * YouTube makes the whole page full screen, and its player can fall back to
+ * its normal size while the page stays full screen.
+ */
 async function isFullscreen(page: Page): Promise<boolean> {
-  return page.evaluate(() => document.fullscreenElement !== null);
+  return page.evaluate((mark) => {
+    const video = document.querySelector(`video[${mark}]`);
+    if (!document.fullscreenElement || !video) return false;
+    const { width, height } = video.getBoundingClientRect();
+    return width >= innerWidth * 0.9 || height >= innerHeight * 0.9;
+  }, MARK);
 }
 
 async function goFullscreen(page: Page, profile: PlayerProfile): Promise<void> {
   const how = profile.fullscreen;
   const video = page.locator(`video[${MARK}]`);
+  // A page left full screen ignores the player's request to go full screen, so
+  // the player never grows. Safe only while starting: leaving full screen
+  // during playback stops it.
+  const stuck = await page.evaluate(() => document.fullscreenElement !== null);
+  if (stuck) {
+    await page.evaluate(() => document.exitFullscreen());
+    await delay(600);
+  }
   if ('key' in how) {
     await page.keyboard.press(how.key);
   } else if ('dblclick' in how) {
