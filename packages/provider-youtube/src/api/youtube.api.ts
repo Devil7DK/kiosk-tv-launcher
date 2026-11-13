@@ -28,6 +28,10 @@ export class YouTubeApi {
     return this.call('browse', { ...request });
   }
 
+  async search(query: string): Promise<unknown> {
+    return this.call('search', { query });
+  }
+
   /** The channel id behind a link like youtube.com/@name. */
   async resolveChannel(link: string): Promise<string | undefined> {
     const json = (await this.call('navigation/resolve_url', { url: link })) as {

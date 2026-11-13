@@ -31,6 +31,23 @@ export function collect(
   return out;
 }
 
+/** Values under any of `keys`, anywhere in the answer, in document order, with their key. */
+export function collectEach(
+  json: Json,
+  keys: readonly string[],
+  out: [string, unknown][] = [],
+): [string, unknown][] {
+  if (Array.isArray(json)) {
+    for (const value of json) collectEach(value, keys, out);
+  } else if (json && typeof json === 'object') {
+    for (const [k, value] of Object.entries(json)) {
+      if (keys.includes(k)) out.push([k, value]);
+      else collectEach(value, keys, out);
+    }
+  }
+  return out;
+}
+
 /** Newer lists wrap the command in another one: `continuationItemViewModel`. */
 export function continuationOf(json: Json): string | undefined {
   for (const command of collect(json, 'continuationCommand')) {
@@ -144,6 +161,66 @@ export function lockupToPlayable(
           ),
         }
       : {}),
+    url: `${SITE}/watch?v=${encodeURIComponent(id)}`,
+  };
+}
+
+const VideoRendererSchema = z.object({
+  videoId: z.string().min(1),
+  title: z.object({
+    runs: z.array(z.object({ text: z.string() })).min(1),
+  }),
+  /** Absent for a live stream. */
+  lengthText: z.object({ simpleText: z.string() }).optional(),
+  ownerText: z
+    .object({
+      runs: z
+        .array(
+          z.object({
+            text: z.string(),
+            navigationEndpoint: z
+              .object({
+                browseEndpoint: z.object({ browseId: z.string() }).optional(),
+              })
+              .optional(),
+          }),
+        )
+        .min(1),
+    })
+    .optional(),
+});
+
+/** A video in search results, which use this older format rather than lockups. */
+export function videoRendererToPlayable(
+  renderer: unknown,
+): Playable | undefined {
+  const parsed = VideoRendererSchema.safeParse(renderer);
+  if (!parsed.success) return undefined;
+  const { videoId: id, lengthText, ownerText } = parsed.data;
+  const duration = lengthText ? parseClock(lengthText.simpleText) : undefined;
+  if (duration === undefined || duration < SHORTEST_VIDEO_SECONDS) {
+    return undefined;
+  }
+  const title = parsed.data.title.runs.map((r) => r.text).join('');
+  const owner = ownerText?.runs[0];
+  const channelId = owner?.navigationEndpoint?.browseEndpoint?.browseId;
+  const number = episodeNumber(title);
+  return {
+    ref: { provider: PROVIDER, id },
+    kind: 'video',
+    title,
+    ...(number === undefined ? {} : { number }),
+    ...(owner && channelId && isChannelId(channelId)
+      ? {
+          parent: {
+            ref: { provider: PROVIDER, id: channelId },
+            name: owner.text,
+          },
+        }
+      : {}),
+    ...(owner ? { description: owner.text } : {}),
+    durationSeconds: duration,
+    artwork: thumbnails(id),
     url: `${SITE}/watch?v=${encodeURIComponent(id)}`,
   };
 }

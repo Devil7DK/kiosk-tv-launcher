@@ -4,18 +4,27 @@ import {
   type Provider,
   type ProviderContext,
 } from '@kiosk-tv/provider-kit';
-import type { Page, Playable, Ref, Shelf, Title } from '@kiosk-tv/shared';
+import type {
+  CatalogItem,
+  Page,
+  Playable,
+  Ref,
+  Shelf,
+  Title,
+} from '@kiosk-tv/shared';
 
 import { type Browse, YouTubeApi } from './api/youtube.api.js';
 import {
   channelToTitle,
   collect,
+  collectEach,
   continuationOf,
   isChannelId,
   isNewestFirst,
   lockupAgeSeconds,
   lockupToPlayable,
   lockupToPlaylist,
+  videoRendererToPlayable,
 } from './catalog/youtube.mapping.js';
 
 /** The Videos tab of a channel, newest first. */
@@ -232,6 +241,26 @@ export function createYouTubeProvider(
     },
 
     title,
+
+    /** Channels, videos and playlists, in YouTube's order; Shorts and live streams left out. */
+    async search(query) {
+      const json = await api.search(query);
+      const found: CatalogItem[] = [];
+      for (const [key, value] of collectEach(json, [
+        'channelRenderer',
+        'videoRenderer',
+        'lockupViewModel',
+      ])) {
+        const item =
+          key === 'channelRenderer'
+            ? channelToTitle(value)
+            : key === 'videoRenderer'
+              ? videoRendererToPlayable(value)
+              : lockupToPlaylist(value);
+        if (item) found.push(item);
+      }
+      return found;
+    },
 
     async episodes(ref, options = {}) {
       if (!isChannelId(ref.id)) {

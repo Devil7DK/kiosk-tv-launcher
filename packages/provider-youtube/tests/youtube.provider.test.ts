@@ -160,4 +160,29 @@ describe('YouTube provider', () => {
     ]);
     expect(shelves.next).toBeUndefined();
   });
+
+  it('finds channels, videos and playlists, leaving out Shorts and live streams', async () => {
+    const { page, requests } = fakeSite([
+      { match: (r) => r.query === 'tenali raman', body: fixture('search') },
+    ]);
+    const found = await createYouTubeProvider(contextFor(page)).search!(
+      'tenali raman',
+      { languages: ['ta'] },
+    );
+    expect(requests).toContainEqual({ query: 'tenali raman' });
+    expect(found.map((item) => item.kind)).toEqual([
+      'channel',
+      'video',
+      'video',
+      'playlist',
+      'video',
+    ]);
+    const episode = found[1]!;
+    expect(episode).toMatchObject({
+      title: expect.stringContaining('Tenali Raman | Episode 367'),
+      number: 367,
+      parent: { name: 'Thanthi One' },
+    });
+    expect(found.some((item) => item.ref.id === 'shortvideo01')).toBe(false);
+  });
 });
