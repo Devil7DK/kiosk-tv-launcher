@@ -36,3 +36,19 @@ query ($country: String, $translation: String) {
     contents { ... on TVShow { id title description languages webUrl image { list cover } } }
   }
 }`;
+
+/** The search page's query (SRQ), asking only for what search results are mapped from. */
+export const SEARCH_QUERY = `
+query ($searchQueryInRailInput: SearchQueryInRailInput!) {
+  hybridSearchResults(searchQueryInRailInput: $searchQueryInRailInput) {
+    rails {
+      id tags
+      contents {
+        ... on Episode {
+          id title assetSubType webUrl slug languages description duration
+          episodeNumber releaseDate image { list } tvShow { id title }
+        }
+      }
+    }
+  }
+}`;

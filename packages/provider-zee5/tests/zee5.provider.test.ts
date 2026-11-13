@@ -121,4 +121,32 @@ describe('ZEE5 provider', () => {
       await provider.resolve!(new URL('https://www.youtube.com/@x')),
     ).toBeUndefined();
   });
+
+  it('finds the show and its newest episodes, leaving out what it merely suggests', async () => {
+    const { page, site } = fakeSite([
+      { match: /SRQ/, body: fixture('search') },
+    ]);
+    const found = await createZee5Provider(contextFor(page), now).search!(
+      'karthigai deepam',
+      { languages: ['ta'] },
+    );
+    expect(
+      found.map((item) => ('name' in item ? item.name : item.title)),
+    ).toEqual([
+      'Karthigai Deepam',
+      'Revathi Conceals the Truth',
+      'Shreya Despises Chamundeshwari',
+      'Karthikeyan Hesitates To Reveal The Truth',
+    ]);
+    expect(found[1]).toMatchObject({
+      kind: 'episode',
+      parent: { name: 'Karthigai Deepam' },
+      url: expect.stringMatching(
+        /^https:\/\/www\.zee5\.com\/tv-shows\/details\//,
+      ),
+    });
+    expect(site.requests.find((r) => r.includes('SRQ'))).toContain(
+      '"query":"karthigai deepam"',
+    );
+  });
 });

@@ -9,7 +9,12 @@ import {
 import type { z } from 'zod';
 
 import { SITE } from '../api/zee5.api.js';
-import type { Episode, RailItem, Show } from '../api/zee5.schemas.js';
+import type {
+  Episode,
+  RailItem,
+  SearchItem,
+  Show,
+} from '../api/zee5.schemas.js';
 
 export const PROVIDER = 'zee5';
 
@@ -143,4 +148,21 @@ export function railItemToCatalogItem(item: RailItem): CatalogItem | undefined {
     };
   }
   return undefined;
+}
+
+/** A search result: an episode with its show, or a show or movie as in the site's rails. */
+export function searchItemToCatalogItem(
+  item: SearchItem,
+): CatalogItem | undefined {
+  if (item.assetSubType !== 'episode') return railItemToCatalogItem(item);
+  return episodeToPlayable({
+    id: item.id,
+    title: item.title,
+    episodeNumber: item.episodeNumber,
+    releaseDate: item.releaseDate,
+    duration: item.duration,
+    webUrl: item.webUrl ?? item.slug,
+    image: { list: item.image?.list },
+    tvShow: item.tvShow,
+  });
 }

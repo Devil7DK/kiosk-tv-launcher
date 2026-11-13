@@ -119,3 +119,26 @@ export const MovieLanguagePageSchema = z.object({
     }),
   }),
 });
+
+/** Search results are all typed Episode, whatever they are; `assetSubType` says. */
+export const SearchItemSchema = RailItemSchema.extend({
+  episodeNumber: z.number().nullish(),
+  tvShow: z.object({ id: z.string(), title: z.string() }).nullish(),
+});
+export type SearchItem = z.infer<typeof SearchItemSchema>;
+
+export const SearchAnswerSchema = gqlSchema(
+  z.object({
+    hybridSearchResults: z
+      .object({
+        rails: z.array(
+          z.object({
+            id: z.string(),
+            tags: z.array(z.string()).nullish(),
+            contents: z.array(z.unknown()).nullish(),
+          }),
+        ),
+      })
+      .nullish(),
+  }),
+);

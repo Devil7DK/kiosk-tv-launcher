@@ -1,0 +1,131 @@
+{
+  "data": {
+    "hybridSearchResults": {
+      "rails": [
+        {
+          "id": "Top_Results",
+          "tags": ["all", "ui_grid", "portrait_small"],
+          "contents": [
+            {
+              "id": "0-6-4z5262158",
+              "title": "Karthigai Deepam",
+              "assetSubType": "tvshow",
+              "webUrl": null,
+              "slug": "tv-shows/details/karthigai-deepam/0-6-4z5262158",
+              "languages": ["ta"],
+              "description": "After Deepa's death, Karthikeyan returns to his village with Parameshwari and Ra",
+              "duration": 0,
+              "episodeNumber": null,
+              "releaseDate": "2022-12-05",
+              "image": {
+                "list": "1920x1080listee4ff0779c594ee6b7f346fcc8a6f5fdbb59c65e4ed14666ba67ac73147050bd"
+              },
+              "tvShow": null
+            }
+          ]
+        },
+        {
+          "id": "Primary_Lang_Episodes",
+          "tags": ["differentepisodelist"],
+          "contents": [
+            {
+              "id": "0-1-6z51107736",
+              "title": "Revathi Conceals the Truth",
+              "assetSubType": "episode",
+              "webUrl": null,
+              "slug": "tv-shows/details/karthigai-deepam/0-6-4z5262158/revathi-conceals-the-truth/0-1-6z51107736",
+              "languages": ["ta"],
+              "description": "Revathi conceals the truth from Chamundeshwari about Arun.",
+              "duration": 1243,
+              "episodeNumber": 1412,
+              "releaseDate": "2026-11-13",
+              "image": {
+                "list": "0000000484ebeb37471014a5e965aeff047d585f0"
+              },
+              "tvShow": {
+                "id": "0-6-4z5262158",
+                "title": "Karthigai Deepam"
+              }
+            },
+            {
+              "id": "0-1-6z51107732",
+              "title": "Shreya Despises Chamundeshwari",
+              "assetSubType": "episode",
+              "webUrl": null,
+              "slug": "tv-shows/details/karthigai-deepam/0-6-4z5262158/shreya-despises-chamundeshwari/0-1-6z51107732",
+              "languages": ["ta"],
+              "description": "Chamundeswari is delighted to learn Dinesh's sister is Shreya, but Shreya despis",
+              "duration": 1216,
+              "episodeNumber": 1413,
+              "releaseDate": "2026-11-13",
+              "image": {
+                "list": "00000009736a60e55729b4e928c999fda390703cb"
+              },
+              "tvShow": {
+                "id": "0-6-4z5262158",
+                "title": "Karthigai Deepam"
+              }
+            },
+            {
+              "id": "0-1-6z51107735",
+              "title": "Karthikeyan Hesitates To Reveal The Truth",
+              "assetSubType": "episode",
+              "webUrl": null,
+              "slug": "tv-shows/details/karthigai-deepam/0-6-4z5262158/karthikeyan-hesitates-to-reveal-the-truth/0-1-6z51107735",
+              "languages": ["ta"],
+              "description": "Karthikeyan hesitates to reveal the truth when Revathi enquires about the heart ",
+              "duration": 1195,
+              "episodeNumber": 1411,
+              "releaseDate": "2026-11-12",
+              "image": {
+                "list": "000000113cc858c7a37684c41ab47bbe4bbb12b04"
+              },
+              "tvShow": {
+                "id": "0-6-4z5262158",
+                "title": "Karthigai Deepam"
+              }
+            }
+          ]
+        },
+        {
+          "id": "0",
+          "tags": ["all", "ui_grid", "portrait_small"],
+          "contents": [
+            {
+              "id": "0-6-4z5761653",
+              "title": "Ayali",
+              "assetSubType": "tvshow",
+              "webUrl": null,
+              "slug": "tv-shows/details/ayali/0-6-4z5761653",
+              "languages": ["ta"],
+              "description": "Shunned by her family over false accusations against her mother, Ayali tolerates",
+              "duration": 0,
+              "episodeNumber": null,
+              "releaseDate": "2025-06-02",
+              "image": {
+                "list": "1920x1080list529d07e21077414c86e33a1742037c4ec7a4abf7ca144a95af72d494290c6ecc"
+              },
+              "tvShow": null
+            },
+            {
+              "id": "0-6-4z5437832",
+              "title": "Sandhya Raagam",
+              "assetSubType": "tvshow",
+              "webUrl": null,
+              "slug": "tv-shows/details/sandhya-raagam/0-6-4z5437832",
+              "languages": ["ta"],
+              "description": "Circumstances separate sisters Janaki and Sandhya. Fate brings Sandhya's daughte",
+              "duration": 0,
+              "episodeNumber": null,
+              "releaseDate": "2023-10-09",
+              "image": {
+                "list": "1920x1080list6d0822f3aee3433da12d40fa79996361cd15e0c07065427fbc86d798aee1e7be"
+              },
+              "tvShow": null
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

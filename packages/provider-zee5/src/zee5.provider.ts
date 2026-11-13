@@ -17,6 +17,7 @@ import { Zee5Api } from './api/zee5.api.js';
 import {
   EPISODES_QUERY,
   HISTORY_QUERY,
+  SEARCH_QUERY,
   SHOW_QUERY,
   WATCHLIST_QUERY,
 } from './api/zee5.queries.js';
@@ -27,6 +28,8 @@ import {
   MovieLanguagePageSchema,
   ProfilesAnswerSchema,
   RailItemSchema,
+  SearchAnswerSchema,
+  SearchItemSchema,
   ShowAnswerSchema,
   ShowSchema,
   TvLanguagePageSchema,
@@ -36,6 +39,7 @@ import {
   episodeToPlayable,
   parseEach,
   railItemToCatalogItem,
+  searchItemToCatalogItem,
   showToTitle,
 } from './catalog/zee5.mapping.js';
 
@@ -207,6 +211,47 @@ export function createZee5Provider(
 
     async title(ref): Promise<Title> {
       return showToTitle(await show(ref.id));
+    },
+
+    /**
+     * The site's top results, then the latest episodes of the top show. Its
+     * "You may also like" rail is left out: it is not about the query.
+     */
+    async search(query, options) {
+      const answer = await api.query(
+        'SRQ',
+        SEARCH_QUERY,
+        {
+          searchQueryInRailInput: {
+            query,
+            country: 'IN',
+            filters: {},
+            languages: options.languages.join(','),
+            translation: 'en',
+            profileType: 1,
+          },
+        },
+        SearchAnswerSchema,
+      );
+      const rails = (answer.data?.hybridSearchResults?.rails ?? []).filter(
+        (rail) =>
+          rail.id === 'Top_Results' ||
+          rail.tags?.includes('differentepisodelist'),
+      );
+      const found = new Map<string, CatalogItem>();
+      for (const rail of rails) {
+        for (const item of parseEach(
+          rail.contents,
+          SearchItemSchema,
+          log,
+          `search ${rail.id}`,
+        )) {
+          const mapped = searchItemToCatalogItem(item);
+          if (mapped && !found.has(mapped.ref.id))
+            found.set(mapped.ref.id, mapped);
+        }
+      }
+      return [...found.values()];
     },
 
     async resolve(url) {
