@@ -1,3 +1,4 @@
+import type { Page } from 'playwright-core';
 import { describe, expect, it } from 'vitest';
 
 import { createYouTubeProvider } from '../src/youtube.provider.js';
@@ -184,5 +185,35 @@ describe('YouTube provider', () => {
       parent: { name: 'Thanthi One' },
     });
     expect(found.some((item) => item.ref.id === 'shortvideo01')).toBe(false);
+  });
+
+  it('tells which video the player moved on to, as autoplay does', async () => {
+    const player = {
+      url: () => 'https://www.youtube.com/watch?v=ULRrrf3AQWw',
+      evaluate: async () => ({
+        videoId: 'ULRrrf3AQWw',
+        title: 'Tenali Raman | Episode 367 | Thanthi One',
+        lengthSeconds: '2542',
+        author: 'Thanthi One',
+        channelId: 'UCFYqIFxANnSDsnz6qDH01Hw',
+      }),
+    } as unknown as Page;
+    const now = await createYouTubeProvider(contextFor(player)).nowPlaying!();
+    expect(now).toMatchObject({
+      ref: { id: 'ULRrrf3AQWw' },
+      number: 367,
+      durationSeconds: 2542,
+      parent: { name: 'Thanthi One' },
+    });
+  });
+
+  it('knows of nothing playing on a page that is not a video', async () => {
+    const home = {
+      url: () => 'https://www.youtube.com/',
+      evaluate: async () => null,
+    } as unknown as Page;
+    expect(await createYouTubeProvider(contextFor(home)).nowPlaying!()).toBe(
+      undefined,
+    );
   });
 });

@@ -345,3 +345,38 @@ export function isNewestFirst(
   }
   return false;
 }
+
+const VideoDetailsSchema = z.object({
+  videoId: z.string().min(1),
+  title: z.string().min(1),
+  lengthSeconds: z.coerce.number(),
+  author: z.string().optional(),
+  channelId: z.string().optional(),
+  isLiveContent: z.boolean().optional(),
+});
+
+/** The video YouTube's player holds, from its `getPlayerResponse().videoDetails`. */
+export function videoDetailsToPlayable(details: unknown): Playable | undefined {
+  const parsed = VideoDetailsSchema.safeParse(details);
+  if (!parsed.success) return undefined;
+  const { videoId: id, title, lengthSeconds, author, channelId } = parsed.data;
+  if (parsed.data.isLiveContent || lengthSeconds < SHORTEST_VIDEO_SECONDS) {
+    return undefined;
+  }
+  const number = episodeNumber(title);
+  return {
+    ref: { provider: PROVIDER, id },
+    kind: 'video',
+    title,
+    ...(number === undefined ? {} : { number }),
+    ...(author && channelId && isChannelId(channelId)
+      ? {
+          parent: { ref: { provider: PROVIDER, id: channelId }, name: author },
+          description: author,
+        }
+      : {}),
+    durationSeconds: lengthSeconds,
+    artwork: thumbnails(id),
+    url: `${SITE}/watch?v=${encodeURIComponent(id)}`,
+  };
+}

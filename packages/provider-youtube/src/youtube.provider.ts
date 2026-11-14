@@ -24,6 +24,7 @@ import {
   lockupAgeSeconds,
   lockupToPlayable,
   lockupToPlaylist,
+  videoDetailsToPlayable,
   videoRendererToPlayable,
 } from './catalog/youtube.mapping.js';
 
@@ -241,6 +242,23 @@ export function createYouTubeProvider(
     },
 
     title,
+
+    /** Read off the player itself, which stays right when YouTube moves on without loading a page. */
+    async nowPlaying() {
+      const page = await pages.player();
+      if (new URL(page.url()).pathname !== '/watch') return undefined;
+      const details = await page
+        .evaluate(() => {
+          const player = document.getElementById('movie_player') as
+            | (HTMLElement & {
+                getPlayerResponse?: () => { videoDetails?: unknown };
+              })
+            | null;
+          return player?.getPlayerResponse?.()?.videoDetails ?? null;
+        })
+        .catch(() => null);
+      return videoDetailsToPlayable(details);
+    },
 
     /** Channels, videos and playlists, in YouTube's order; Shorts and live streams left out. */
     async search(query) {
