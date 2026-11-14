@@ -95,11 +95,42 @@ export function BluetoothSection() {
       </section>
     );
   }
+  // The TV switches the adapter just after it saves the setting.
+  const switchTo = (on: boolean) =>
+    act('')(
+      adminApi
+        .settings({ bluetooth: on })
+        .then(() => new Promise((resolve) => setTimeout(resolve, 1500))),
+    );
+  if (status && !status.powered) {
+    return (
+      <section>
+        <h2>Bluetooth</h2>
+        {error && <p class='error'>{error}</p>}
+        <div class='row-form'>
+          <span class='grow'>Bluetooth is off.</span>
+          <button
+            class='primary'
+            disabled={busy !== undefined}
+            onClick={() => switchTo(true)}
+          >
+            Turn on
+          </button>
+        </div>
+      </section>
+    );
+  }
   const paired = status?.devices.filter((d) => d.paired) ?? [];
   const nearby = status?.devices.filter((d) => !d.paired) ?? [];
   return (
     <section>
       <h2>Bluetooth</h2>
+      <div class='row-form'>
+        <span class='grow'>Bluetooth is on.</span>
+        <button disabled={busy !== undefined} onClick={() => switchTo(false)}>
+          Turn off
+        </button>
+      </div>
       <p class='muted'>
         For a speaker or headphones. Put the device in pairing mode, search,
         then connect it while the search runs.

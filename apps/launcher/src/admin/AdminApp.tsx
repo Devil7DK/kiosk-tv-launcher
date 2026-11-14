@@ -177,6 +177,20 @@ export function AdminApp() {
             ))}
           </select>
         </label>
+        <p>When a video ends</p>
+        <label class='row-form'>
+          <input
+            type='checkbox'
+            checked={settings.autoplay}
+            onChange={(e) =>
+              onChange(adminApi.settings({ autoplay: e.currentTarget.checked }))
+            }
+          />
+          let YouTube play its next video by itself
+        </label>
+        <p class='muted'>
+          Otherwise the TV offers the next episode of what ended.
+        </p>
         <p>Languages on the service tabs</p>
         {LANGUAGES.map(([code, name]) => (
           <label key={code} class='row-form'>
