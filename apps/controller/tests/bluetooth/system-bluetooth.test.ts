@@ -35,27 +35,20 @@ describe('failureOf', () => {
 });
 
 describe('devicesToReconnect', () => {
-  const speaker = {
-    address: '00:11:22:33:44:55',
-    name: 'Speaker',
-    paired: true,
-    connected: false,
-  };
+  const speaker = '00:11:22:33:44:55';
 
-  it('calls back a paired speaker that went away', () => {
-    expect(devicesToReconnect([speaker], new Set())).toEqual([speaker.address]);
+  it('calls back a trusted speaker, even one a reboot left unpaired', () => {
+    expect(devicesToReconnect([speaker], new Set(), new Set())).toEqual([
+      speaker,
+    ]);
   });
 
-  it('leaves alone a device disconnected on purpose, one never paired, and one still connected', () => {
+  it('leaves alone a device still connected, and one disconnected on purpose', () => {
     expect(
-      devicesToReconnect(
-        [
-          speaker,
-          { ...speaker, address: '66:77:88:99:AA:BB', paired: false },
-          { ...speaker, address: 'AA:BB:CC:DD:EE:FF', connected: true },
-        ],
-        new Set([speaker.address]),
-      ),
+      devicesToReconnect([speaker], new Set([speaker]), new Set()),
+    ).toEqual([]);
+    expect(
+      devicesToReconnect([speaker], new Set(), new Set([speaker])),
     ).toEqual([]);
   });
 });

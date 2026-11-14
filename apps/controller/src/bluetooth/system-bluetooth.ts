@@ -19,22 +19,23 @@ export interface Bluetooth {
   connect(address: string): Promise<void>;
   disconnect(address: string): Promise<void>;
   forget(address: string): Promise<void>;
-  /** Tries once to bring back paired devices that went away, such as a speaker switched off and on. */
+  /** Tries once to bring back trusted devices that went away, such as a speaker switched off and on. */
   reconnect(): Promise<void>;
 }
 
 /**
- * Paired devices worth calling: not connected, and not disconnected on
- * purpose from the admin page.
+ * Devices worth calling: trusted, which every device connected from the admin
+ * page is, and not connected or disconnected on purpose. Not "paired": a
+ * speaker that never bonds is unpaired again after every reboot.
  */
 export function devicesToReconnect(
-  devices: readonly BluetoothDevice[],
+  trusted: readonly string[],
+  connected: ReadonlySet<string>,
   disconnectedOnPurpose: ReadonlySet<string>,
 ): string[] {
-  return devices
-    .filter((d) => d.paired && !d.connected)
-    .map((d) => d.address)
-    .filter((address) => !disconnectedOnPurpose.has(address));
+  return trusted.filter(
+    (address) => !connected.has(address) && !disconnectedOnPurpose.has(address),
+  );
 }
 
 const LINE = /^Device ((?:[0-9A-F]{2}:){5}[0-9A-F]{2}) (.+)$/;
@@ -83,7 +84,7 @@ export function createSystemBluetooth(log: Logger): Bluetooth {
     return /^Controller /m.test(shown);
   }
 
-  async function devices(filter?: 'Paired' | 'Connected') {
+  async function devices(filter?: 'Paired' | 'Trusted' | 'Connected') {
     return parseDevices(
       await bluetoothctl('devices', ...(filter ? [filter] : [])),
     );
@@ -153,18 +154,18 @@ export function createSystemBluetooth(log: Logger): Bluetooth {
       if (reconnecting || searching) return;
       reconnecting = true;
       try {
-        const { available, devices: known } = await bluetooth.status();
-        if (!available) return;
+        if (!(await available())) return;
+        const [trusted, connected] = await Promise.all([
+          devices('Trusted'),
+          devices('Connected'),
+        ]);
         for (const address of devicesToReconnect(
-          known,
+          trusted.map((d) => d.address),
+          new Set(connected.map((d) => d.address)),
           disconnectedOnPurpose,
         )) {
           // Fails while the device is off; the next round tries again.
-          const back = await bluetoothctl('connect', address).then(
-            () => true,
-            () => false,
-          );
-          if (back) log.info('bluetooth device reconnected', { address });
+          await bluetooth.connect(address).catch(() => {});
         }
       } finally {
         reconnecting = false;
