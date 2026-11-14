@@ -161,9 +161,11 @@ export function fakeModule(id: string, provider: Provider) {
 export function fakeBluetooth(nearby: { address: string; name: string }[]) {
   const devices = new Map<string, BluetoothDevice>();
   let scanning = false;
+  let powered = true;
   const bluetooth: Bluetooth = {
     status: async () => ({
       available: true,
+      powered,
       scanning,
       devices: [...devices.values()],
     }),
@@ -183,6 +185,7 @@ export function fakeBluetooth(nearby: { address: string; name: string }[]) {
     },
     forget: async (address) => void devices.delete(address),
     reconnect: async () => {},
+    setPowered: async (on) => void (powered = on),
   };
   return bluetooth;
 }

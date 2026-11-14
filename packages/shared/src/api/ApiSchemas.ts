@@ -102,6 +102,8 @@ export type BluetoothDevice = z.infer<typeof BluetoothDeviceSchema>;
 export const BluetoothStatusSchema = z.object({
   /** False on a computer without a Bluetooth adapter. */
   available: z.boolean(),
+  /** The adapter is switched on. */
+  powered: z.boolean(),
   scanning: z.boolean(),
   devices: z.array(BluetoothDeviceSchema),
 });

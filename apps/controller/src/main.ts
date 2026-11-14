@@ -82,7 +82,28 @@ const home = () => homeCache.get('home', () => homeService.build());
 events.subscribe((event) => {
   if (event.type === 'home') homeCache.clear();
 });
+let bluetoothApplied: boolean | undefined;
+
+/**
+ * Switches the adapter when the setting changes. At startup only "off" is
+ * enforced: BlueZ switches the adapter on at every boot, and a computer whose
+ * Bluetooth someone switched off by hand keeps it off.
+ */
+async function applyBluetoothSetting(): Promise<void> {
+  const { settings } = await library.read();
+  if (settings.bluetooth === bluetoothApplied) return;
+  const startup = bluetoothApplied === undefined;
+  bluetoothApplied = settings.bluetooth;
+  if (startup && settings.bluetooth) return;
+  await bluetooth
+    .setPowered(settings.bluetooth)
+    .catch((error: unknown) =>
+      log.warn('could not switch bluetooth', { error: String(error) }),
+    );
+}
+
 library.onChange(() => {
+  void applyBluetoothSetting();
   homeCache.clear();
   events.publish({ type: 'home' });
   void library
@@ -106,6 +127,7 @@ const playback = new PlaybackService({
 
 let battery = await readTvBattery();
 const bluetooth = createSystemBluetooth(log.child('bluetooth'));
+await applyBluetoothSetting();
 const remoteStatus = new RemoteStatusTracker();
 const remoteInput = createRemoteInput({
   playback,

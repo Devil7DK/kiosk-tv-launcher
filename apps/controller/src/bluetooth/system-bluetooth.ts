@@ -17,6 +17,8 @@ export interface Bluetooth {
   scan(): Promise<void>;
   /** Pairs and trusts the device first when it is new, so it reconnects by itself later. */
   connect(address: string): Promise<void>;
+  /** Switches the adapter on or off; nothing reaches the TV while it is off. */
+  setPowered(on: boolean): Promise<void>;
   disconnect(address: string): Promise<void>;
   forget(address: string): Promise<void>;
   /** Tries once to bring back trusted devices that went away, such as a speaker switched off and on. */
@@ -79,9 +81,16 @@ export function createSystemBluetooth(log: Logger): Bluetooth {
   let reconnecting = false;
   const disconnectedOnPurpose = new Set<string>();
 
-  async function available(): Promise<boolean> {
+  async function adapter(): Promise<{ available: boolean; powered: boolean }> {
     const shown = await bluetoothctl('show').catch(() => '');
-    return /^Controller /m.test(shown);
+    return {
+      available: /^Controller /m.test(shown),
+      powered: /^\s*Powered: yes$/m.test(shown),
+    };
+  }
+
+  async function poweredOn(): Promise<void> {
+    if (!(await adapter()).powered) throw new Error('Bluetooth is off');
   }
 
   async function devices(filter?: 'Paired' | 'Trusted' | 'Connected') {
@@ -92,8 +101,9 @@ export function createSystemBluetooth(log: Logger): Bluetooth {
 
   const bluetooth: Bluetooth = {
     async status() {
-      if (!(await available())) {
-        return { available: false, scanning: false, devices: [] };
+      const { available, powered } = await adapter();
+      if (!available) {
+        return { available, powered, scanning: false, devices: [] };
       }
       const [all, paired, connected] = await Promise.all([
         devices(),
@@ -107,12 +117,12 @@ export function createSystemBluetooth(log: Logger): Bluetooth {
         paired: isPaired.has(d.address),
         connected: isConnected.has(d.address),
       }));
-      return { available: true, scanning: searching, devices: list };
+      return { available, powered, scanning: searching, devices: list };
     },
 
     async scan() {
       if (searching) return;
-      await bluetoothctl('power', 'on');
+      await poweredOn();
       searching = true;
       const search = spawn(
         'bluetoothctl',
@@ -129,6 +139,7 @@ export function createSystemBluetooth(log: Logger): Bluetooth {
     },
 
     async connect(address) {
+      await poweredOn();
       disconnectedOnPurpose.delete(address);
       const known = await devices('Paired');
       if (!known.some((d) => d.address === address)) {
@@ -138,6 +149,13 @@ export function createSystemBluetooth(log: Logger): Bluetooth {
       }
       await bluetoothctl('connect', address);
       log.info('bluetooth device connected', { address });
+    },
+
+    async setPowered(on) {
+      const { available, powered } = await adapter();
+      if (!available || powered === on) return;
+      await bluetoothctl('power', on ? 'on' : 'off');
+      log.info(on ? 'bluetooth switched on' : 'bluetooth switched off');
     },
 
     async disconnect(address) {
@@ -154,7 +172,7 @@ export function createSystemBluetooth(log: Logger): Bluetooth {
       if (reconnecting || searching) return;
       reconnecting = true;
       try {
-        if (!(await available())) return;
+        if (!(await adapter()).powered) return;
         const [trusted, connected] = await Promise.all([
           devices('Trusted'),
           devices('Connected'),
