@@ -6,6 +6,7 @@ import {
   type PlaybackState,
   type PlayRequest,
   type Progress,
+  refKey,
   type RemoteKey,
 } from '@kiosk-tv/shared';
 
@@ -28,6 +29,8 @@ export interface Screen {
 type Finish = Extract<PlaybackState, { state: 'finished' }>['reason'];
 
 const SKIP_SECONDS = 10;
+/** YouTube counts down a few seconds before it plays the next video. */
+const AUTOPLAY_WAIT_MS = 15_000;
 
 /** One video at a time: starts it, records progress, and takes the screen back after. */
 export class PlaybackService {
@@ -45,6 +48,10 @@ export class PlaybackService {
       screen: Screen;
       events: EventHub;
       log: Logger;
+      /** Whether a service may play its own next video when one ends. */
+      autoplay?: () => Promise<boolean>;
+      /** How long to wait for the site to move on before showing Up Next. */
+      autoplayWaitMs?: number;
     },
   ) {}
 
@@ -133,13 +140,44 @@ export class PlaybackService {
         this.set({ ...this.current, progress });
       }
     });
-    session.on('ended', () => void this.finish(session, 'ended'));
+    session.on('ended', () => void this.ended(session));
     session.on('left', () => void this.finish(session, 'left'));
     session.on('error', (error) =>
       this.deps.log.warn('playback reported an error', {
         error: String(error),
       }),
     );
+  }
+
+  /** Plays the site's own next video when autoplay is on and the site moved on; else Up Next. */
+  private async ended(session: PlaybackSession): Promise<void> {
+    if (this.session !== session) return;
+    const next = await this.siteNext(session);
+    if (next && this.session === session) {
+      await this.play({ playable: next });
+      return;
+    }
+    await this.finish(session, 'ended');
+  }
+
+  /** The video the site went on to by itself, within the wait. */
+  private async siteNext(
+    session: PlaybackSession,
+  ): Promise<Playable | undefined> {
+    const provider = this.deps.registry.get(session.playable.ref.provider);
+    if (!provider?.nowPlaying || !(await this.deps.autoplay?.())) {
+      return undefined;
+    }
+    const finished = refKey(session.playable.ref);
+    const wait = this.deps.autoplayWaitMs ?? AUTOPLAY_WAIT_MS;
+    const deadline = Date.now() + wait;
+    while (this.session === session) {
+      const now = await provider.nowPlaying().catch(() => undefined);
+      if (now && refKey(now.ref) !== finished) return now;
+      if (Date.now() >= deadline) return undefined;
+      await new Promise((resolve) => setTimeout(resolve, Math.min(1000, wait)));
+    }
+    return undefined;
   }
 
   private async release(): Promise<void> {

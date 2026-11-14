@@ -2,6 +2,7 @@ import { mkdtemp } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
+import type { Provider } from '@kiosk-tv/provider-kit';
 import {
   type PlaybackState,
   progressAt,
@@ -26,8 +27,10 @@ import {
 const serial = show('alpha', 's1', 'Moondru Mudichu');
 const episodes = [episode(serial, 3), episode(serial, 2), episode(serial, 1)];
 
-async function setup() {
-  const fake = fakeProvider([{ title: serial, episodes }]);
+async function setup(
+  options: { autoplay?: boolean; overrides?: Partial<Provider> } = {},
+) {
+  const fake = fakeProvider([{ title: serial, episodes }], options.overrides);
   const registry = await ProviderRegistry.start(
     { alpha: { profile: 'Test' } },
     {
@@ -53,6 +56,8 @@ async function setup() {
     screen,
     events,
     log: silentLog,
+    autoplay: async () => options.autoplay ?? false,
+    autoplayWaitMs: 50,
   });
   const states = () =>
     published.flatMap((e) => (e.type === 'playback' ? [e.playback.state] : []));
@@ -108,6 +113,56 @@ describe('PlaybackService', () => {
       state: 'finished',
       reason: 'ended',
       next: { number: 3 },
+    });
+  });
+
+  it('follows the site to the video it went on to by itself, when autoplay is on', async () => {
+    const { fake, playback } = await setup({
+      autoplay: true,
+      overrides: { nowPlaying: async () => episodes[0] },
+    });
+    await playback.play({ playable: episodes[1]! });
+    fake.sessions[0]!.emit('ended');
+    await settle();
+    expect(fake.sessions[1]?.playable).toEqual(episodes[0]);
+    expect(playback.state).toMatchObject({
+      state: 'playing',
+      playable: { number: 3 },
+    });
+  });
+
+  it('shows Up Next when the site stays on the video that ended', async () => {
+    const { fake, playback } = await setup({
+      autoplay: true,
+      overrides: { nowPlaying: async () => episodes[1] },
+    });
+    await playback.play({ playable: episodes[1]! });
+    fake.sessions[0]!.emit('ended');
+    await new Promise((resolve) => setTimeout(resolve, 150));
+    expect(playback.state).toMatchObject({
+      state: 'finished',
+      reason: 'ended',
+      next: { number: 3 },
+    });
+  });
+
+  it('never asks the site what plays next while autoplay is off', async () => {
+    let asked = false;
+    const { fake, playback } = await setup({
+      overrides: {
+        nowPlaying: async () => {
+          asked = true;
+          return episodes[0];
+        },
+      },
+    });
+    await playback.play({ playable: episodes[1]! });
+    fake.sessions[0]!.emit('ended');
+    await settle();
+    expect(asked).toBe(false);
+    expect(playback.state).toMatchObject({
+      state: 'finished',
+      reason: 'ended',
     });
   });
 

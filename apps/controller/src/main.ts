@@ -101,6 +101,7 @@ const playback = new PlaybackService({
   screen,
   events,
   log: log.child('playback'),
+  autoplay: async () => (await library.read()).settings.autoplay,
 });
 
 let battery = await readTvBattery();
