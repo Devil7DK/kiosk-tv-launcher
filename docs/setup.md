@@ -63,11 +63,21 @@ The page answers only addresses on the home network.
 ## Debian package
 
 A TV running Debian without a desktop gets the controller and launcher as one
-package, built on a development machine:
+package. GitHub builds it on every push to `master`, kept with the workflow run,
+and attaches one to every published release. To build it on a development
+machine:
 
 ```bash
-yarn package:deb    # tools/package-deb/dist/kiosk-tv_<version>_amd64.deb
+yarn package:deb                    # tools/package-deb/dist/kiosk-tv_<version>_amd64.deb
+yarn package:deb --release v1.2.0   # as a release builds it
 ```
+
+A build is named `<last release>-<commit date>-<short sha>`, as
+`1.2.0-20261114-85a5308`; before the first release tag (`v1.2.0`) the release
+part is `0.1.<number of commits>`. A release is named by its tag: `v1.2.0` is
+`1.2.0`, and `v1.2.0-rc1` is `1.2.0~rc1`, which sorts before `1.2.0`. Two builds
+from the same day after a release are told apart only by their sha, so the
+later one can look older to `apt`, which then needs `--allow-downgrades`.
 
 The controller and providers are bundled; only `serialport` (native code) and
 `playwright-core` are shipped as installed. The package also turns off Brave's
