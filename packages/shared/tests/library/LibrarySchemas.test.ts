@@ -3,11 +3,17 @@ import { describe, expect, it } from 'vitest';
 import { LibrarySchema } from '../../src/index.js';
 
 describe('LibrarySchema', () => {
-  it('starts an empty store with Tamil and launcher-only continue watching', () => {
+  it('starts an empty store with Tamil, launcher-only continue watching, no autoplay and Bluetooth on', () => {
     expect(LibrarySchema.parse({})).toEqual({
       follows: [],
       playlists: [],
-      settings: { continueWatching: 'launcher', languages: ['ta'], scale: 1 },
+      settings: {
+        continueWatching: 'launcher',
+        languages: ['ta'],
+        scale: 1,
+        autoplay: false,
+        bluetooth: true,
+      },
     });
   });
 

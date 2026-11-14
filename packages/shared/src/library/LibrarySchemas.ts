@@ -42,6 +42,10 @@ export const SettingsSchema = z.object({
   continueWatching: ContinueWatchingModeSchema.default('launcher'),
   languages: LanguagesSchema.default(['ta']),
   scale: ScaleSchema.default(1),
+  /** When a video ends, let the service play its own next one (YouTube's autoplay). */
+  autoplay: z.boolean().default(false),
+  /** Off keeps the Bluetooth adapter off, also after a restart. */
+  bluetooth: z.boolean().default(true),
 });
 export type Settings = z.infer<typeof SettingsSchema>;
 

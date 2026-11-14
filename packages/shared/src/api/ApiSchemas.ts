@@ -169,5 +169,7 @@ export const SettingsUpdateSchema = z.object({
   continueWatching: ContinueWatchingModeSchema.optional(),
   languages: LanguagesSchema.optional(),
   scale: ScaleSchema.optional(),
+  autoplay: z.boolean().optional(),
+  bluetooth: z.boolean().optional(),
 });
 export type SettingsUpdate = z.infer<typeof SettingsUpdateSchema>;

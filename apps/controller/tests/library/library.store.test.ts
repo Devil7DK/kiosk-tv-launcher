@@ -82,6 +82,8 @@ describe('LibraryStore', () => {
       continueWatching: 'all',
       languages: ['ta'],
       scale: 1,
+      autoplay: false,
+      bluetooth: true,
     });
   });
 });
