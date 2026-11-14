@@ -17,7 +17,12 @@ import { fileURLToPath } from 'node:url';
 
 import { build } from 'rolldown';
 
-import { controlFile, debianVersion, isShipped } from './control.file.ts';
+import {
+  controlFile,
+  debianVersion,
+  isShipped,
+  releaseVersion,
+} from './control.file.ts';
 import { runtimePackages } from './runtime.deps.ts';
 
 const repo = fileURLToPath(new URL('../../../', import.meta.url));
@@ -154,7 +159,8 @@ async function writeControl(version: string): Promise<void> {
       `${createHash('md5').update(content).digest('hex')}  ${relative(root, file)}`,
     );
   }
-  const maintainer = `${git('config', 'user.name')} <${git('config', 'user.email')}>`;
+  // The commit's author: a CI runner has no git identity of its own.
+  const maintainer = git('log', '-1', '--format=%an <%ae>');
   await writeFile(
     join(control, 'control'),
     controlFile({ version, maintainer, installedKiB: Math.ceil(bytes / 1024) }),
@@ -218,11 +224,27 @@ for (const file of FILES) {
   if (file.executable) await chmod(target, 0o755);
 }
 
-const dirty = git('status', '--porcelain') !== '';
-const version = debianVersion(
-  Number(git('rev-list', '--count', 'HEAD')),
-  dirty ? new Date() : undefined,
-);
+/** `--release <tag>` builds that release's version; otherwise a build of the commit. */
+function versionOf(args: readonly string[]): string {
+  const at = args.indexOf('--release');
+  if (at >= 0) return releaseVersion(args[at + 1] ?? '');
+  let base: string;
+  try {
+    base = releaseVersion(
+      git('describe', '--tags', '--abbrev=0', '--match', 'v[0-9]*'),
+    );
+  } catch {
+    base = `0.1.${git('rev-list', '--count', 'HEAD')}`;
+  }
+  return debianVersion({
+    base,
+    committedAt: new Date(Number(git('log', '-1', '--format=%ct')) * 1000),
+    sha: git('rev-parse', '--short', 'HEAD'),
+    uncommittedAt: git('status', '--porcelain') !== '' ? new Date() : undefined,
+  });
+}
+
+const version = versionOf(process.argv.slice(2));
 await writeControl(version);
 const deb = await archive(version);
 console.log(

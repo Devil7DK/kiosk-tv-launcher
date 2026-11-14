@@ -1,16 +1,45 @@
 import { describe, expect, it } from 'vitest';
 
-import { controlFile, debianVersion, isShipped } from '../src/control.file.ts';
+import {
+  controlFile,
+  debianVersion,
+  isShipped,
+  releaseVersion,
+} from '../src/control.file.ts';
 
 describe('debianVersion', () => {
-  it('grows by one with each commit', () => {
-    expect(debianVersion(88)).toBe('0.1.88');
+  const committedAt = new Date('2026-11-14T08:30:15Z');
+
+  it('names the build by its last release, its commit date and short sha', () => {
+    expect(debianVersion({ base: '1.2.0', committedAt, sha: '85a5308' })).toBe(
+      '1.2.0-20261114-85a5308',
+    );
   });
 
-  it('sorts a build with uncommitted changes below its commit', () => {
-    expect(debianVersion(88, new Date('2026-11-12T21:30:05.123Z'))).toBe(
-      '0.1.88~dirty20261112T213005',
-    );
+  it('sorts a build with uncommitted changes just below its commit', () => {
+    expect(
+      debianVersion({
+        base: '0.1.154',
+        committedAt,
+        sha: '85a5308',
+        uncommittedAt: new Date('2026-11-14T09:00:00.500Z'),
+      }),
+    ).toBe('0.1.154-20261114-85a5308~dirty20261114090000');
+  });
+});
+
+describe('releaseVersion', () => {
+  it('takes a release version from its tag', () => {
+    expect(releaseVersion('v1.2.0')).toBe('1.2.0');
+    expect(releaseVersion('1.2.0')).toBe('1.2.0');
+  });
+
+  it('sorts a pre-release before the release it leads to', () => {
+    expect(releaseVersion('v1.2.0-rc1')).toBe('1.2.0~rc1');
+  });
+
+  it('refuses a tag that is not a version', () => {
+    expect(() => releaseVersion('latest')).toThrow(/not a release tag/);
   });
 });
 

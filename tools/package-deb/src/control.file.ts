@@ -1,16 +1,37 @@
+/** UTC, to the second, as digits only: 20261114083015. */
+function stamp(time: Date): string {
+  return time.toISOString().replace(/[-:T]/g, '').replace(/\..*$/, '');
+}
+
 /**
- * The package version: one step per commit, so every build installs over the
- * one before. A build with uncommitted changes sorts below its commit (`~`),
- * and is told apart from other such builds by when it was made.
+ * A build's version: `<last release>-<commit date>-<short sha>`, the release
+ * being `0.1.<commits>` before the first. A build with uncommitted changes
+ * sorts just below its commit.
  */
-export function debianVersion(commits: number, uncommittedAt?: Date): string {
-  const base = `0.1.${commits}`;
-  if (!uncommittedAt) return base;
-  const stamp = uncommittedAt
-    .toISOString()
-    .replace(/[-:]/g, '')
-    .replace(/\..*$/, '');
-  return `${base}~dirty${stamp}`;
+export function debianVersion(build: {
+  base: string;
+  committedAt: Date;
+  sha: string;
+  uncommittedAt?: Date | undefined;
+}): string {
+  const version = `${build.base}-${stamp(build.committedAt).slice(0, 8)}-${build.sha}`;
+  return build.uncommittedAt
+    ? `${version}~dirty${stamp(build.uncommittedAt)}`
+    : version;
+}
+
+const RELEASE_TAG = /^v?(\d+\.\d+\.\d+)(?:-([0-9A-Za-z.]+))?$/;
+
+/**
+ * A release's version from its tag: v1.2.0 is 1.2.0. A pre-release, v1.2.0-rc1,
+ * becomes 1.2.0~rc1, which Debian sorts before 1.2.0 itself.
+ */
+export function releaseVersion(tag: string): string {
+  const match = RELEASE_TAG.exec(tag);
+  if (!match) {
+    throw new Error(`${tag} is not a release tag like v1.2.0 or v1.2.0-rc1`);
+  }
+  return match[2] ? `${match[1]}~${match[2]}` : match[1]!;
 }
 
 export interface Control {
