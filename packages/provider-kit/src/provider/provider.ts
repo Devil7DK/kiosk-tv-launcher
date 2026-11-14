@@ -71,6 +71,11 @@ export interface Provider {
    * points at; undefined for links that are not this service's, or not to one.
    */
   resolve?(url: URL): Promise<Title | undefined>;
+  /**
+   * What the player tab shows now. Lets the TV follow a site that moves on to
+   * its next video by itself when one ends, as YouTube's autoplay does.
+   */
+  nowPlaying?(): Promise<Playable | undefined>;
   dispose?(): Promise<void>;
 }
 
