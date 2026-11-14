@@ -1,0 +1,56 @@
+name: Debian package
+
+# Every push to master builds a package named after its commit; publishing a
+# release builds one with the release's own version and attaches it.
+on:
+  push:
+    branches: [master]
+  release:
+    types: [published]
+
+jobs:
+  package:
+    runs-on: ubuntu-24.04
+    permissions:
+      # Attaching the package to a release.
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # The version needs the commit count and the last release tag.
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - run: corepack enable
+      - run: yarn install --immutable
+
+      - name: Check
+        run: yarn typecheck && yarn lint && yarn test && yarn format:check
+
+      - name: Build the package
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          if [ -n "$RELEASE_TAG" ]; then
+            yarn package:deb --release "$RELEASE_TAG"
+          else
+            yarn package:deb
+          fi
+
+      - name: Keep the package with the run
+        if: github.event_name == 'push'
+        uses: actions/upload-artifact@v4
+        with:
+          name: kiosk-tv-deb
+          path: tools/package-deb/dist/*.deb
+          if-no-files-found: error
+
+      - name: Attach the package to the release
+        if: github.event_name == 'release'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: gh release upload "$RELEASE_TAG" tools/package-deb/dist/*.deb --clobber
