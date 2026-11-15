@@ -31,6 +31,8 @@ async function api() {
   return (await setup()).app;
 }
 
+const pressed: string[] = [];
+
 async function setup(
   power?: (action: PowerAction) => Promise<void>,
   /** null for a screen without a backlight. */
@@ -76,6 +78,7 @@ async function setup(
     events,
     homeService,
     home: () => homeService.build(),
+    pressRemote: async (button) => void pressed.push(button),
     remote: () => ({ batteryLow: false }),
     battery: () => undefined,
     bluetooth: fakeBluetooth([{ address: SPEAKER, name: 'Speaker' }]),
@@ -201,6 +204,18 @@ describe('API', () => {
     expect(asked).toEqual([]);
     await new Promise((resolve) => setTimeout(resolve, 300));
     expect(asked).toEqual(['restart']);
+  });
+
+  it('passes a button from the admin page on as a press of the remote', async () => {
+    const app = await api();
+    pressed.length = 0;
+    expect(
+      (await app.request('/remote/press', json({ button: 'volumeUp' }))).status,
+    ).toBe(204);
+    expect(
+      (await app.request('/remote/press', json({ button: 'power' }))).status,
+    ).toBe(400);
+    expect(pressed).toEqual(['volumeUp']);
   });
 
   it('changes the brightness and answers with the new one', async () => {

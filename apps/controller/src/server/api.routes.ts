@@ -12,7 +12,9 @@ import {
   type PowerAction,
   PowerRequestSchema,
   type Ref,
+  type RemoteButton,
   RemoteKeySchema,
+  RemotePressRequestSchema,
   type RemoteStatus,
   SettingsUpdateSchema,
   type TvBattery,
@@ -48,6 +50,8 @@ export interface ApiDeps {
   playback: PlaybackService;
   watch: WatchStore;
   events: EventHub;
+  /** Handles a button as if pressed on the TV's own remote. */
+  pressRemote: (button: RemoteButton) => Promise<void>;
   /** The remote as last heard from. */
   remote: () => RemoteStatus;
   /** The computer's own battery; undefined without one. */
@@ -168,6 +172,11 @@ export function createApi(deps: ApiDeps): Hono {
 
   api.get('/playback', (c) => c.json(deps.playback.state));
   api.get('/remote', (c) => c.json(deps.remote()));
+  api.post('/remote/press', async (c) => {
+    const { button } = await body(c, RemotePressRequestSchema);
+    await deps.pressRemote(button);
+    return c.body(null, 204);
+  });
   api.post('/play', async (c) => {
     const request = await body(c, PlayRequestSchema);
     deps.playback.check(request);

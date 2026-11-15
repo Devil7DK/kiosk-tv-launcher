@@ -191,6 +191,7 @@ app.route(
     playback,
     watch,
     events,
+    pressRemote: (button) => remoteInput({ button, repeat: false }),
     remote: () => remoteStatus.current,
     battery: () => battery,
     bluetooth,
