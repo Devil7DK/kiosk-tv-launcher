@@ -1,6 +1,8 @@
 import {
   type BluetoothStatus,
   BluetoothStatusSchema,
+  type BrightnessStatus,
+  BrightnessStatusSchema,
   type CatalogItem,
   CatalogItemSchema,
   type EpisodeListing,
@@ -128,6 +130,10 @@ export const api = {
   powerAvailable: async (): Promise<boolean> =>
     (await get('/power', PowerStatusSchema)).available,
   power: (action: PowerAction): Promise<void> => post('/power', { action }),
+  brightness: (): Promise<BrightnessStatus> =>
+    get('/brightness', BrightnessStatusSchema),
+  setBrightness: (percent: number): Promise<BrightnessStatus> =>
+    sendFor('PUT', '/brightness', BrightnessStatusSchema, { percent }),
   playback: (command: PlaybackCommand): Promise<void> =>
     post('/playback', command),
 };
