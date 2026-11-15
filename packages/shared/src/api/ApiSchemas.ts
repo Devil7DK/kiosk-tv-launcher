@@ -153,6 +153,20 @@ export type PowerRequest = z.infer<typeof PowerRequestSchema>;
 export const PowerStatusSchema = z.object({ available: z.boolean() });
 export type PowerStatus = z.infer<typeof PowerStatusSchema>;
 
+/** Never fully dark: a black screen gives the viewer no way back. */
+export const DIMMEST_PERCENT = 10;
+
+export const BrightnessRequestSchema = z.object({
+  percent: z.number().int().min(DIMMEST_PERCENT).max(100),
+});
+export type BrightnessRequest = z.infer<typeof BrightnessRequestSchema>;
+
+/** The screen's backlight; `percent` is absent on a screen without one. */
+export const BrightnessStatusSchema = z.object({
+  percent: z.number().int().min(0).max(100).optional(),
+});
+export type BrightnessStatus = z.infer<typeof BrightnessStatusSchema>;
+
 export const PlaylistCreateSchema = z.object({
   name: z.string().trim().min(1),
   source: PlaylistSourceSchema,
