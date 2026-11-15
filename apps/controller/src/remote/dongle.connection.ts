@@ -1,19 +1,8 @@
+import { type RemoteButton, RemoteButtonSchema } from '@kiosk-tv/shared';
 import { ReadlineParser, SerialPort } from 'serialport';
 import { z } from 'zod';
 
 import type { Logger } from '../logging/logger.js';
-
-export const RemoteButtonSchema = z.enum([
-  'up',
-  'down',
-  'left',
-  'right',
-  'ok',
-  'back',
-  'volumeUp',
-  'volumeDown',
-]);
-export type RemoteButton = z.infer<typeof RemoteButtonSchema>;
 
 export interface RemotePress {
   button: RemoteButton;
