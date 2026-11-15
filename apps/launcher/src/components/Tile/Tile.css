@@ -1,5 +1,7 @@
 .tile {
   flex: 0 0 22vw;
+  /* Otherwise a title with no spaces, such as a run of hashtags, widens the tile and its picture. */
+  min-width: 0;
   scroll-margin: 0 var(--gutter);
 }
 
@@ -63,6 +65,7 @@
 
 .tile-title {
   margin-top: 0.4em;
+  overflow-wrap: anywhere;
   font-size: 0.9rem;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -72,6 +75,7 @@
 
 .tile-subtitle {
   font-size: 0.75rem;
+  overflow-wrap: anywhere;
   color: var(--muted);
   display: -webkit-box;
   -webkit-line-clamp: 2;
