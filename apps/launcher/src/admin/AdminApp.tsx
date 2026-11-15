@@ -8,6 +8,7 @@ import { AddFromLink } from './AddFromLink';
 import { BluetoothSection } from './BluetoothSection';
 import { BrowseSection } from './BrowseSection';
 import { PlaylistsSection } from './PlaylistsSection';
+import { PowerSection } from './PowerSection';
 import { RemoteSection } from './RemoteSection';
 import { SearchSection } from './SearchSection';
 
@@ -134,6 +135,7 @@ export function AdminApp() {
 
       <PlaylistsSection library={library} onChange={onChange} />
       <BluetoothSection />
+      <PowerSection />
       <BrowseSection
         providers={providers}
         library={library}
