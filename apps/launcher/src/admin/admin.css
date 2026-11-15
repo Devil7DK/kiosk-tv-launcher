@@ -124,3 +124,51 @@
 .admin .search-form select {
   flex: 1;
 }
+
+/* Thumb-sized keys in the remote's own cross; the page never zooms on a double tap. */
+.admin .remote-pad {
+  display: grid;
+  grid-template-columns: repeat(3, 72px);
+  grid-template-rows: repeat(3, 72px);
+  gap: 8px;
+  justify-content: center;
+  margin: 8px 0 12px;
+}
+
+.admin .remote-pad button,
+.admin .remote-below button {
+  font-size: 1.25em;
+  touch-action: manipulation;
+}
+
+.admin .remote-up {
+  grid-area: 1 / 2;
+}
+
+.admin .remote-left {
+  grid-area: 2 / 1;
+}
+
+.admin .remote-ok {
+  grid-area: 2 / 2;
+  font-weight: 700;
+}
+
+.admin .remote-right {
+  grid-area: 2 / 3;
+}
+
+.admin .remote-down {
+  grid-area: 3 / 2;
+}
+
+.admin .remote-below {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.admin .remote-below button {
+  flex: 0 1 120px;
+  min-height: 56px;
+}

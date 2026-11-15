@@ -23,6 +23,7 @@ import {
   ProviderInfoSchema,
   type Ref,
   refKey,
+  type RemoteButton,
   type RemoteStatus,
   RemoteStatusSchema,
   type SearchResult,
@@ -173,6 +174,8 @@ export const adminApi = {
       z.array(CatalogItemSchema),
     ),
   refresh: (): Promise<void> => post('/refresh', {}),
+  pressRemote: (button: RemoteButton): Promise<void> =>
+    post('/remote/press', { button }),
   bluetooth: (): Promise<BluetoothStatus> =>
     get('/bluetooth', BluetoothStatusSchema),
   searchBluetooth: (): Promise<void> => post('/bluetooth/scan', {}),

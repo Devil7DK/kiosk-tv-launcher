@@ -8,6 +8,7 @@ import { AddFromLink } from './AddFromLink';
 import { BluetoothSection } from './BluetoothSection';
 import { BrowseSection } from './BrowseSection';
 import { PlaylistsSection } from './PlaylistsSection';
+import { RemoteSection } from './RemoteSection';
 import { SearchSection } from './SearchSection';
 
 const SIZES = [0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6];
@@ -98,6 +99,8 @@ export function AdminApp() {
           </button>
         </div>
       </section>
+
+      <RemoteSection />
 
       <SearchSection
         providers={providers}
