@@ -172,6 +172,11 @@ The gear at the right end of the tabs opens **Settings**, where Smaller and
 Bigger change the size of everything on the TV, one step per press of OK. Back
 or Done closes it; the choice is kept.
 
+On a laptop, Dimmer and Brighter below them set the screen's backlight in steps
+of 10%, down to 10% and never off. The controller asks logind to set it, which
+lets the user logged in at the screen do so without root; at boot,
+`systemd-backlight` brings back the last level.
+
 ## Known limits
 
 - ZEE5's sign-in token is valid for four days. Whether the site renews it on its
