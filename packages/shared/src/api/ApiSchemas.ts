@@ -30,6 +30,20 @@ export const RemoteKeySchema = z.enum([
 ]);
 export type RemoteKey = z.infer<typeof RemoteKeySchema>;
 
+/** Every button of the TV's own remote: the keys, and volume. */
+export const RemoteButtonSchema = z.enum([
+  ...RemoteKeySchema.options,
+  'volumeUp',
+  'volumeDown',
+]);
+export type RemoteButton = z.infer<typeof RemoteButtonSchema>;
+
+/** A button pressed on the admin page's remote, handled as the real remote's. */
+export const RemotePressRequestSchema = z.object({
+  button: RemoteButtonSchema,
+});
+export type RemotePressRequest = z.infer<typeof RemotePressRequestSchema>;
+
 export const ProviderInfoSchema = z.object({
   manifest: ProviderManifestSchema,
   status: ProviderStatusSchema,
