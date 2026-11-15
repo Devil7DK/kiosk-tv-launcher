@@ -57,6 +57,10 @@ same Wi-Fi. From there:
 - set the **size** of everything on the TV, from 60% to 160%,
 - choose whether **Continue watching** shows only what was started on the TV,
   or also what the services report from other devices.
+- press the TV's buttons on the **remote** there, volume included, when the
+  real one is out of reach,
+- **shut down or restart** the TV, where it allows that (see below); both ask
+  first.
 
 The page answers only addresses on the home network.
 
