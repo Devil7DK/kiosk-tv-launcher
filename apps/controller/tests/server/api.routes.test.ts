@@ -15,6 +15,7 @@ import { createApi } from '../../src/server/api.routes.js';
 import { WatchStore } from '../../src/watch/watch.store.js';
 import {
   episode,
+  fakeBacklight,
   fakeBluetooth,
   fakeModule,
   fakeProvider,
@@ -30,7 +31,11 @@ async function api() {
   return (await setup()).app;
 }
 
-async function setup(power?: (action: PowerAction) => Promise<void>) {
+async function setup(
+  power?: (action: PowerAction) => Promise<void>,
+  /** null for a screen without a backlight. */
+  brightness: number | null = 40,
+) {
   const fake = fakeProvider([
     { title: serial, episodes: [episode(serial, 1)] },
   ]);
@@ -74,6 +79,7 @@ async function setup(power?: (action: PowerAction) => Promise<void>) {
     remote: () => ({ batteryLow: false }),
     battery: () => undefined,
     bluetooth: fakeBluetooth([{ address: SPEAKER, name: 'Speaker' }]),
+    backlight: fakeBacklight(brightness ?? undefined),
     ...(power ? { power } : {}),
     log: silentLog,
   });
@@ -195,6 +201,37 @@ describe('API', () => {
     expect(asked).toEqual([]);
     await new Promise((resolve) => setTimeout(resolve, 300));
     expect(asked).toEqual(['restart']);
+  });
+
+  it('changes the brightness and answers with the new one', async () => {
+    const app = await api();
+    expect(await (await app.request('/brightness')).json()).toEqual({
+      percent: 40,
+    });
+    const res = await app.request('/brightness', {
+      ...json({ percent: 70 }),
+      method: 'PUT',
+    });
+    expect(await res.json()).toEqual({ percent: 70 });
+  });
+
+  it('refuses to darken the screen completely', async () => {
+    const app = await api();
+    const res = await app.request('/brightness', {
+      ...json({ percent: 0 }),
+      method: 'PUT',
+    });
+    expect(res.status).toBe(400);
+  });
+
+  it('reports no brightness for a screen without a backlight', async () => {
+    const { app } = await setup(undefined, null);
+    expect(await (await app.request('/brightness')).json()).toEqual({});
+    const res = await app.request('/brightness', {
+      ...json({ percent: 50 }),
+      method: 'PUT',
+    });
+    expect(res.status).toBe(503);
   });
 
   it('finds a speaker, pairs with it and forgets it again', async () => {

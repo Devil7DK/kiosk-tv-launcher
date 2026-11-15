@@ -12,6 +12,7 @@ import { createSystemBluetooth } from './bluetooth/system-bluetooth.js';
 import { CatalogService } from './catalog/catalog.service.js';
 import { TtlCache } from './catalog/ttl.cache.js';
 import { loadTvConfig } from './config/tv-config.js';
+import { systemBacklight } from './display/backlight.js';
 import { EventHub } from './events/event.hub.js';
 import { HomeService } from './home/home.service.js';
 import { LibraryStore } from './library/library.store.js';
@@ -193,6 +194,7 @@ app.route(
     remote: () => remoteStatus.current,
     battery: () => battery,
     bluetooth,
+    backlight: systemBacklight(),
     ...(config.power.enabled ? { power: powerTv } : {}),
     log,
   }),

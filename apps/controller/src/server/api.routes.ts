@@ -1,5 +1,6 @@
 import {
   BluetoothDeviceSchema,
+  BrightnessRequestSchema,
   CatalogItemSchema,
   FollowLinkRequestSchema,
   FollowRequestSchema,
@@ -26,6 +27,7 @@ import {
   type CatalogService,
   ProviderUnavailableError,
 } from '../catalog/catalog.service.js';
+import type { Backlight } from '../display/backlight.js';
 import type { EventHub } from '../events/event.hub.js';
 import type { HomeService } from '../home/home.service.js';
 import { type LibraryStore, NotFoundError } from '../library/library.store.js';
@@ -51,6 +53,7 @@ export interface ApiDeps {
   /** The computer's own battery; undefined without one. */
   battery: () => TvBattery | undefined;
   bluetooth: Bluetooth;
+  backlight: Backlight;
   /** Absent where the launcher may not shut the computer down. */
   power?: (action: PowerAction) => Promise<void>;
   log: Logger;
@@ -306,6 +309,22 @@ export function createApi(deps: ApiDeps): Hono {
       'Could not forget the device',
     );
     return c.body(null, 204);
+  });
+
+  const brightness = async () => {
+    const percent = await deps.backlight.percent();
+    return percent === undefined ? {} : { percent };
+  };
+  api.get('/brightness', async (c) => c.json(await brightness()));
+  api.put('/brightness', async (c) => {
+    const { percent } = await body(c, BrightnessRequestSchema);
+    try {
+      await deps.backlight.setPercent(percent);
+    } catch (error) {
+      deps.log.warn('could not set the brightness', { error: String(error) });
+      throw new HTTPException(503, { message: 'Could not set the brightness' });
+    }
+    return c.json(await brightness());
   });
 
   api.get('/power', (c) => c.json({ available: deps.power !== undefined }));

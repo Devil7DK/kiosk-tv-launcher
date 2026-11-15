@@ -9,6 +9,7 @@ import type { BluetoothDevice, Playable, Title } from '@kiosk-tv/shared';
 import { z } from 'zod';
 
 import type { Bluetooth } from '../../src/bluetooth/system-bluetooth.js';
+import type { Backlight } from '../../src/display/backlight.js';
 import type { Logger } from '../../src/logging/logger.js';
 
 export const silentLog: Logger = {
@@ -188,4 +189,16 @@ export function fakeBluetooth(nearby: { address: string; name: string }[]) {
     setPowered: async (on) => void (powered = on),
   };
   return bluetooth;
+}
+
+/** A screen's backlight in memory; `undefined` is a screen without one. */
+export function fakeBacklight(start: number | undefined): Backlight {
+  let level = start;
+  return {
+    percent: async () => level,
+    setPercent: async (percent) => {
+      if (level === undefined) throw new Error('No backlight');
+      level = percent;
+    },
+  };
 }
