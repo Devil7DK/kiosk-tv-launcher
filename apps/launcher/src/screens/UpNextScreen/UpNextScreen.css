@@ -25,6 +25,7 @@
 }
 
 .up-next-title {
+  overflow-wrap: anywhere;
   margin: 0.2em 0 0.1em;
   font-size: 1.6rem;
 }
